@@ -1,12 +1,12 @@
-class Node {
+export class Cell {
     constructor(
         public rowValue: number,
         public colValue: number,
         public value: any,
-        public nextRow: Node | undefined = undefined,
-        public nextCol: Node | undefined = undefined,
-        public prevRow: Node | undefined = undefined,
-        public prevCol: Node | undefined = undefined,
+        public nextRow: Cell | undefined = undefined,
+        public nextCol: Cell | undefined = undefined,
+        public prevRow: Cell | undefined = undefined,
+        public prevCol: Cell | undefined = undefined,
         public textAlign = 'center',
         public textBaseline = 'middle',
         public fontSize = 14,
@@ -16,8 +16,8 @@ class Node {
 }
 
 export class SparseMatrix {
-    rowHeaders: { [key: number]: Node | undefined } = {};
-    colHeaders: { [key: number]: Node | undefined } = {};
+    rowHeaders: { [key: number]: Cell | undefined } = {};
+    colHeaders: { [key: number]: Cell | undefined } = {};
 
     private _cellExists(row: number, col: number): boolean {
         let current = this.rowHeaders[row];
@@ -48,47 +48,47 @@ export class SparseMatrix {
         delete this.colHeaders[col];
     }
 
-    private _insertNodeInRow(row: number, newNode: Node): void {
+    private _insertCellInRow(row: number, newCell: Cell): void {
         let current = this.rowHeaders[row];
-        let prev: Node | undefined = undefined;
+        let prev: Cell | undefined = undefined;
 
-        while (current && current.colValue < newNode.colValue) {
+        while (current && current.colValue < newCell.colValue) {
             prev = current;
             current = current.nextCol;
         }
 
         if (prev) {
-            prev.nextCol = newNode;
-            newNode.prevCol = prev;
+            prev.nextCol = newCell;
+            newCell.prevCol = prev;
         } else {
-            this.rowHeaders[row] = newNode;
+            this.rowHeaders[row] = newCell;
         }
 
         if (current) {
-            newNode.nextCol = current;
-            current.prevCol = newNode;
+            newCell.nextCol = current;
+            current.prevCol = newCell;
         }
     }
 
-    private _insertNodeInColumn(col: number, newNode: Node): void {
+    private _insertCellInColumn(col: number, newCell: Cell): void {
         let current = this.colHeaders[col];
-        let prev: Node | undefined = undefined;
+        let prev: Cell | undefined = undefined;
 
-        while (current && current.rowValue < newNode.rowValue) {
+        while (current && current.rowValue < newCell.rowValue) {
             prev = current;
             current = current.nextRow;
         }
 
         if (prev) {
-            prev.nextRow = newNode;
-            newNode.prevRow = prev;
+            prev.nextRow = newCell;
+            newCell.prevRow = prev;
         } else {
-            this.colHeaders[col] = newNode;
+            this.colHeaders[col] = newCell;
         }
 
         if (current) {
-            newNode.nextRow = current;
-            current.prevRow = newNode;
+            newCell.nextRow = current;
+            current.prevRow = newCell;
         }
     }
 
@@ -121,8 +121,8 @@ export class SparseMatrix {
             });
 
         for (let col in this.colHeaders) {
-            const newNode = new Node(newRow, parseInt(col), null);
-            this._insertNodeInColumn(parseInt(col), newNode);
+            const newCell = new Cell(newRow, parseInt(col), null);
+            this._insertCellInColumn(parseInt(col), newCell);
         }
     }
 
@@ -135,16 +135,16 @@ export class SparseMatrix {
             });
 
         for (let row in this.rowHeaders) {
-            const newNode = new Node(parseInt(row), newCol, null);
-            this._insertNodeInRow(parseInt(row), newNode);
-            this._insertNodeInColumn(newCol, newNode);
+            const newCell = new Cell(parseInt(row), newCol, null);
+            this._insertCellInRow(parseInt(row), newCell);
+            this._insertCellInColumn(newCol, newCell);
         }
     }
 
     deleteRow(rowToDelete: number): void {
         let current = this.rowHeaders[rowToDelete];
         while (current) {
-            this._removeNodeFromColumn(current.colValue, rowToDelete);
+            this._removeCellFromColumn(current.colValue, rowToDelete);
             current = current.nextCol;
         }
         delete this.rowHeaders[rowToDelete];
@@ -159,7 +159,7 @@ export class SparseMatrix {
     deleteColumn(colToDelete: number): void {
         let current = this.colHeaders[colToDelete];
         while (current) {
-            this._removeNodeFromRow(current.rowValue, colToDelete);
+            this._removeCellFromRow(current.rowValue, colToDelete);
             current = current.nextRow;
         }
         delete this.colHeaders[colToDelete];
@@ -171,9 +171,9 @@ export class SparseMatrix {
             });
     }
 
-    private _removeNodeFromRow(row: number, col: number): void {
+    private _removeCellFromRow(row: number, col: number): void {
         let current = this.rowHeaders[row];
-        let prev: Node | undefined = undefined;
+        let prev: Cell | undefined = undefined;
 
         while (current && current.colValue !== col) {
             prev = current;
@@ -193,9 +193,9 @@ export class SparseMatrix {
         }
     }
 
-    private _removeNodeFromColumn(row: number, col: number): void {
+    private _removeCellFromColumn(row: number, col: number): void {
         let current = this.colHeaders[col];
-        let prev: Node | undefined = undefined;
+        let prev: Cell | undefined = undefined;
 
         while (current && current.rowValue !== row) {
             prev = current;

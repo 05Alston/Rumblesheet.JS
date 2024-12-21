@@ -11,14 +11,17 @@ export class Scroll {
     lastMouseX = 0;
     lastMouseY = 0;
     scrollbarDirection?: 'vertical' | 'horizontal';
-    sheetRendrer: SheetRendrer;
+    sheetRendrer!: SheetRendrer;
     canvases?: { [key: string]: HTMLCanvasElement; };
     contexts?: { [key: string]: CanvasRenderingContext2D; };
 
     constructor(private helper: Helper) {
-        this.sheetRendrer = helper.sheetRendrer;
         this.mappingFromHelper();
         this.setupEventListeners();
+    }
+
+    setRenderer(renderer: SheetRendrer) {
+        this.sheetRendrer = renderer;
     }
 
     mappingFromHelper():void {
@@ -26,7 +29,7 @@ export class Scroll {
         this.contexts = this.helper.contexts;
       }
 
-    setupEventListeners() {
+    setupEventListeners():void {
         const canvas = this.canvases!.spreadsheet;
         const { row: Sheetrow, col: Sheetcol, index: Sheetindex } = this.helper.getRowColofExcel();
         canvas.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
@@ -41,7 +44,7 @@ export class Scroll {
         horizontalScrollBar?.addEventListener('mousedown', this.handleScrollBarMouseDown.bind(this, 'horizontal'));
     }
 
-    handleScrollBarMouseDown(direction: 'vertical' | 'horizontal', event: MouseEvent) {
+    handleScrollBarMouseDown(direction: 'vertical' | 'horizontal', event: MouseEvent):void {
         event.preventDefault();
         this.isScrollbarDragging = true;
         this.scrollbarDirection = direction;
@@ -49,7 +52,7 @@ export class Scroll {
         this.lastMouseY = event.clientY;
     }
 
-    handleMouseMove(event: MouseEvent) {
+    handleMouseMove(event: MouseEvent):void {
         if (this.isDragging) {
             if (event.shiftKey) {
                 const deltaX = this.lastMouseX - event.clientX;
@@ -80,13 +83,13 @@ export class Scroll {
         }
     }
   
-    handleMouseUp() {
+    handleMouseUp():void {
         this.isDragging = false;
         this.isScrollbarDragging = false;
         this.destroy();
     }
    
-    handleWheel(event: WheelEvent) {
+    handleWheel(event: WheelEvent):void {
         if (!event.ctrlKey && !event.metaKey) {
             event.preventDefault();
             const deltaX = event.deltaX;
@@ -95,13 +98,13 @@ export class Scroll {
         }
     }
 
-    handleMouseDown(event: MouseEvent) {
+    handleMouseDown(event: MouseEvent):void {
         this.isDragging = true;
         this.lastMouseX = event.clientX;
         this.lastMouseY = event.clientY;
     }
 
-    updateMaxScroll(totalWidth: number, totalHeight: number, viewportWidth: number, viewportHeight: number) {
+    updateMaxScroll(totalWidth: number, totalHeight: number, viewportWidth: number, viewportHeight: number):void {
         this.maxScrollX = Math.max(0, totalWidth - viewportWidth);
         this.maxScrollY = Math.max(0, totalHeight - viewportHeight);
         
@@ -111,7 +114,7 @@ export class Scroll {
     }
     
 
-    expandContent(direction: 'horizontal' | 'vertical') {
+    expandContent(direction: 'horizontal' | 'vertical'):void {
         const scrollBar = direction === 'horizontal' 
             ? this.helper.horizontalScroll?.bar
             : this.helper.verticalScroll?.bar;
@@ -122,13 +125,13 @@ export class Scroll {
 
             if (direction === 'horizontal') {
                 if (this.scrollX >= 0.8 * (this.maxScrollX - this.canvases!.spreadsheet.clientWidth)) {
-                    this.sheetRendrer.headerCellManager.updateCells();
+                    this.helper.updateCells();
                     this.maxScrollX *= expandFactor;
                     this.scrollX = Math.min(this.scrollX, this.maxScrollX);
                 }
             } else if (direction === 'vertical') {
                 if (this.scrollY >= 0.8 * (this.maxScrollY - this.canvases!.spreadsheet.clientHeight)) {
-                    this.sheetRendrer.headerCellManager.updateCells();
+                    this.helper.updateCells();
                     this.maxScrollY *= expandFactor;
                     this.scrollY = Math.min(this.scrollY, this.maxScrollY);
                 }
@@ -139,7 +142,7 @@ export class Scroll {
         }
     }
 
-    updateScrollBar(direction: 'vertical' | 'horizontal') {
+    updateScrollBar(direction: 'vertical' | 'horizontal'):void {
         // Get the scroll and bar elements based on the direction
         let scrollElement: HTMLElement | null | undefined;
         let barElement: HTMLElement | null | undefined;
@@ -181,7 +184,7 @@ export class Scroll {
       }
       
     
-    scroll(deltaX: number, deltaY: number) {
+    scroll(deltaX: number, deltaY: number):void {
         const direction = deltaX === 0 
             ? "vertical"
             : "horizontal";
@@ -191,6 +194,7 @@ export class Scroll {
             deltaX = Math.max(-maxScrollSpeed, Math.min(deltaX, maxScrollSpeed));
             deltaY = Math.max(-maxScrollSpeed, Math.min(deltaY, maxScrollSpeed));
         }
+        console.log("in the scroll",deltaX,deltaY);
         
         this.scrollX = Math.max(0, Math.min(this.scrollX + deltaX, this.maxScrollX));
         this.scrollY = Math.max(0, Math.min(this.scrollY + deltaY, this.maxScrollY));
@@ -200,7 +204,7 @@ export class Scroll {
         this.sheetRendrer.draw();
     }
     
-    checkScrollPosition() {
+    checkScrollPosition():void {
         // Horizontal scroll
         const horizontalRatio = this.scrollX / this.maxScrollX;
         if (horizontalRatio > 0.8) {
@@ -214,7 +218,7 @@ export class Scroll {
         }
     }
     
-    getScroll() {
+    getScroll(): { x: number, y: number } {
         return { x: this.scrollX, y: this.scrollY };
     }
 
