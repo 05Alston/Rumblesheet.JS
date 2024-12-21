@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "lib": ["es2017", "dom"],
+    "target": "es6",            // Use ES6 for modern browsers
+    "module": "es6",            // Use ES6 modules
+    "outDir": "./dist",         // Output folder for compiled JavaScript
+    "rootDir": "./src",         // Root folder for your TypeScript files
+    "strict": true,             // Enable strict type checking
+    "esModuleInterop": true     // Ensure compatibility with ES modules
+  },
+  "include": ["src/**/*.ts"],   // Include all .ts files in the src folder
+  "exclude": ["node_modules"]   // Exclude dependencies
+}
