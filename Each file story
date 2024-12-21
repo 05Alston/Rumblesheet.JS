@@ -1,0 +1,298 @@
+Index.html 
+    -- Contain simple html file with path of js and css
+
+
+SRC
+    Core\
+        Initiator.ts
+            -- Start with event listener Dom content calls init function 
+
+            -- init function take two argument ribbonContainer and mainContainer
+            -- calls two class ribbon maker and 
+                                                excelsHandler (for now grid maker)
+        EventManger.ts
+            -- need to work on it (generally it should handle all the events)
+
+        excelsHandler (for now gridmaker)
+            constructor (mainContainer,maxRow,maxCol)
+                -- main contianer maxiumum number of rows and cols for excel
+                -- create rowArr for maintaing number of rows
+                -- call init
+            init 
+                -- call function add new row 
+                -- call setupEventListener
+            addNewRow 
+                -- call Excel class to create excel 
+                -- give them row and col as 1 
+                src\core\excel\excel.ts excel(row,this.currentRowcount,col=1, this)
+
+            setupEventListener (this all things can be handle on ribbon.ts no need for eventlistner)
+                -- listen to add new row button
+                -- ..add new col button 
+                -- ..delete selected excel
+
+            handleClick (should be named findcurrExcel)
+                -- find curr active cell and give border to it
+            
+            addnNewCol (rowNumber)
+                -- call excel class to add new col to the excel
+                src\core\excel\excel.ts excel(row,rowNum,colCount, this)
+
+            addResizeHandles
+                -- provide resize handler for different excel 
+            
+            handleResize 
+                -- handle the resize of excels
+
+            deleteExcel
+                -- delete the current selected excel
+            
+            deleteRow  (should be handle in deleteExcel only)
+                -- delete the row if it is last excel on the row 
+
+            updateCurrExcel(excelRow, excelCol, sheetobj) ### can be removed if not needed need to check
+                -- this function help in knowing on which sheet the file or graph should be uploaded on
+                -- All the plugin and stuff need to call here or on eventManager
+        
+    excel\
+        excel.ts have to class Excel and sheet 
+            Excel 
+                constructor(rowcontainer,row,col,Excel_handler)
+                    -- row container is the container for the entire row of excels
+                    -- row and col is for it's unique id of different element like canvas_row_col
+                    -- call init
+                init
+                    -- call contructExcel()
+                constructExcel
+                    -- create container for individual excel_div on each row
+                    -- create excel-id as rowCol(this.row)_(this.col)
+                    call emaker class for now (later it will be a part of excel class only)
+
+            Emaker 
+                constructor(excel_div,row,col,Excel_class)
+                    -- Initiate a list of sheet for mulitple sheet in excel
+                        sheet[]
+                    -- while initiating first sheet call 
+                        ### new sheet class
+                        call the function createExcel , handleEvents()
+                    -- call the function this.Excel (Excel_handler.updateCurrExcel) to update current Excel   
+                handleEvents
+                    -- listen for click call mouse down event
+                handleMouseDown
+                    -- call this.Excel_handler.updatecurrExcel
+                createExcel
+                    -- as the name suggest it create excel 
+                    -- first it make the inner html of excel_div emptu and then wrapper it another div
+                    -- and then call function 
+                            updateContentArea and CreateSheetBar
+                updateContentArea()
+                    -- update the content area of excel_div by appending activeSheet.elements.top section and middle section generated from initated first sheet
+                createSheetBar 
+                    -- it will create sheet bar for the excel sheet 1 and all
+                    -- have add sheet btn 
+                    -- and switch sheet as button
+                    -- delete sheet
+                addSheet 
+                    -- create new sheet push on the sheet list
+                    -- call switch sheet to switch between sheet
+                    -- call update sheet tab to switch on the newly generated sheet
+                switchSheet 
+                    -- calls update active sheet Index 
+                    -- calls update content area and update sheet tabs
+                updateSheetTab 
+                    -- update sheet tab by adding new tab for new sheet
+                remove sheet
+                    -- check for lower limit
+                    -- change the activeSheetIndex 
+                    -- calls update Content Area and update Sheet Tabs
+
+            Sheet class
+                constructor(name,Excelcol,Excelrow,sheetindex)
+                    -- create the entire sheet by calling createElements
+                    -- wait for timeout to load things on dom , then call two 
+                    classes SparseMatrix and SheetRendrer for now later it will call 
+                    component\Helper class to access things in DataStructre\SparseMatrix and component\SheetRendrer
+                    -- one class to maintain Sparse Matrix and one for Sheet Rendrer
+                createElements
+                    -- give the id as name of the part like topsection_row_col_sheetindex
+                    -- call create the top section of sheet
+                    -- call create the middle section of sheet
+                    return the topSection and Middle section to Emaker(for now later) or Excel
+                createTopSection
+                    -- create the top section of sheet such as header canvas and all
+                createMiddlesection
+                    -- create the middle section of sheet such as main canvas side canvas 
+                    -- call function to create horizontal and vertical scroll
+
+        Components\
+            Helper.ts
+                -- It will call and manage sheet rendrer, scroll and sparse matrix 
+                -- it will also initiate CellManager, HeaderCellManager
+                -- It will have other function to access data from Sheetrendrer,scroll and sparseMatrix
+                1. Managing Data and Interaction with SparseMatrix
+                    getCellValue(row: number, col: number): any
+                        --Retrieves the value of a cell at the specified row and column.
+                        --Usage: This can be used by SheetRenderer to retrieve the current data for rendering a cell.
+
+                    setCellValue(row: number, col: number, value: any): void
+                        --Sets the value of a cell at the specified row and column.
+                        --Usage: This should be called when a user updates the content of a cell via the UI.
+
+                    insertRow(row: number): void
+                        --Inserts a new row at the specified index in the SparseMatrix.
+                        --Usage: Used when a new row is added via the ribbon or UI controls.
+
+                    insertColumn(col: number): void
+                        --Inserts a new column at the specified index in the SparseMatrix.
+                        --Usage: Called when a new column is added by the user.
+
+                    deleteCell(row: number, col: number): void
+                        --Deletes a single cell from the SparseMatrix.
+                        --Usage: This can be triggered when a user deletes a cell or when clearing data.
+
+                    getRowValues(row: number): any[]** will be used in future dev
+                        --Retrieves all values of a given row.
+                        --Usage: Helps in rendering a row in the UI or processing data at the row level.
+
+                    getColumnValues(col: number): any[]**
+                        --Retrieves all values of a given column.
+                        --Usage: Useful when rendering a column or for column-based operations like filtering.
+
+                2. Interaction with SheetRenderer and Rendering Logic
+                    updateCellDisplay(row: number, col: number): void
+                        --Updates the visual display of a specific cell (e.g., applying styles like color, font-size, etc.).
+                        --Usage: This would be used when data changes, and the UI needs to reflect those changes.
+
+                    renderSheet(sheet: Sheet): void
+                        --Re-renders the entire sheet, including cell values, styles, and any other visual elements like borders or highlights.
+                        --Usage: Called when the sheet is initialized or needs to be re-rendered after significant changes.
+
+                    updateScrollPosition(scrollX: number, scrollY: number): void
+                        --Updates the scroll position for both horizontal and vertical scrolling.
+                        --Usage: Used when the user scrolls the sheet or when scrolling needs to be programmatically adjusted.
+
+                3. Handling Selection and Formatting
+                    applyCellFormatting(row: number, col: number, options: any): void
+                        --Applies formatting options (like font, color, text alignment) to a specified cell.
+                        --Usage: This function would be triggered when a user applies formatting through the ribbon (e.g., bold, font-size change).
+
+                    clearCellSelection(): void
+                        --Clears any active cell selection.
+                        --Usage: Called when the selection state needs to be reset or deselected.
+
+                4. Data Synchronization and Update Mechanism
+                    syncDataWithUI(): void**
+                        --Synchronizes all data changes (like cell values, row/column inserts/deletes) with the UI rendering.
+                        --Usage: Can be used after a significant data change (e.g., user edits a value) to ensure the UI stays in sync with the data structure.
+
+                    syncUIWithData(): void**
+                        --Synchronizes the UI changes (like scroll positions, zoom levels, etc.) with the underlying data.
+                        --Usage: Ensures that the UI rendering is correctly aligned with the underlying data model.
+
+                5. Utility Methods
+                    getDevicePixelRatio(): number
+                        --Returns the current device pixel ratio (DPR) for rendering.
+                        --Usage: This is used for scaling and ensuring the canvas and other visual elements are rendered correctly on devices with high DPI.
+
+                    resizeCanvas(width: number, height: number): void
+                        --Resizes the canvas based on the given width and height.
+                        --Usage: Used when the sheet is zoomed in/out, or the user adjusts the canvas dimensions.
+
+                    getScroll
+                        -- get the scrollX , scrollY pos
+
+                    setScroll(x,y)
+                        -- set the scroll to particular position
+                        
+                    scrolling(deltax,deltay)
+                    -- scrolling the sheet by delta x and y
+
+            Sheetrendrer.ts
+                constructor(Sheet-> it will not have access to excelclass or excelhandler class just sheet)
+                    -- It will initiate a lot of things 
+                    -- such as minScale maxScale Grid Size etc. for dpr
+                    -- it will have access to sparse matrix for now later it will take from helper class
+                    -- call three function 
+                initCanvases
+                    -- make a const canvas where all three canvases will be there
+                setupEventListener
+                    -- so it have event Listner for the element provided on ribbon that are
+                    -- font-size , horizontal-left-btn
+                    -- horizontal-center-btn etc.
+                monitorDevicePixelRation
+                    -- it help in mainting the device pixel ration on zoom 
+                    -- by calling resize canvas , updateCanvasDimension,updateHeaderCells
+                setScroll 
+                    -- update the scroll position
+                draw
+                    -- it calls clearCanvas which clear all three canvas
+                    -- drawHeader , drawGrid , drawSparseMatrixValues
+                    -- and it will called things like this.cellFunctionality.drawHighlights() for now later
+                    -- the draw function will be call from helper and so you can't just write this.cellfunctionality.drawHighlight() function here...
+                    -- It also call draw resize line but it's more of a feature , so it will later be in feature folder
+                    -- I think this much is enough for a simple canvas
+
+                Scroll.ts
+                    constructor(sheetRendrer for now later it will be helper.ts)
+                        -- initiate a bunch of variable like this.ScrollX ,Y maxScrollX etc.
+                        -- call setupEventListener
+                    setupEventListener
+                        -- Listen for mousedown , mouse up wheel and mousemove events for both horizontal and vertical
+                    handmousemove
+                    handlemouseup
+                    handlemousedown
+                    getScroll()
+                        -- return the value of this.scrollx and this.scrollY that is how much it have scrolled
+                    Scroll(deltaX,deltaY)
+                        -- move the scroll by deltaX and deltaY
+                    setScroll(X,Y)
+                        -- set the position of scroll to X and Y
+                    this three function must be access only by using helper.ts
+
+        DataStructre\
+            SparseMatrix.ts
+                constructor(if the number of row and cols are defined it should be provided here)
+                    -- this.rowHeaders = {}; // Stores the head node of each row's linked list.
+                    -- this.colHeaders = {}; // Stores the head node of each column's linked list.
+                _cellExist
+                    -- check whether the cell exist or not 
+                    -- if not then create call function create cell
+                createCell
+                    -- create the cell by row, value
+                insertCellShiftRight
+                    -- As the name suggest
+                InsertCellShiftDown
+                    -- As the name suggest
+                createCell
+                    -- create cell if not exist
+                delete cell ( need to change for multiple cell )
+                    -- delete a single cell
+                getCellvalue(row,col)
+                    -- get the value of the cell
+                getCell(row,col)
+                    -- get the entire cell node with info
+                    -- rowValue, colValue,value,and link for next row , next Col , prev row, prev col
+                    -- text align, text baseline, fontsize,fontFamily,color
+                setCell(row,col,value)
+                    --set cell value by row,col:value
+                
+                
+        ribbon\
+            ribbonMaker.ts
+                create ribbon
+                    -- createformatsection // cell customization color and all
+                    -- createfileSection // upload and download
+                    -- createoperationSection // search and forumla bar
+                    -- create graph section // graph
+
+                handle event
+                    -- add tab event listener
+                    -- toggle tab
+                    -- add font size event listener
+                    -- add font family listener
+                    -- add text Format Listener
+                    -- toggle Active State
+                    -- add text color Listener
+                    -- add Fill color Listener
+                    -- add horizontal Alignement Listener
+                    -- add vertical Alignent listnere 
