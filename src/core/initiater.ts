@@ -1,6 +1,6 @@
 import { Excel } from "../excel/excel.js";
 import { Ribbon } from "../ribbon/ribbon.js";
-
+import { ThemeManager } from "../theme/theme.js";
 
 export class excelsHandler {
     mainContainer: HTMLElement;
@@ -12,6 +12,7 @@ export class excelsHandler {
     currExcelRow?: number;
     currExcelCol?: number;
     currSheetObj?: any;
+    themes!: ThemeManager;
 
     constructor(mainContainer: HTMLElement, maxRow: number, maxCol: number) {
         this.mainContainer = mainContainer;
@@ -26,6 +27,8 @@ export class excelsHandler {
     private init(): void {
         this.mainContainer.style.display = 'flex';
         this.mainContainer.style.flexDirection = 'column';
+        this.themes = new ThemeManager();
+        this.themes.updateTheme("blue");
         this.addNewRow();
         this.handleClick = this.handleClick.bind(this);
         this.setupEventListeners();
