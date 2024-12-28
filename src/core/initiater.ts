@@ -28,7 +28,7 @@ export class excelsHandler {
         this.mainContainer.style.display = 'flex';
         this.mainContainer.style.flexDirection = 'column';
         this.themes = new ThemeManager();
-        this.themes.updateTheme("blue");
+        this.themes.updateTheme("violet");
         this.addNewRow();
         this.handleClick = this.handleClick.bind(this);
         this.setupEventListeners();
