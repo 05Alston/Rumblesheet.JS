@@ -148,8 +148,8 @@ export class Ribbon {
     private createFileSection(): String {
         return `
             <div class="focus-file">
-                <input class="focus-zone-input-btn focus-zone-inner-btn-left" type="file" name="file" accept=".csv">
-                <button class="focus-zone-inner-btn focus-zone-inner-btn-right" type="submit" value="Upload">
+                <input class="focus-zone-input-btn focus-zone-inner-btn-left" type="file" name="file" accept=".csv" id="fileInput">
+                <button class="focus-zone-inner-btn focus-zone-inner-btn-right" type="submit" value="Upload" id="uploadButton">
                     <span class="iconify" data-icon="material-symbols:upload" data-width="23" data-height="23"></span>
                 </button>
             </div>

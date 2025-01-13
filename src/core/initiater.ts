@@ -1,5 +1,7 @@
 import { Excel } from "../excel/excel.js";
 import { Ribbon } from "../ribbon/ribbon.js";
+import { EventManager } from "./eventManager.js";
+import { plug } from "../plugin/plugin.js";
 
 
 export class excelsHandler {
@@ -12,6 +14,8 @@ export class excelsHandler {
     currExcelRow?: number;
     currExcelCol?: number;
     currSheetObj?: any;
+    plug!:plug;
+    EventManager!: EventManager;
 
     constructor(mainContainer: HTMLElement, maxRow: number, maxCol: number) {
         this.mainContainer = mainContainer;
@@ -29,6 +33,8 @@ export class excelsHandler {
         this.addNewRow();
         this.handleClick = this.handleClick.bind(this);
         this.setupEventListeners();
+        this.plug = new plug(this);
+        this.EventManager = new EventManager(this);
     }
 
     private setupEventListeners(): void {
@@ -70,6 +76,7 @@ export class excelsHandler {
         this.currExcelRow = excelRow;
         this.currExcelCol = excelCol;
         this.currSheetObj = sheetObj;
+        console.log(this.currSheetObj.instance);
     }
 
     private addNewRow(): void {

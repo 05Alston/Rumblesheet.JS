@@ -1,10 +1,10 @@
 import { Helper,GridHeaderCell } from "./helper";
 
 export class SheetRendrer {
-    helper: Helper; // Define sheet as any or create a specific type if you have one
-    scale: number;
-    minScale: number;
-    maxScale: number;
+    private zoomIndex: number;
+    private minZoom: number;
+    private maxZoom: number;
+    helper: Helper; 
     baseGridSize: number;
     lastDevicePixelRatio: number;
     resizeObserver?: ResizeObserver;
@@ -12,12 +12,15 @@ export class SheetRendrer {
     contexts?: { [key: string]: CanvasRenderingContext2D; };
     verticalCells!: GridHeaderCell[];
     horizontalCells!: GridHeaderCell[];
+    public lastVisibleRow:number = 0;
+    public lastVisibleCol:number = 0;
+
   
     constructor(helper: Helper) {
       this.helper = helper;
-      this.scale = 1;
-      this.minScale = 0.5;
-      this.maxScale = 2;
+      this.zoomIndex = this.helper.zoomIndex;
+      this.minZoom = this.helper.minZoom;
+      this.maxZoom = this.helper.maxZoom;
       this.baseGridSize = 20;
       this.lastDevicePixelRatio = window.devicePixelRatio;
       this.mappingFromHelper();
@@ -73,27 +76,44 @@ export class SheetRendrer {
       if (event.ctrlKey || event.metaKey) {
         event.preventDefault();
         const delta = event.deltaY;
-        const zoomFactor = delta > 0 ? 0.9 : 1.1;
+        const zoomDelta = delta > 0 ? 0.9 : 1.1;
   
         const rect = this.canvases!.spreadsheet.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
   
-        this.zoom(zoomFactor, mouseX, mouseY);
+        this.zoom(zoomDelta, mouseX, mouseY);
       }
     }
   
-    zoom(factor: number, centerX: number, centerY: number):void {
+    zoom(zoomDelta: number, centerX: number, centerY: number):void {
+      const buffer = 5;
       const newScale = Math.min(
-        Math.max(this.scale * factor, this.minScale),
-        this.maxScale
+        Math.max(this.zoomIndex * zoomDelta, this.minZoom),
+        this.maxZoom
       );
-      if (newScale !== this.scale) {
-        this.scale = newScale;
+      if (this.helper.totalCol === 0 && this.helper.totalRow === 0) {
+        this.applyzoom(newScale);
+
+      }
+      else if ((this.lastVisibleRow + buffer < this.helper.totalRow && this.lastVisibleCol + buffer < this.helper.totalCol) ||
+          newScale > this.zoomIndex) {
+            this.applyzoom(newScale);
+
+      }
+      else if ((this.helper.totalCol === 0 && this.lastVisibleRow + buffer < this.helper.totalRow) ||newScale > this.zoomIndex){
+        this.applyzoom(newScale);
+      }
+      else if ((this.helper.totalRow === 0 && this.lastVisibleCol + buffer < this.helper.totalCol) || newScale > this.zoomIndex){
+        this.applyzoom(newScale);
+      }
+    }
+
+    private applyzoom(zoomIndex: number): void {
+      this.zoomIndex = zoomIndex;
         this.updateHeaderCells();
         this.helper.updateMaxScroll();
         this.draw();
-      }
     }
   
     monitorDevicePixelRatio():void {
@@ -121,8 +141,11 @@ export class SheetRendrer {
       });
     }
   
-    updateHeaderCells() {
-      // Update header cell logic here
+    updateHeaderCells(): void {
+      const visibleWidth = this.canvases!.spreadsheet.clientWidth;
+      const visibleHeight = this.canvases!.spreadsheet.clientHeight;
+      this.helper.updateZoomIndex(visibleWidth, visibleHeight, this.zoomIndex);
+      this.helper.updateMaxScroll();
     }
   
     draw(): void {
@@ -140,7 +163,9 @@ export class SheetRendrer {
 
     drawHeaders(scrollX: number, scrollY: number): void {
       this.verticalCells = this.helper.getVerticalHeaderCells(scrollY);
+      this.lastVisibleRow = this.verticalCells[this.verticalCells.length - 1].row
       this.horizontalCells = this.helper.getHorizontalHeaderCells(scrollX);
+      this.lastVisibleCol = this.horizontalCells[this.horizontalCells.length -1].col
     
       this.drawHeaderCells(
         this.contexts!.vertical,
@@ -158,7 +183,7 @@ export class SheetRendrer {
     
     drawHeaderCells(
       ctx: CanvasRenderingContext2D, 
-      cells: { x: number, y: number, width: number, height: number }[], 
+      cells: { x: number, y: number, width: number, height: number , value:number | string }[], 
       isVertical: boolean, 
       scroll: number
     ): void {
@@ -189,14 +214,49 @@ export class SheetRendrer {
             ctx.moveTo(0, y);
             ctx.lineTo(canvasWidth, y);
             ctx.stroke();
+            this.drawAtCentered(
+              ctx,
+              cell.value.toString(),
+              canvasWidth / 2,
+              y + cell.height / 2,
+              canvasWidth,
+              cell.height
+            );
           } else {
             const x = cell.x - scroll;
             ctx.moveTo(x, 0);
             ctx.lineTo(x, canvasHeight);
             ctx.stroke();
+            this.drawAtCentered(
+              ctx,
+              cell.value.toString(),
+              x + cell.width / 2,
+              canvasHeight / 2,
+              cell.width,
+              canvasHeight
+            );
           }
         }
       });
+    }
+
+
+    drawAtCentered(ctx: CanvasRenderingContext2D,text: string,x: number,y: number,
+      maxWidth: number, 
+      maxHeight: number): void{
+      const baseFontSize = this.baseGridSize * this.zoomIndex;
+      let fontSize = Math.min(baseFontSize, maxHeight * 0.8);
+  
+      // Adjust font size if text is too wide
+      // ctx.font = `${fontSize}px Arial`;
+  
+      let textWidth = ctx.measureText(text).width;
+      if (textWidth > maxWidth * 0.9) {
+        fontSize *= (maxWidth * 0.9) / textWidth;
+      }
+      ctx.font = `${fontSize}px Arial`;
+      ctx.strokeStyle = "black";
+      ctx.fillText(text, x, y, maxWidth);
     }
 
     drawGrid(scrollX: number, scrollY: number): void {
