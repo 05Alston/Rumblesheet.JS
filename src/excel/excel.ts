@@ -28,6 +28,7 @@ export class Excel {
     private init(): void {
         this.constructExcel();
         this.updateCurrExcel(this.row, this.col, this.sheets[this.activeSheetIndex]);
+        this.excelHandler.updateCurrExcel(this.row, this.col, this.sheets[this.activeSheetIndex]);
         this.handleEvents();
     }
 
