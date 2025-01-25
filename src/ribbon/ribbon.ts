@@ -19,7 +19,7 @@ export class Ribbon {
 
 
     private createRibbon1(){
-        this.ribbonElement.innerHTML = `      <div class="ribbon" id="ribbon">
+        this.ribbonElement.innerHTML = `
         <div class="top">
           <div class="tablist-container leftSection">
             <div class="tablist-items"><span></span>File</div>
@@ -347,7 +347,7 @@ export class Ribbon {
             <textarea rows="1"></textarea>
           </div>
         </div>
-      </div>`;
+      `;
     }
 
     private createRibbon(): void {
