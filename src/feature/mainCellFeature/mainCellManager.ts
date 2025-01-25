@@ -1,6 +1,6 @@
 import { Helper } from "../../excel/component/helper.js";
 import { selectionCell } from "./selection/selection.js";
-import { GridHeaderCell, GridHeaderManager } from '../../excel/component/GridManager.js';
+import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
 export class mainCellManager{
     public helper: Helper;
     public input!: HTMLElement | null;
@@ -97,7 +97,7 @@ export class mainCellManager{
         this.helper.Scroll(x, y);
     }
 
-    public getCellFromCoordinates(x:number, y:number):{column:GridHeaderCell, row:GridHeaderCell} |null {
+    public getCellFromCoordinates(x:number, y:number):{column:IGridHeaderCell, row:IGridHeaderCell} |null {
         const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
         const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
     
@@ -142,7 +142,7 @@ export class mainCellManager{
         this.selectionCell.updatePosForScrolling()
     }
 
-    public updateInputElement(cell:{column:GridHeaderCell, row:GridHeaderCell} |null) {
+    public updateInputElement(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.input = document.getElementById(
           `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
         );
@@ -191,7 +191,10 @@ export class mainCellManager{
     public draw(): void {
         this.helper.draw();
     }
-  
+
+    public getCurrSelectedCells(){
+      return this.selectionCell.selectedCells;
+    }
+
 }
 
-export { GridHeaderCell };

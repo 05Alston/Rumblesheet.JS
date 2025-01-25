@@ -1,5 +1,6 @@
-import { GridHeaderCell, mainCellManager } from "../mainCellManager.js";
+import {  mainCellManager } from "../mainCellManager.js";
 import { Cell } from "../../../dataStructure/sparseMatrix.js";
+import { IGridHeaderCell } from "../../../dataStructure/interfaces.js";
 
 export class selectionCell{
     private maincellManager! : mainCellManager;
@@ -8,8 +9,8 @@ export class selectionCell{
     private isScrolling: boolean;
     private startPoint!: { x: number; y: number };
     private endPoint!: { x: number; y: number };
-    private clickedCell_headercells!: {column:GridHeaderCell, row:GridHeaderCell} |null;
-    public selectedCells!: { column: GridHeaderCell | undefined; row: GridHeaderCell | undefined; cell: Cell |null }[];
+    private clickedCell_headercells!: {column:IGridHeaderCell, row:IGridHeaderCell} |null;
+    public selectedCells!: { column: IGridHeaderCell | undefined; row: IGridHeaderCell | undefined; cell: Cell |null }[];
 
 
     constructor(maincellManager:mainCellManager){
@@ -106,7 +107,7 @@ export class selectionCell{
       }
     
 
-      private selectCell(cell:{column:GridHeaderCell, row:GridHeaderCell} |null) {
+      private selectCell(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.maincellManager.updateInputElement(cell); 
         this.maincellManager.draw(); 
         this.drawHighlight();
