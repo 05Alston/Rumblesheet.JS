@@ -121,8 +121,8 @@ export class Scroll {
 
             if (deltaX !== 0) this.updateScrollBar('horizontal');
             if (deltaY !== 0) this.updateScrollBar('vertical');
-
-            this.sheetRendrer.draw();
+            console.log("calling draw")
+            this.helper.draw();
         }
 
         // Check if we need to load more content
@@ -131,10 +131,9 @@ export class Scroll {
             // Update scroll limits based on new content
             this.setScrollLimits();
         }
+        this.helper.updateDrawForFeatures();
         
     }
-
-
 
     handleScrollBarMouseDown(direction: 'vertical' | 'horizontal', event: MouseEvent):void {
         event.preventDefault();

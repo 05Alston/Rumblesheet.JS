@@ -39,7 +39,6 @@ export class SheetRendrer {
       // Set up the ResizeObserver
       this.resizeObserver = new ResizeObserver(this.handleResize.bind(this));
       this.resizeObserver.observe(this.canvases!.spreadsheet);
-      this.resizeCanvases();
     }
   
     resizeCanvases() {
@@ -48,7 +47,9 @@ export class SheetRendrer {
         this.updateCanvasDimensions(canvas ?? {}, dpr)
       );
       this.updateHeaderCells();
+      console.log("calling draw")
       this.draw();
+      this.helper.updateDrawForFeatures()
     }
   
     updateCanvasDimensions(canvas: HTMLCanvasElement, dpr: number):void {
@@ -113,7 +114,10 @@ export class SheetRendrer {
       this.zoomIndex = zoomIndex;
         this.updateHeaderCells();
         this.helper.updateMaxScroll();
+        console.log("calling draw")
         this.draw();
+        this.helper.updateDrawForFeatures()
+
     }
   
     monitorDevicePixelRatio():void {
@@ -149,6 +153,7 @@ export class SheetRendrer {
     }
   
     draw(): void {
+      console.log("in the clear canvas and draw")
       this.clearCanvases();
   
       // Get the scroll values
