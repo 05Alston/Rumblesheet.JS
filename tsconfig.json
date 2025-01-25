@@ -10,4 +10,5 @@
   },
   "include": ["src/**/*.ts"],   // Include all .ts files in the src folder
   "exclude": ["node_modules"]   // Exclude dependencies
+
 }

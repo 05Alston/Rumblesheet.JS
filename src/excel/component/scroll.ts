@@ -14,22 +14,20 @@ export class Scroll {
     sheetRendrer!: SheetRendrer;
     canvases?: { [key: string]: HTMLCanvasElement; };
     contexts?: { [key: string]: CanvasRenderingContext2D; };
+    private loadThreshold = 0.8;
 
     constructor(private helper: Helper) {
+        this.helper = helper;
         this.mappingFromHelper();
         this.setupEventListeners();
     }
 
-    setRenderer(renderer: SheetRendrer) {
-        this.sheetRendrer = renderer;
-    }
-
-    mappingFromHelper():void {
+    private mappingFromHelper():void {
         this.canvases = this.helper.canvases;
         this.contexts = this.helper.contexts;
-      }
+    }
 
-    setupEventListeners():void {
+    private setupEventListeners():void {
         const canvas = this.canvases!.spreadsheet;
         const { row: Sheetrow, col: Sheetcol, index: Sheetindex } = this.helper.getRowColofExcel();
         canvas.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
@@ -43,6 +41,100 @@ export class Scroll {
         verticalScrollBar?.addEventListener('mousedown', this.handleScrollBarMouseDown.bind(this, 'vertical'));
         horizontalScrollBar?.addEventListener('mousedown', this.handleScrollBarMouseDown.bind(this, 'horizontal'));
     }
+
+    public setRenderer(renderer: SheetRendrer) {
+        this.sheetRendrer = renderer;
+        this.setScrollLimits();
+    }
+
+    private setScrollLimits(): void {
+        const viewportWidth = this.canvases!.spreadsheet.clientWidth;
+        const viewportHeight = this.canvases!.spreadsheet.clientHeight;
+        const totalWidth = this.helper.getTotalWidth();
+        const totalHeight = this.helper.getTotalHeight();
+
+        this.updateMaxScroll(totalWidth, totalHeight, viewportWidth, viewportHeight);
+    }
+
+    updateMaxScroll(totalWidth: number, totalHeight: number, viewportWidth: number, viewportHeight: number): void {
+        this.maxScrollX = Math.max(0, totalWidth - viewportWidth);
+        this.maxScrollY = Math.max(0, totalHeight - viewportHeight);
+
+        // Ensure current scroll positions don't exceed new maximums
+        this.scrollX = Math.min(this.scrollX, this.maxScrollX);
+        this.scrollY = Math.min(this.scrollY, this.maxScrollY);
+
+        this.updateScrollBar('horizontal');
+        this.updateScrollBar('vertical');
+    }
+
+    private updateScrollBar(direction: 'vertical' | 'horizontal'): void {
+        const scrollElement = direction === 'vertical' 
+            ? this.helper.verticalScroll?.scroll 
+            : this.helper.horizontalScroll?.scroll;
+        const barElement = direction === 'vertical' 
+            ? this.helper.verticalScroll?.bar 
+            : this.helper.horizontalScroll?.bar;
+
+        if (!scrollElement || !barElement || !this.helper) {
+            return;
+        }
+
+        const minBarSize = 20;
+        const scrollSize = direction === 'vertical' ? scrollElement.clientHeight : scrollElement.clientWidth;
+        
+        // Get ratio from GridHeaderManager
+        const ratio = this.helper.getScrollbarRatio(direction);
+        
+        // Calculate bar size
+        const barSize = Math.max(minBarSize, scrollSize * ratio!);
+
+        // Calculate position
+        const maxScroll = direction === 'vertical' ? this.maxScrollY : this.maxScrollX;
+        const currentScroll = direction === 'vertical' ? this.scrollY : this.scrollX;
+        const scrollableSpace = scrollSize - barSize;
+        const scrollProgress = maxScroll > 0 ? currentScroll / maxScroll : 0;
+        const barPosition = scrollableSpace * scrollProgress;
+
+        // Update bar style
+        if (direction === 'vertical') {
+            barElement.style.height = `${barSize}px`;
+            barElement.style.top = `${barPosition}px`;
+        } else {
+            barElement.style.width = `${barSize}px`;
+            barElement.style.left = `${barPosition}px`;
+        }
+    }
+
+    scroll(deltaX: number, deltaY: number): void {
+        const maxScrollSpeed = 100;
+        deltaX = Math.max(-maxScrollSpeed, Math.min(deltaX, maxScrollSpeed));
+        deltaY = Math.max(-maxScrollSpeed, Math.min(deltaY, maxScrollSpeed));
+        // Calculate new scroll positions
+        let newScrollX = Math.max(0, Math.min(this.scrollX + deltaX, this.maxScrollX));
+        let newScrollY = Math.max(0, Math.min(this.scrollY + deltaY, this.maxScrollY));
+
+        // Update scroll positions
+        if (newScrollX !== this.scrollX || newScrollY !== this.scrollY) {
+            this.scrollX = newScrollX;
+            this.scrollY = newScrollY;
+
+            if (deltaX !== 0) this.updateScrollBar('horizontal');
+            if (deltaY !== 0) this.updateScrollBar('vertical');
+
+            this.sheetRendrer.draw();
+        }
+
+        // Check if we need to load more content
+        const shouldLoadMore = this.checkAndLoadMoreContent(newScrollX, newScrollY);
+        if (shouldLoadMore) {
+            // Update scroll limits based on new content
+            this.setScrollLimits();
+        }
+        
+    }
+
+
 
     handleScrollBarMouseDown(direction: 'vertical' | 'horizontal', event: MouseEvent):void {
         event.preventDefault();
@@ -104,119 +196,44 @@ export class Scroll {
         this.lastMouseY = event.clientY;
     }
 
-    updateMaxScroll(totalWidth: number, totalHeight: number, viewportWidth: number, viewportHeight: number):void {
-        this.maxScrollX = Math.max(0, totalWidth - viewportWidth);
-        this.maxScrollY = Math.max(0, totalHeight - viewportHeight);
-        
-        // Adjust current scroll if it exceeds new maximum
-        this.scrollX = Math.min(this.scrollX, this.maxScrollX);
-        this.scrollY = Math.min(this.scrollY, this.maxScrollY);
-    }
+    private checkAndLoadMoreContent(newScrollX: number, newScrollY: number): boolean {
+        let contentLoaded = false;
+        if (!this.helper) {
+            return contentLoaded;
+        }
     
-
-    expandContent(direction: 'horizontal' | 'vertical'):void {
-        const scrollBar = direction === 'horizontal' 
-            ? this.helper.horizontalScroll?.bar
-            : this.helper.verticalScroll?.bar;
+        // Check vertical scroll
+        const verticalBarElement = this.helper.verticalScroll?.bar;
+        const verticalBarTop = verticalBarElement?.offsetTop || 0;
+        const verticalScrollableHeight = (this.helper.verticalScroll?.scroll!.clientHeight || 0) - (verticalBarElement?.clientHeight || 0);
     
-        if (scrollBar) {
-            const expandFactor = 1.2; // Factor to expand content
-            const shrinkFactor = 0.8; // Factor to shrink content
-
-            if (direction === 'horizontal') {
-                if (this.scrollX >= 0.8 * (this.maxScrollX - this.canvases!.spreadsheet.clientWidth)) {
-                    this.helper.updateCells();
-                    this.maxScrollX *= expandFactor;
-                    this.scrollX = Math.min(this.scrollX, this.maxScrollX);
-                }
-            } else if (direction === 'vertical') {
-                if (this.scrollY >= 0.8 * (this.maxScrollY - this.canvases!.spreadsheet.clientHeight)) {
-                    this.helper.updateCells();
-                    this.maxScrollY *= expandFactor;
-                    this.scrollY = Math.min(this.scrollY, this.maxScrollY);
-                }
+        if (verticalScrollableHeight > 0 && (verticalBarTop / verticalScrollableHeight) >= this.loadThreshold) {
+            if (this.helper.loadMoreContent('vertical')) {
+                contentLoaded = true;
             }
-
-            // Update scrollbar style
-            this.updateScrollBar(direction);
-        }
-    }
-
-    updateScrollBar(direction: 'vertical' | 'horizontal'):void {
-        // Get the scroll and bar elements based on the direction
-        let scrollElement: HTMLElement | null | undefined;
-        let barElement: HTMLElement | null | undefined;
-        let maxScrollValue: number;
-        let scrollValue: number;
-        const minBarSize = 20;
-        if (direction === 'vertical'){
-            scrollElement = this.helper.verticalScroll?.scroll;
-            barElement = this.helper.verticalScroll?.bar;
-            maxScrollValue = this.maxScrollY;
-            scrollValue = this.scrollY;
-        }
-        else{
-            scrollElement = this.helper.horizontalScroll?.scroll;
-            barElement = this.helper.horizontalScroll?.bar;
-            maxScrollValue = this.maxScrollX;
-            scrollValue = this.scrollX;
-        }
-      
-        // Ensure elements exist
-        if (!scrollElement || !barElement) {
-          throw new Error(`${direction} scroll or bar element not found.`);
-        }
-      
-        // Calculate scroll and bar dimensions
-        const scrollSize = direction === 'vertical' ? scrollElement.clientHeight : scrollElement.clientWidth;
-        const contentSize = scrollSize + maxScrollValue;
-        const barSize = Math.max(minBarSize, (scrollSize / contentSize) * scrollSize);
-        const barPosition = (scrollValue / maxScrollValue) * (scrollSize - barSize);
-      
-        // Update bar dimensions and position
-        if (direction === 'vertical') {
-          barElement.style.height = `${barSize}px`;
-          barElement.style.top = `${barPosition}px`;
-        } else {
-          barElement.style.width = `${barSize}px`;
-          barElement.style.left = `${barPosition}px`;
-        }
-      }
-      
-    
-    scroll(deltaX: number, deltaY: number):void {
-        const direction = deltaX === 0 
-            ? "vertical"
-            : "horizontal";
-        // Limit the maximum scroll speed
-        const maxScrollSpeed = 10000; // Adjust this value to control the maximum scroll speed
-        if (deltaX > 0 || deltaY > 0) {
-            deltaX = Math.max(-maxScrollSpeed, Math.min(deltaX, maxScrollSpeed));
-            deltaY = Math.max(-maxScrollSpeed, Math.min(deltaY, maxScrollSpeed));
-        }
-        console.log("in the scroll",deltaX,deltaY);
-        
-        this.scrollX = Math.max(0, Math.min(this.scrollX + deltaX, this.maxScrollX));
-        this.scrollY = Math.max(0, Math.min(this.scrollY + deltaY, this.maxScrollY));
-
-        this.updateScrollBar(direction);
-        this.checkScrollPosition();
-        this.sheetRendrer.draw();
-    }
-    
-    checkScrollPosition():void {
-        // Horizontal scroll
-        const horizontalRatio = this.scrollX / this.maxScrollX;
-        if (horizontalRatio > 0.8) {
-            this.expandContent('horizontal');
         }
     
-        // Vertical scroll
-        const verticalRatio = this.scrollY / this.maxScrollY;
-        if (verticalRatio > 0.8) {
-            this.expandContent('vertical');
+        // Check horizontal scroll
+        const horizontalBarElement = this.helper.horizontalScroll?.bar;
+        const horizontalBarLeft = horizontalBarElement?.offsetLeft || 0;
+        const horizontalScrollableWidth = (this.helper.horizontalScroll?.scroll!.clientWidth || 0) - (horizontalBarElement?.clientWidth || 0);
+    
+        if (horizontalScrollableWidth > 0 && (horizontalBarLeft / horizontalScrollableWidth) >= this.loadThreshold) {
+            if (this.helper.loadMoreContent('horizontal')) {
+                contentLoaded = true;
+            }
         }
+    
+        return contentLoaded;
     }
+
+    // Remove expandContent and checkScrollPosition methods as they're no longer needed
+
+    constrainScrollPosition(scrollValue: number, direction: "horizontal" | "vertical"): number {
+        const maxScroll = direction === "horizontal" ? this.maxScrollX : this.maxScrollY;
+        return Math.max(0, Math.min(scrollValue, maxScroll));
+    }
+
     
     getScroll(): { x: number, y: number } {
         return { x: this.scrollX, y: this.scrollY };
