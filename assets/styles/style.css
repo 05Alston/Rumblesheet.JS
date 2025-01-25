@@ -11,7 +11,7 @@ body {
   font-family: Arial, sans-serif;
 }
 body #ribbon-container {
-  background-color: #f5faf7;
+  background-color: var(--primaryBgColor);
   height: 10vh;
   width: 100vw;
   display: flex;
@@ -20,13 +20,13 @@ body #ribbon-container {
 body .progress {
   display: none;
   position: relative;
-  background-color: #f5faf7;
+  background-color: var(--primaryBgColor);
   top: 0px;
   height: 1.25vh;
   border-radius: 0;
 }
 body .progress .progress-bar {
-  background-color: #107C41;
+  background-color: var(--secondaryBgColor);
   font-size: 9px;
   height: 100%;
 }
@@ -45,7 +45,7 @@ body .tab-list-container .tab-list-container-items {
   cursor: pointer;
 }
 body .tab-list-container .tab-list-container-items:hover, body .tab-list-container .tab-list-container-items.active {
-  border-bottom: 2px solid #107C41;
+  border-bottom: 2px solid var(--secondaryBgColor);
 }
 body .focus-zone {
   margin: 0 7px;
@@ -54,7 +54,7 @@ body .focus-zone {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #107C41;
+  background-color: var(--secondaryBgColor);
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-radius: 50px;
 }
@@ -87,7 +87,7 @@ body .focus-zone .focus-zone-inner .focus-zone-inner-btn {
 }
 body .focus-zone .focus-zone-inner .focus-zone-inner-btn:hover, body .focus-zone .focus-zone-inner .focus-zone-inner-btn.active {
   color: #ffffff;
-  background-color: #40a061;
+  background-color: var(--primaryBtnColor);
 }
 body .focus-zone .focus-zone-inner .focus-zone-inner-btn-left {
   border-radius: 14px 0px 0px 14px;
@@ -120,7 +120,7 @@ body .focus-zone .focus-zone-inner .focus-zone-left .focus-graph.active {
 }
 body .focus-zone .focus-zone-inner .focus-zone-left .file-upload-btn {
   color: #ffffff;
-  background-color: #107C41;
+  background-color: var(--secondaryBgColor);
   height: 30px;
   border: none;
   padding: 5px;
