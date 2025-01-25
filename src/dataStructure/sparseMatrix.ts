@@ -1,3 +1,5 @@
+import { GridHeaderCell } from "../excel/component/GridManager";
+
 export class Cell {
     constructor(
         public rowValue: number,
@@ -112,65 +114,6 @@ export class SparseMatrix {
         }
     }
 
-    addRowInBetween(newRow: number): void {
-        Object.keys(this.rowHeaders)
-            .map(Number)
-            .sort((a, b) => b - a)
-            .forEach(row => {
-                if (row >= newRow) this._shiftRow(row, row + 1);
-            });
-
-        for (let col in this.colHeaders) {
-            const newCell = new Cell(newRow, parseInt(col), null);
-            this._insertCellInColumn(parseInt(col), newCell);
-        }
-    }
-
-    addColumnInBetween(newCol: number): void {
-        Object.keys(this.colHeaders)
-            .map(Number)
-            .sort((a, b) => b - a)
-            .forEach(col => {
-                if (col >= newCol) this._shiftColumn(col, col + 1);
-            });
-
-        for (let row in this.rowHeaders) {
-            const newCell = new Cell(parseInt(row), newCol, null);
-            this._insertCellInRow(parseInt(row), newCell);
-            this._insertCellInColumn(newCol, newCell);
-        }
-    }
-
-    deleteRow(rowToDelete: number): void {
-        let current = this.rowHeaders[rowToDelete];
-        while (current) {
-            this._removeCellFromColumn(current.colValue, rowToDelete);
-            current = current.nextCol;
-        }
-        delete this.rowHeaders[rowToDelete];
-        Object.keys(this.rowHeaders)
-            .map(Number)
-            .sort((a, b) => a - b)
-            .forEach(row => {
-                if (row > rowToDelete) this._shiftRow(row, row - 1);
-            });
-    }
-
-    deleteColumn(colToDelete: number): void {
-        let current = this.colHeaders[colToDelete];
-        while (current) {
-            this._removeCellFromRow(current.rowValue, colToDelete);
-            current = current.nextRow;
-        }
-        delete this.colHeaders[colToDelete];
-        Object.keys(this.colHeaders)
-            .map(Number)
-            .sort((a, b) => a - b)
-            .forEach(col => {
-                if (col > colToDelete) this._shiftColumn(col, col - 1);
-            });
-    }
-
     private _removeCellFromRow(row: number, col: number): void {
         let current = this.rowHeaders[row];
         let prev: Cell | undefined = undefined;
@@ -212,6 +155,110 @@ export class SparseMatrix {
 
         if (current.nextRow) {
             current.nextRow.prevRow = prev;
+        }
+    }
+
+    private createCell(row:number, col:number, value:string) {
+        if (this._cellExists(row, col)) return;
+
+        const newNode = new Cell(row, col, value);
+        if (!this.rowHeaders[row]) {
+            this.rowHeaders[row] = newNode;
+        } else {
+            this._insertCellInRow(row, newNode);
+        }
+
+        if (!this.colHeaders[col]) {
+            this.colHeaders[col] = newNode;
+        } else {
+            this._insertCellInColumn(col, newNode);
+        }
+    }
+
+    private _updateCellValue(row:number, col:number, value:string) {
+        let current = this.rowHeaders[row];
+        while (current) {
+            if (current.colValue === col) {
+                current.value = value;
+                return;
+            }
+            current = current.nextCol;
+        }
+    }
+
+    public addRowInBetween(newRow: number): void {
+        Object.keys(this.rowHeaders)
+            .map(Number)
+            .sort((a, b) => b - a)
+            .forEach(row => {
+                if (row >= newRow) this._shiftRow(row, row + 1);
+            });
+
+        for (let col in this.colHeaders) {
+            const newCell = new Cell(newRow, parseInt(col), null);
+            this._insertCellInColumn(parseInt(col), newCell);
+        }
+    }
+
+    public addColumnInBetween(newCol: number): void {
+        Object.keys(this.colHeaders)
+            .map(Number)
+            .sort((a, b) => b - a)
+            .forEach(col => {
+                if (col >= newCol) this._shiftColumn(col, col + 1);
+            });
+
+        for (let row in this.rowHeaders) {
+            const newCell = new Cell(parseInt(row), newCol, null);
+            this._insertCellInRow(parseInt(row), newCell);
+            this._insertCellInColumn(newCol, newCell);
+        }
+    }
+
+    public deleteRow(rowToDelete: number): void {
+        let current = this.rowHeaders[rowToDelete];
+        while (current) {
+            this._removeCellFromColumn(current.colValue, rowToDelete);
+            current = current.nextCol;
+        }
+        delete this.rowHeaders[rowToDelete];
+        Object.keys(this.rowHeaders)
+            .map(Number)
+            .sort((a, b) => a - b)
+            .forEach(row => {
+                if (row > rowToDelete) this._shiftRow(row, row - 1);
+            });
+    }
+
+    public deleteColumn(colToDelete: number): void {
+        let current = this.colHeaders[colToDelete];
+        while (current) {
+            this._removeCellFromRow(current.rowValue, colToDelete);
+            current = current.nextRow;
+        }
+        delete this.colHeaders[colToDelete];
+        Object.keys(this.colHeaders)
+            .map(Number)
+            .sort((a, b) => a - b)
+            .forEach(col => {
+                if (col > colToDelete) this._shiftColumn(col, col - 1);
+            });
+    }
+
+    public getCell(row:number, col:number): Cell|null {
+        let current = this.rowHeaders[row];
+        while (current) {
+            if (current.colValue === col) return current;
+            current = current.nextCol;
+        }
+        return null;
+    }
+
+    public setCell(row:number, col:number, value:string) {
+        if (this._cellExists(row, col)) {
+            this._updateCellValue(row, col, value);
+        } else {
+            this.createCell(row, col, value);
         }
     }
 }
