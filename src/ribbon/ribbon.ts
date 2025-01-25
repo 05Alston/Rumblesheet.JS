@@ -1,3 +1,5 @@
+import { RumbleSheetFunctions } from "./ribbonFunctionalities.js";
+
 export class Ribbon {
     private ribbonElement: HTMLElement;
     private activeTab: HTMLElement | null;
@@ -10,8 +12,342 @@ export class Ribbon {
         this.ribbonElement = ribbonElement;
         this.activeTab = null;
 
-        this.createRibbon();
-        this.handleEvents();
+        this.createRibbon1();
+        new RumbleSheetFunctions();
+
+    }
+
+
+    private createRibbon1(){
+        this.ribbonElement.innerHTML = `      <div class="ribbon" id="ribbon">
+        <div class="top">
+          <div class="tablist-container leftSection">
+            <div class="tablist-items"><span></span>File</div>
+            <div class="tablist-items active">Home</div>
+            <div class="tablist-items">Graph</div>
+            <div class="tablist-items">Operations</div>
+            <div class="tablist-items">Format</div>
+          </div>
+          <div class="rightSection">
+            <p class="name">Rumblesheet</p>
+            <div class="search">Search</div>
+          </div>
+        </div>
+        <div class="focus-zone">
+          <div class="focus-content">
+            <div class="focus-tab tab-1">File Tab</div>
+            <div class="focus-tab tab-2 active">
+              <div class="tab-section section-1">
+                <div class="feature-menu menu-1">
+                  <div class="icon icon-paste-20"></div>
+                  <div class="name">Clipboard</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-1">
+                  <div class="content divided-in-column">
+                    <div class="col">
+                      <div class="feature-vertical">
+                        <div class="icon icon-paste"></div>
+                        <p class="icon-name">Paste</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="col">
+                      <div class="feature-horizontal">
+                        <div class="icon icon-cut"></div>
+                        <p class="icon-name">Cut</p>
+                      </div>
+                      <div class="feature-horizontal">
+                        <div class="icon icon-copy"></div>
+                        <p class="icon-name">Copy</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Clipboard</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="tab-section section-2">
+                <div class="feature-menu menu-2" >
+                  <div class="icon icon-bold"></div>
+                  <div class="name">Font</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-2">
+                  <div class="content divided-in-row">
+                    <div class="row">
+                      <select
+                        class="select-options"
+                        name="font-family"
+                        id="family-select"
+                      >
+                        <option value="Times new Roman">Times new Roman</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Opan Sans">Open Sans</option>
+                        <option value="Rubik">Rubik</option>
+                      </select>
+                      <select
+                        class="select-options"
+                        name="font-size"
+                        id="size-select"
+                      >
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="20">20</option>
+                      </select>
+                      <div class="feature-icon">
+                        <div class="icon icon-font-size-decrease"></div>
+                        <p class="icon-name">Font Size Decrease</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-font-size-increase"></div>
+                        <p class="icon-name">Font Size Increase</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-bold"></div>
+                        <p class="icon-name">Bold</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-italic"></div>
+                        <p class="icon-name">Italic</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-underline"></div>
+                        <p class="icon-name">Underline</p>
+                      </div>
+                      <div class="feature-icon feature-icon-input">
+                        <div class="icon icon-fill"></div>
+                        <input type="color" />
+                        <p class="icon-name">Fill</p>
+                      </div>
+                      <div class="feature-icon feature-icon-input">
+                        <div class="icon icon-A"></div>
+                        <input type="color" />
+                        <p class="icon-name">Font Color</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Font</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="tab-section section-3">
+                <div class="feature-menu menu-3">
+                  <div class="icon icon-align-center"></div>
+                  <div class="name">Alignment</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-3">
+                  <div class="content divided-in-row">
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-align-left"></div>
+                        <p class="icon-name">Align Left</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-align-center"></div>
+                        <p class="icon-name">Align Center</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-align-right"></div>
+                        <p class="icon-name">Align Right</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-decrease-indent"></div>
+                        <p class="icon-name">Decrease Indent</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-increase-indent"></div>
+                        <p class="icon-name">Increase Indent</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Alignment</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="tab-section section-4">
+                <div class="feature-menu menu-4">
+                  <div class="icon icon-paste-20"></div>
+                  <div class="name">Clipboard</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-4">
+                  <div class="content divided-in-column">
+                    <div class="col">
+                      <div class="feature-vertical">
+                        <div class="icon icon-paste"></div>
+                        <p class="icon-name">Paste</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="col">
+                      <div class="feature-horizontal">
+                        <div class="icon icon-cut"></div>
+                        <p class="icon-name">Cut</p>
+                      </div>
+                      <div class="feature-horizontal">
+                        <div class="icon icon-copy"></div>
+                        <p class="icon-name">Copy</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Cells</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="tab-section section-5">
+                <div class="feature-menu menu-5" >
+                  <div class="icon icon-bold"></div>
+                  <div class="name">Font</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-5">
+                  <div class="content divided-in-row">
+                    <div class="row">
+                      <select
+                        class="select-options"
+                        name="font-family"
+                        id="font-family-select"
+                      >
+                        <option value="Times new Roman">Times new Roman</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Opan Sans">Open Sans</option>
+                        <option value="Rubik">Rubik</option>
+                      </select>
+                      <select
+                        class="select-options"
+                        name="font-size"
+                        id="font-size-select"
+                      >
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="20">20</option>
+                      </select>
+                      <div class="feature-icon">
+                        <div class="icon icon-font-size-decrease"></div>
+                        <p class="icon-name">Font Size Decrease</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-font-size-increase"></div>
+                        <p class="icon-name">Font Size Increase</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-bold"></div>
+                        <p class="icon-name">Bold</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-italic"></div>
+                        <p class="icon-name">Italic</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-underline"></div>
+                        <p class="icon-name">Underline</p>
+                      </div>
+                      <div class="feature-icon feature-icon-input">
+                        <div class="icon icon-fill"></div>
+                        <input type="color" />
+                        <p class="icon-name">Fill</p>
+                      </div>
+                      <div class="feature-icon feature-icon-input">
+                        <div class="icon icon-A"></div>
+                        <input type="color" />
+                        <p class="icon-name">Font Color</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Edits</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <!-- <div class="tab-section section-6">
+                <div class="feature-menu menu-6">
+                  <div class="icon icon-align-center"></div>
+                  <div class="name">Alignment</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-6">
+                  <div class="content divided-in-row">
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-align-left"></div>
+                        <p class="icon-name">Align Left</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-align-center"></div>
+                        <p class="icon-name">Align Center</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-align-right"></div>
+                        <p class="icon-name">Align Right</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="row">
+                      <div class="feature-icon">
+                        <div class="icon icon-decrease-indent"></div>
+                        <p class="icon-name">Decrease Indent</p>
+                      </div>
+                      <div class="feature-icon">
+                        <div class="icon icon-increase-indent"></div>
+                        <p class="icon-name">Increase Indent</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">New</div>
+                </div>
+              </div> -->
+            </div>
+            <div class="focus-tab tab-3">Graph Tab</div>
+            <div class="focus-tab tab-4">Operations Tab</div>
+            <div class="focus-tab tab-5">Format Tab</div>
+          </div>
+          <!-- updated for not expandable below -->
+          <div class="fixed-to-right">
+            <button class="toggle-content-btn" id="toggle-content">
+              <div class="icon icon-down"></div>
+            </button>
+          </div>
+          <div class="scroll-left">
+            <div class="icon icon-down"></div>
+          </div>
+          <div class="scroll-right">
+            <div class="icon icon-down"></div>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="active-cell">
+            <input type="text" value="A1" />
+          </div>
+          <div class="formula-bar">
+            <div class="icon function-icon icon-fx"></div>
+            <textarea rows="1"></textarea>
+          </div>
+        </div>
+      </div>`;
     }
 
     private createRibbon(): void {

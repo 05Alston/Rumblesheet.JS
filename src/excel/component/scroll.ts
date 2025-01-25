@@ -121,7 +121,6 @@ export class Scroll {
 
             if (deltaX !== 0) this.updateScrollBar('horizontal');
             if (deltaY !== 0) this.updateScrollBar('vertical');
-            console.log("calling draw")
             this.helper.draw();
         }
 

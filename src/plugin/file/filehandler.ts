@@ -17,7 +17,6 @@ export class FileUploader {
     const rows: string[][] = fileData
       .split("\n")
       .map((line) => line.split(",").map((value) => value.trim()));
-      console.log(this.plug.excelsHandler)
     this.plug.excelsHandler.currSheetObj.instance.helper.setValue(rows)
     alert("CSV uploaded and matrix populated successfully.");
   }

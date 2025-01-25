@@ -1,5 +1,6 @@
 import { Excel } from "../excel/excel.js";
 import { Ribbon } from "../ribbon/ribbon.js";
+import { ThemeManager } from "../theme/theme.js";
 import { EventManager } from "./eventManager.js";
 import { plug } from "../plugin/plugin.js";
 
@@ -14,6 +15,7 @@ export class excelsHandler {
     currExcelRow?: number;
     currExcelCol?: number;
     currSheetObj?: any;
+    themes!: ThemeManager;
     plug!:plug;
     EventManager!: EventManager;
 
@@ -30,6 +32,8 @@ export class excelsHandler {
     private init(): void {
         this.mainContainer.style.display = 'flex';
         this.mainContainer.style.flexDirection = 'column';
+        this.themes = new ThemeManager();
+        this.themes.updateTheme("violet");
         this.addNewRow();
         this.handleClick = this.handleClick.bind(this);
         this.setupEventListeners();
@@ -76,7 +80,6 @@ export class excelsHandler {
         this.currExcelRow = excelRow;
         this.currExcelCol = excelCol;
         this.currSheetObj = sheetObj;
-        console.log(this.currSheetObj.instance);
     }
 
     private addNewRow(): void {
@@ -259,7 +262,7 @@ function init(ribbonContainer: HTMLElement, mainContainer: HTMLElement): void {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Get HTML elements from the DOM
-    const ribbonContainer = document.getElementById("ribbon-container");
+    const ribbonContainer = document.getElementById("ribbon");
     const mainContainer = document.getElementById("mainContainer");
 
     // Check if elements exist and initialize

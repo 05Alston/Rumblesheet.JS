@@ -27,7 +27,7 @@ export class EventManager {
         if (file) {
             this.handleCsvUpload(file);
         } else {
-            console.log("No file selected.");
+            // console.log("No file selected.");
         }
     }
 

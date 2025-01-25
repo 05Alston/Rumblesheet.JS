@@ -149,9 +149,7 @@ export class mainCellManager{
         this.input!.addEventListener('blur', function() {
           this.style.display = 'none';
         });
-        console.log(this.input)
     
-        console.log(cell)
         // Recalculate input box position
         const { x: scrollX, y: scrollY } =
           this.helper.getScroll();
@@ -159,7 +157,6 @@ export class mainCellManager{
         const inputchange = 2;
         const node = this.helper.getCell(cell!.row.row,
           cell!.column.col);
-          console.log(node)
         const fontSize = node? node.fontSize : 14;
         
         this.input!.style.position = "absolute";
@@ -192,7 +189,6 @@ export class mainCellManager{
     }
 
     public draw(): void {
-        console.log("calling draw from main cell manager")
         this.helper.draw();
     }
   
