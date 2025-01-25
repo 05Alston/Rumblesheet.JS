@@ -1,4 +1,5 @@
-import { Helper,GridHeaderCell } from "./helper";
+import { Helper } from "./helper";
+import { IGridHeaderCell } from "../../dataStructure/interfaces";
 
 export class SheetRendrer {
     private zoomIndex: number;
@@ -10,8 +11,8 @@ export class SheetRendrer {
     resizeObserver?: ResizeObserver;
     canvases?: { [key: string]: HTMLCanvasElement; };
     contexts?: { [key: string]: CanvasRenderingContext2D; };
-    verticalCells!: GridHeaderCell[];
-    horizontalCells!: GridHeaderCell[];
+    verticalCells!: IGridHeaderCell[];
+    horizontalCells!: IGridHeaderCell[];
     public lastVisibleRow:number = 0;
     public lastVisibleCol:number = 0;
 
@@ -263,8 +264,8 @@ export class SheetRendrer {
 
     drawGrid(scrollX: number, scrollY: number): void {
       const ctx: CanvasRenderingContext2D = this.contexts!.spreadsheet;
-      const verticalCells: GridHeaderCell[] = this.verticalCells;
-      const horizontalCells: GridHeaderCell[] = this.horizontalCells;
+      const verticalCells: IGridHeaderCell[] = this.verticalCells;
+      const horizontalCells: IGridHeaderCell[] = this.horizontalCells;
   
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 1;
@@ -274,7 +275,7 @@ export class SheetRendrer {
       const canvasHeight: number =
           this.canvases!.spreadsheet.height / window.devicePixelRatio;
   
-      verticalCells.forEach((cell: GridHeaderCell) => {
+      verticalCells.forEach((cell: IGridHeaderCell) => {
           const y: number = cell.y - scrollY;
           ctx.beginPath();
           ctx.moveTo(0, y);
@@ -282,7 +283,7 @@ export class SheetRendrer {
           ctx.stroke();
       });
   
-      horizontalCells.forEach((cell: GridHeaderCell) => {
+      horizontalCells.forEach((cell: IGridHeaderCell) => {
           const x: number = cell.x - scrollX;
           ctx.beginPath();
           ctx.moveTo(x, 0);
@@ -299,11 +300,11 @@ export class SheetRendrer {
         this.canvases!.spreadsheet.height / window.devicePixelRatio;
 
     // Map vertical and horizontal cells for faster lookup
-    const verticalCellMap: Map<number | string, GridHeaderCell> = new Map(
-        this.verticalCells.map((cell: GridHeaderCell) => [cell.value, cell])
+    const verticalCellMap: Map<number | string, IGridHeaderCell> = new Map(
+        this.verticalCells.map((cell: IGridHeaderCell) => [cell.value, cell])
     );
-    const horizontalCellMap: Map<string, GridHeaderCell> = new Map(
-        this.horizontalCells.map((cell: GridHeaderCell) => [cell.value as string, cell])
+    const horizontalCellMap: Map<string, IGridHeaderCell> = new Map(
+        this.horizontalCells.map((cell: IGridHeaderCell) => [cell.value as string, cell])
     );
 
     // Iterate through the sparse matrix rows
@@ -314,8 +315,8 @@ export class SheetRendrer {
 
         while (current) {
             // Find corresponding header cells
-            const vCell: GridHeaderCell | undefined = verticalCellMap.get(current.rowValue);
-            const hCell: GridHeaderCell | undefined = horizontalCellMap.get(
+            const vCell: IGridHeaderCell | undefined = verticalCellMap.get(current.rowValue);
+            const hCell: IGridHeaderCell | undefined = horizontalCellMap.get(
                 this.helper!.numberToColumnName(current.colValue)
             );
 

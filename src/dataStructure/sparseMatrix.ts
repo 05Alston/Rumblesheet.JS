@@ -1,4 +1,3 @@
-import { GridHeaderCell } from "../excel/component/GridManager";
 
 export class Cell {
     constructor(

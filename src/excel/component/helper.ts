@@ -1,8 +1,9 @@
 import { Sheet } from "../excel.js";
 import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
-import { SheetRendrer } from "./sheetrendrer.js";
-import { GridHeaderCell, GridHeaderManager } from "./GridManager.js";
+import { SheetRendrer } from "./sheetRendrer.js";
+import {  GridHeaderManager } from "./GridManager.js";
+import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
 
 export class Helper {
@@ -10,7 +11,7 @@ export class Helper {
   private sheetRendrer: SheetRendrer;
   public sheet: Sheet;
   private SparseMatrix: SparseMatrix;
-  private GridHeaderCell!: GridHeaderCell;
+  private IGridHeaderCell!: IGridHeaderCell;
   private GridHeaderManager?: GridHeaderManager;
   public canvases: { [key: string]: HTMLCanvasElement };
   public contexts: { [key: string]: CanvasRenderingContext2D };
@@ -275,12 +276,12 @@ export class Helper {
   }
 
   //Get Horizontal header cells
-  getHorizontalHeaderCells(scrollX: number): GridHeaderCell[] {
+  getHorizontalHeaderCells(scrollX: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsHorizontal(scrollX);
   }
 
   // Get Vertical header cells
-  getVerticalHeaderCells(scrollY: number): GridHeaderCell[] {
+  getVerticalHeaderCells(scrollY: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
 
@@ -289,7 +290,7 @@ export class Helper {
   }
 
   public binarySearch(
-    cells: GridHeaderCell[],
+    cells: IGridHeaderCell[],
     value: number,
     property: string
   ) {
@@ -316,4 +317,3 @@ export class Helper {
     return low;
   }
 }
-export { GridHeaderCell };

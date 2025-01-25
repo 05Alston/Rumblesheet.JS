@@ -1,6 +1,6 @@
 import { Helper } from "./helper";
 
-export class GridHeaderCell {
+class GridHeaderCell {
     x: number;
     y: number;
     width: number;
