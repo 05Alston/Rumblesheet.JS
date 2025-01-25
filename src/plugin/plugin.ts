@@ -17,7 +17,6 @@ export class plug {
             // Call a function to process the CSV file
             this.FileUploader.handleCsvUpload(file);
         } else {
-            console.log("No file selected.");
         }
     }
 }

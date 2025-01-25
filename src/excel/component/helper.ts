@@ -133,7 +133,6 @@ export class Helper {
   }
 
   public getCell(x: number, y: number): Cell | null {
-    console.log(x, y);
     return this.SparseMatrix.getCell(x, y);
   }
 
@@ -203,7 +202,6 @@ export class Helper {
       });
     });
 
-    console.log("Matrix updated:", this.SparseMatrix);
   }
 
   public updateDrawForFeatures(): void {
@@ -287,7 +285,6 @@ export class Helper {
   }
 
   draw() {
-    console.log("calling draw");
     this.sheetRendrer.draw();
   }
 

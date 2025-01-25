@@ -78,7 +78,6 @@ export class selectionCell{
         }
     
         if (y - scrollY < 0 && event.movementY < 0) {
-          console.log(y - scrollY);
           this.maincellManager.scroll(0, -10); // Scroll up
         } else if (
           y - scrollY > canvas.clientHeight - edgeDistance &&
@@ -97,9 +96,7 @@ export class selectionCell{
         const { x: scrollX, y: scrollY } = this.maincellManager.getCanvasCoordinates(event);
     
         this.clickedCell_headercells = this.maincellManager.getCellFromCoordinates(scrollX, scrollY);
-        console.log(this.clickedCell_headercells);
         if (this.clickedCell_headercells) {
-            console.log("in the else")
             this.deselectCurrentCells();
             this.maincellManager.updateInputElement(this.clickedCell_headercells);
             this.selectCell(this.clickedCell_headercells);
@@ -119,7 +116,6 @@ export class selectionCell{
         if (this.selectedCells.length > 0) {
             this.selectedCells = [];
             this.maincellManager.hideInputElement(); // Hide the input element if it's visible
-            console.log("deselect calling draw")
             this.maincellManager.draw(); // Redraw the sheet to remove any highlighting
         }
     }
@@ -139,7 +135,6 @@ export class selectionCell{
 
     drawHighlight() {
         this.maincellManager.draw();
-        console.log("in the draw highlight ")
         const ctx = this.canvases.spreadsheet.getContext("2d")!;
         const { x: scrollX, y: scrollY } =
         this.maincellManager.getScroll();
@@ -165,7 +160,6 @@ export class selectionCell{
             return cell.row!.y + cell.row!.height;
           })
         );
-        console.log("33333333333333333333333333",this.selectedCells)
 
         // Use a single function to draw on both horizontal and vertical canvases
         this.drawRectangleOnHeaderCanvas(
@@ -176,7 +170,6 @@ export class selectionCell{
         );
 
         // Draw the border around the entire selection area
-        console.log(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY)
         ctx.fillStyle = "rgb(131,242,143,0.6)";
         ctx.fillRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);
         ctx.strokeRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);

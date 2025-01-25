@@ -80,7 +80,6 @@ export class excelsHandler {
         this.currExcelRow = excelRow;
         this.currExcelCol = excelCol;
         this.currSheetObj = sheetObj;
-        console.log(this.currSheetObj.instance);
     }
 
     private addNewRow(): void {
@@ -263,7 +262,7 @@ function init(ribbonContainer: HTMLElement, mainContainer: HTMLElement): void {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Get HTML elements from the DOM
-    const ribbonContainer = document.getElementById("ribbon-container");
+    const ribbonContainer = document.getElementById("ribbon");
     const mainContainer = document.getElementById("mainContainer");
 
     // Check if elements exist and initialize
