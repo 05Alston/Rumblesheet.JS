@@ -56,5 +56,19 @@
     --footerSheetBtnBgColor: var(--themeColorL5);
     --footerSheetBtnTextColor: var(--themeColorD4);
 
+    --color-1: rgb(255, 255, 255);
+    --color-2: #ededed;
+    --color-3: #14362d;
+    --gray: gray;
+    --light-gray: rgb(203, 203, 203);
+    --lightest-gray: rgb(234, 234, 234);
+  
+    --input-font-size: 14px;
+    --input-line-height: 20px;
+    --font-family: Arial;
+  
+    --font-size-medium: 14px;
+    --line-height-medium: 16px;
+
 
 }

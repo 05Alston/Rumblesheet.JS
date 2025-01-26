@@ -523,7 +523,7 @@ table#search-results th {
     height: 100%;
     align-content: center;
   }
-  
+
   .ribbon .top .tablist-container .tablist-items.active {
     background-color: var(--color-1);
     color: var(--color-3);
@@ -553,6 +553,7 @@ table#search-results th {
   
   .ribbon .focus-zone .focus-content .focus-tab {
     display: none;
+    padding: 0px 2px;
   }
   .ribbon .focus-zone .focus-content .focus-tab.active {
     display: flex;
@@ -1104,4 +1105,6 @@ table#search-results th {
   }
   
 
-
+.btn:focus-visible{
+  outline: 2px solid var(--black);
+}
