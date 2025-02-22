@@ -3,7 +3,7 @@ import { selectionCell } from "./selection/selection.js";
 import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
 export class mainCellManager{
     public helper: Helper;
-    public input!: HTMLElement | null;
+    public input!: HTMLInputElement | null;
     private selectionCell!: selectionCell;
     private canvases: { [key: string]: HTMLCanvasElement; };
 
@@ -19,9 +19,9 @@ export class mainCellManager{
       const input = document.getElementById(`input_${row}_${col}_${index}`);
       
       if (input) {
-          input.addEventListener('input', this.handleInputChange.bind(this));
-          input.addEventListener('keydown', this.handleKeyDown.bind(this));
-          input.addEventListener('blur', this.handleInputBlur.bind(this));
+        input.addEventListener("input", (event: Event) => {this.handleInputChange(event)});
+        input.addEventListener('keydown', (event: Event) => {this.handleKeyDown(event)});
+          input.addEventListener('blur', (event: Event) => {this.handleInputBlur(event)});
       } else {
           console.error('Input element not found');
       }
@@ -29,41 +29,40 @@ export class mainCellManager{
 
     private handleInputChange(event:Event) {
       if (this.selectionCell.selectedCells) {
-      //     const { row, column } = this.selectionCell.selectedCells;
-      //     const value = event.target!.data;
+          const { row, column } = this.selectionCell.selectedCells[0];
+          const value = (event.target! as HTMLInputElement).value;
 
-      //     const rowNumber = parseInt(row.value, 10);
-      //     const columnNumber = this.letterToNumber(column.value);
+          const rowNumber = row!.row;
+          const columnNumber = column!.col;
 
-      //     // Update SparseMatrix with new value
-      //     this.helper.setCell(rowNumber, columnNumber, value);
-      // } else {
-      //     console.warn('No cell is currently selected.');
-      // }
+          // Update SparseMatrix with new value
+          this.helper.setCell(rowNumber, columnNumber, value);
+      } else {
+          console.warn('No cell is currently selected.');
+      }
+      }
+
+    private handleKeyDown(event:Event) {
+      if ((event as KeyboardEvent).key === 'Enter') {
+        console.log(event)
+          // this.updateCellValue(event.value);
+          // this.cellFunctionality.selectedCell = null;
+          // this.sheetRenderer.draw();
       }
     }
 
-    private handleKeyDown(event:Event) {
-      return 
-      // if (event.key === 'Enter') {
-      //     this.updateCellValue(event.target!.value);
-      //     this.cellFunctionality.selectedCell = null;
-      //     this.sheetRenderer.draw();
-      // }
-    }
-
     private handleInputBlur(event:Event) {
-      // this.updateCellValue(event.target!.value);
-      // this.cellFunctionality.selectedCell = null;
+      this.updateCellValue((event!.target as HTMLInputElement).value);
+      this.selectionCell.selectedCells[0].cell = null;
     }
 
-    public updateCellValue() {
-      // if (this.cellFunctionality?.selectedCell) {
-      //     const { row, column } = this.cellFunctionality.selectedCell;
-      //     const rowNumber = parseInt(row.value, 10);
-      //     const columnNumber = this.letterToNumber(column.value);
-      //     this.sparseMatrix.setCell(rowNumber, columnNumber, value);
-      // }
+    public updateCellValue(value:string | null) {
+      if ( this.selectionCell.selectedCells[0]) {
+          const { row, column } =  this.selectionCell.selectedCells[0];
+          const rowNumber = row!.row;
+          const columnNumber = column!.col;
+          this.helper.setCell(rowNumber, columnNumber, value);
+      }
     }
   
     private initiateFeature(){
@@ -145,7 +144,7 @@ export class mainCellManager{
     public updateInputElement(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.input = document.getElementById(
           `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
-        );
+        ) as HTMLInputElement;
         this.input!.addEventListener('blur', function() {
           this.style.display = 'none';
         });
@@ -172,7 +171,7 @@ export class mainCellManager{
     
         // Get the cell value from the sparse matrix and set it in the input box
         const cellValue = node ? node.value : ""
-        this.input = cellValue !== null ? cellValue : ""; // Set the input value
+        this.input.value = cellValue !== null ? cellValue : ""; // Set the input value
     }
 
     hideInputElement() {

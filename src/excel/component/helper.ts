@@ -316,4 +316,10 @@ export class Helper {
 
     return low;
   }
+
+  public setCell(rowNumber:number, columnNumber:number, value:string | null){
+    if (value){
+    this.SparseMatrix.setCell(rowNumber, columnNumber, value)
+    }
+  }
 }
