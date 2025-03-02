@@ -31,7 +31,7 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
-  private mainCellManager!: mainCellManager;
+  public mainCellManager!: mainCellManager;
 
   constructor(Sheet: Sheet) {
     this.sheet = Sheet;

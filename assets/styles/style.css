@@ -779,12 +779,21 @@ table#search-results th {
   }
   
   .content .feature-vertical:hover {
-    background-color: var(--light-gray);
+    background-color: var(--lightest-gray);
   }
   .content .feature-horizontal:hover {
-    background-color: var(--light-gray);
+    background-color: var(--lightest-gray);
   }
   .content .feature-icon:hover {
+    background-color: var(--lightest-gray);
+  }
+  .content .feature-vertical.active {
+    background-color: var(--light-gray);
+  }
+  .content .feature-horizontal.active {
+    background-color: var(--light-gray);
+  }
+  .content .feature-icon.active {
     background-color: var(--light-gray);
   }
   

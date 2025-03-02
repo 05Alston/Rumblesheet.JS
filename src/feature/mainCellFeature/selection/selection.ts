@@ -1,6 +1,7 @@
 import {  mainCellManager } from "../mainCellManager.js";
 import { Cell } from "../../../dataStructure/sparseMatrix.js";
 import { IGridHeaderCell } from "../../../dataStructure/interfaces.js";
+import { DEFAULT_HIGHLIGHT_FILL_COLOR, DEFAULT_HIGHLIGHT_BORDER_COLOR, DEFAULT_HIGHLIGHT_LINE_WIDTH, DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR, DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH,  DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR } from "../../../dataStructure/constants.js";
 
 export class selectionCell{
     private maincellManager! : mainCellManager;
@@ -143,9 +144,8 @@ export class selectionCell{
         if (this.selectedCells.length === 0) return;
         let width = null;
         let height = null;
-        ctx.strokeStyle = "green"; // Green border
-        ctx.lineWidth = 4;
-    
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_LINE_WIDTH;
         // Get the boundary of the selected area
         const minX = Math.min(...this.selectedCells.map((cell) => cell.column!.x));
         const maxX = Math.max(
@@ -171,32 +171,29 @@ export class selectionCell{
         );
 
         // Draw the border around the entire selection area
-        ctx.fillStyle = "rgb(131,242,143,0.6)";
+        ctx.fillStyle = DEFAULT_HIGHLIGHT_FILL_COLOR;
         ctx.fillRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);
         ctx.strokeRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);
-    
+
     }
 
     private drawRectangleOnHeaderCanvas(type:string, x:number, y:number, width:number = 0, height:number = 0, isHorizontal:boolean) {
       const context =  this.maincellManager.getContexts();
       const ctx = context[type];
-      ctx.strokeStyle = "black"; // Black border
-      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.fillStyle = "rgb(131,242,143,0.3)";
+      ctx.fillStyle = DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR;
       ctx.fillRect(x, y, width, height);
-  
-  
+
       if (isHorizontal) {
         // Draw a solid green line at the bottom
-        ctx.strokeStyle = "green";
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH;
         ctx.moveTo(x, 20);
         ctx.lineTo(x + width, 20);
       } else {
         // Draw a solid green line on the right side
-        ctx.strokeStyle = "green";
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH ;
         ctx.moveTo(30, y);
         ctx.lineTo(30, y + height);
       }

@@ -1,4 +1,4 @@
-export class RumbleSheetFunctions {
+export class RibbonFunctionalities {
   private tabButtons!: NodeListOf<HTMLElement>;
   private tabContents!: NodeListOf<HTMLElement>;
   private toggleContentBtn!: HTMLElement | null;
@@ -12,11 +12,10 @@ export class RumbleSheetFunctions {
 
   constructor() {
     this.initializeElements();
-    this.attachEventListeners();
     this.updateRibbonScrollBtnsVisible();
   }
 
-  private initializeElements(): void {
+  public initializeElements(): void {
     this.tabButtons = document.querySelectorAll(".tablist-items");
     this.tabContents = document.querySelectorAll(".focus-tab");
     this.toggleContentBtn = document.getElementById("toggle-content");
@@ -29,7 +28,7 @@ export class RumbleSheetFunctions {
     this.rumbleSheetBody = document.querySelector(".rumble-sheet");
   }
 
-  private toggleTabForTarget(target: HTMLElement): void {
+  public toggleTabForTarget(target: HTMLElement): void {
     const index = Array.from(this.tabButtons).indexOf(target);
 
     this.tabButtons.forEach((tab) => {
@@ -50,14 +49,14 @@ export class RumbleSheetFunctions {
     }
   }
 
-  private toggleContentBtnFunc(): void {
+  public toggleContentBtnFunc(): void {
     if (this.focusZone) {
       this.focusZone.classList.toggle("expanded");
     }
     this.updateRibbonScrollBtnsVisible();
   }
 
-  private handleFeatureMenuToggle(event: MouseEvent): void {
+  public handleFeatureMenuToggle(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const tabSection = target.closest(".tab-section") as HTMLElement;
     const correspondingMenuBox = tabSection.querySelector(
@@ -121,7 +120,7 @@ export class RumbleSheetFunctions {
     }
   }
 
-  private handleScrollRibbon(event: MouseEvent): void {
+  public handleScrollRibbon(event: MouseEvent): void {
     const content = document.querySelector(".focus-tab.active") as HTMLElement;
 
     if (event.target instanceof HTMLElement) {
@@ -133,11 +132,11 @@ export class RumbleSheetFunctions {
     }
   }
 
-  private isOverflowingHorizontally(container: HTMLElement): boolean {
+  public isOverflowingHorizontally(container: HTMLElement): boolean {
     return container.scrollWidth > container.clientWidth;
   }
 
-  private updateRibbonScrollBtnsVisible(): void {
+  public updateRibbonScrollBtnsVisible(): void {
     if (!this.focusContent || !this.scrollLeftBtn || !this.scrollRightBtn)
       return;
 
@@ -156,34 +155,4 @@ export class RumbleSheetFunctions {
     }
   }
 
-  private attachEventListeners(): void {
-    this.tabButtons.forEach((tab) => {
-      tab.addEventListener("click", (e) =>
-        this.toggleTabForTarget(e.target as HTMLElement)
-      );
-    });
-
-    if (this.toggleContentBtn) {
-      this.toggleContentBtn.addEventListener("click", () =>
-        this.toggleContentBtnFunc()
-      );
-    }
-
-    this.featureMenuBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => this.handleFeatureMenuToggle(e));
-    });
-
-    if (this.scrollLeftBtn && this.scrollRightBtn) {
-      this.scrollLeftBtn.addEventListener("click", (e) =>
-        this.handleScrollRibbon(e)
-      );
-      this.scrollRightBtn.addEventListener("click", (e) =>
-        this.handleScrollRibbon(e)
-      );
-    }
-
-    window.addEventListener("resize", () =>
-      this.updateRibbonScrollBtnsVisible()
-    );
-  }
 }

@@ -156,7 +156,7 @@ export class mainCellManager{
         const inputchange = 2;
         const node = this.helper.getCell(cell!.row.row,
           cell!.column.col);
-        const fontSize = node? node.fontSize : 14;
+        const fontSize = node? node.styles.fontSize ?? 14 : 14;
         
         this.input!.style.position = "absolute";
         this.input!.style.left = `${cell!.column.x - scrollX +  inputchange}px`;

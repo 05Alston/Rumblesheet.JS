@@ -1,4 +1,4 @@
-import { Excel } from "../excel/excel.js";
+import { Excel, Sheet } from "../excel/excel.js";
 import { Ribbon } from "../ribbon/ribbon.js";
 import { ThemeManager } from "../theme/theme.js";
 import { EventManager } from "./eventManager.js";
@@ -14,10 +14,12 @@ export class excelsHandler {
     rowArr: Excel[][];
     currExcelRow?: number;
     currExcelCol?: number;
-    currSheetObj?: any;
+    currSheetObj?: {
+        name: string;
+        instance: Sheet;
+    };
     themes!: ThemeManager;
     plug!:plug;
-    EventManager!: EventManager;
 
     constructor(mainContainer: HTMLElement, maxRow: number, maxCol: number) {
         this.mainContainer = mainContainer;
@@ -38,7 +40,6 @@ export class excelsHandler {
         this.handleClick = this.handleClick.bind(this);
         this.setupEventListeners();
         this.plug = new plug(this);
-        this.EventManager = new EventManager(this);
     }
 
     private setupEventListeners(): void {
@@ -76,7 +77,10 @@ export class excelsHandler {
         }
     }
 
-    updateCurrExcel(excelRow: number, excelCol: number, sheetObj: any): void {
+    updateCurrExcel(excelRow: number, excelCol: number, sheetObj: {
+        name: string;
+        instance: Sheet;
+    }): void {
         this.currExcelRow = excelRow;
         this.currExcelCol = excelCol;
         this.currSheetObj = sheetObj;
@@ -256,8 +260,10 @@ function init(ribbonContainer: HTMLElement, mainContainer: HTMLElement): void {
     // Create instances of RibbonMaker and GridMaker
     const maxRow = 3;
     const maxCol = 3;
-    new Ribbon(ribbonContainer);
-    new excelsHandler(mainContainer, maxRow, maxCol);
+    const ribbon = new Ribbon(ribbonContainer);
+    const excelHandler = new excelsHandler(mainContainer, maxRow, maxCol);
+    const eventManager = new EventManager(excelHandler,ribbon);
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
