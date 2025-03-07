@@ -1,0 +1,74 @@
+:root{
+    --white : white;
+    --black :  black;
+    --gray :gray;
+    --base : #F0F4FB;
+
+    --themeColor: var(--white);
+    --themeColorL1: var(--white);
+    --themeColorL2: var(--white);
+    --themeColorL3: var(--white);
+    --themeColorL4: var(--white);
+    --themeColorL5: var(--white);
+    --themeColorD1:var(--white);
+    --themeColorD2:var(--white);
+    --themeColorD3:var(--white);
+    --themeColorD4:var(--white);
+    --themeColorD5:var(--white);
+
+    /* format for naming: camelCased
+        --(element seperated by -)(active/focus/hover/etc. states if any)(property bg/text/etc)
+    */
+
+    /*1. COLORS*/
+
+    /*Body*/
+    --bgColor: var(--base);
+
+    /*Ribbon*/
+    --ribbonBgColor: var(--base);
+    --tablistContainerBgColor: var(--white);
+    --tablistItemBgColor: var(--white);
+    --tablistItemActiveBgColor: var(--white);
+    --tablistItemTextColor: var(--themeColorD2);
+    --tablistItemActiveBorderColor: var(--themeColorD2);
+    --ribbonFocusZoneBgColor: var(--themeColorD1);
+    --ribbonFocusBtnBgColor: var(--themeColorL5);
+    --ribbonFocusBtnActiveBgColor: var(--themeColorL2);
+    --ribbonFocusBtnIconColor: var(--themeColorL1);
+    --ribbonFocusBtnActiveTextColor: var(--themeColorD5);
+    --ribbonFocusInputBgColor: var(--themeColorL5);
+    --ribbonFocusSeperatorBgColor: var(--themeColorL5);
+
+    /*Sheets*/
+    --excelPrimaryBgColor: var(--themeColorL4);
+    --excelHorizontalCanvasBgColor: var(--themeColorL4);
+    --excelVerticalCanvasBgColor: var(--themeColorL4);
+    --sheetBgColor: var(--base);
+    --scrollbarTrackColor: var(--base);
+    --scrollbarThumbColor: var(--themeColorL3);
+    --scrollbarThumbHoverColor: var(--themeColorD5);
+
+    /*Footer*/
+    --footerBgColor: var(--themeColorL5);
+    --footerAddBtnBgColor: var(--gray);
+    --footerAddBtnTextColor: var(--black);
+    --footerSheetBtnBgColor: var(--themeColorL5);
+    --footerSheetBtnTextColor: var(--themeColorD4);
+
+    --color-1: rgb(255, 255, 255);
+    --color-2: #ededed;
+    --color-3: #14362d;
+    --gray: gray;
+    --light-gray: rgb(203, 203, 203);
+    --lightest-gray: rgb(234, 234, 234);
+  
+    --input-font-size: 14px;
+    --input-line-height: 20px;
+    --font-family: Arial;
+  
+    --font-size-medium: 14px;
+    --line-height-medium: 16px;
+
+
+}

@@ -1,9 +1,9 @@
 import { Helper } from "../../excel/component/helper.js";
 import { selectionCell } from "./selection/selection.js";
-import { GridHeaderCell, GridHeaderManager } from '../../excel/component/GridManager.js';
+import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
 export class mainCellManager{
     public helper: Helper;
-    public input!: HTMLElement | null;
+    public input!: HTMLInputElement | null;
     private selectionCell!: selectionCell;
     private canvases: { [key: string]: HTMLCanvasElement; };
 
@@ -19,9 +19,9 @@ export class mainCellManager{
       const input = document.getElementById(`input_${row}_${col}_${index}`);
       
       if (input) {
-          input.addEventListener('input', this.handleInputChange.bind(this));
-          input.addEventListener('keydown', this.handleKeyDown.bind(this));
-          input.addEventListener('blur', this.handleInputBlur.bind(this));
+        input.addEventListener("input", (event: Event) => {this.handleInputChange(event)});
+        input.addEventListener('keydown', (event: Event) => {this.handleKeyDown(event)});
+          input.addEventListener('blur', (event: Event) => {this.handleInputBlur(event)});
       } else {
           console.error('Input element not found');
       }
@@ -29,41 +29,39 @@ export class mainCellManager{
 
     private handleInputChange(event:Event) {
       if (this.selectionCell.selectedCells) {
-      //     const { row, column } = this.selectionCell.selectedCells;
-      //     const value = event.target!.data;
+          const { row, column } = this.selectionCell.selectedCells[0];
+          const value = (event.target! as HTMLInputElement).value;
 
-      //     const rowNumber = parseInt(row.value, 10);
-      //     const columnNumber = this.letterToNumber(column.value);
+          const rowNumber = row!.row;
+          const columnNumber = column!.col;
+          // Update SparseMatrix with new value
+          this.helper.setCell(rowNumber, columnNumber, value);
+      } else {
+          console.warn('No cell is currently selected.');
+      }
+      }
 
-      //     // Update SparseMatrix with new value
-      //     this.helper.setCell(rowNumber, columnNumber, value);
-      // } else {
-      //     console.warn('No cell is currently selected.');
-      // }
+    private handleKeyDown(event:Event) {
+      if ((event as KeyboardEvent).key === 'Enter') {
+        console.log(event)
+          // this.updateCellValue(event.value);
+          // this.cellFunctionality.selectedCell = null;
+          this.helper.draw();
       }
     }
 
-    private handleKeyDown(event:Event) {
-      return 
-      // if (event.key === 'Enter') {
-      //     this.updateCellValue(event.target!.value);
-      //     this.cellFunctionality.selectedCell = null;
-      //     this.sheetRenderer.draw();
-      // }
-    }
-
     private handleInputBlur(event:Event) {
-      // this.updateCellValue(event.target!.value);
-      // this.cellFunctionality.selectedCell = null;
+      this.updateCellValue((event!.target as HTMLInputElement).value);
+      this.selectionCell.selectedCells[0].cell = null;
     }
 
-    public updateCellValue() {
-      // if (this.cellFunctionality?.selectedCell) {
-      //     const { row, column } = this.cellFunctionality.selectedCell;
-      //     const rowNumber = parseInt(row.value, 10);
-      //     const columnNumber = this.letterToNumber(column.value);
-      //     this.sparseMatrix.setCell(rowNumber, columnNumber, value);
-      // }
+    public updateCellValue(value:string | null) {
+      if ( this.selectionCell.selectedCells[0]) {
+          const { row, column } =  this.selectionCell.selectedCells[0];
+          const rowNumber = row!.row;
+          const columnNumber = column!.col;
+          this.helper.setCell(rowNumber, columnNumber, value);
+      }
     }
   
     private initiateFeature(){
@@ -97,7 +95,7 @@ export class mainCellManager{
         this.helper.Scroll(x, y);
     }
 
-    public getCellFromCoordinates(x:number, y:number):{column:GridHeaderCell, row:GridHeaderCell} |null {
+    public getCellFromCoordinates(x:number, y:number):{column:IGridHeaderCell, row:IGridHeaderCell} |null {
         const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
         const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
     
@@ -108,8 +106,8 @@ export class mainCellManager{
     }
 
     public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
-        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(startPoint.x);
-        const verticalHeaderCells = this.helper.getVerticalHeaderCells(startPoint.y); 
+        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(0);
+        const verticalHeaderCells = this.helper.getVerticalHeaderCells(0); 
 
         const left = Math.min(startPoint.x, endPoint.x);
         const right = Math.max(startPoint.x, endPoint.x);
@@ -134,7 +132,6 @@ export class mainCellManager{
             });
           }
         }
-    
         return cells;
     }
 
@@ -142,41 +139,50 @@ export class mainCellManager{
         this.selectionCell.updatePosForScrolling()
     }
 
-    public updateInputElement(cell:{column:GridHeaderCell, row:GridHeaderCell} |null) {
-        this.input = document.getElementById(
+    public updateInputElement(cell: { column: IGridHeaderCell; row: IGridHeaderCell } | null) {
+      if (!cell || !cell.column || !cell.row) {
+          return;
+      }
+  
+      this.input = document.getElementById(
           `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
-        );
-        this.input!.addEventListener('blur', function() {
-          this.style.display = 'none';
-        });
-        console.log(this.input)
-    
-        console.log(cell)
-        // Recalculate input box position
-        const { x: scrollX, y: scrollY } =
-          this.helper.getScroll();
-        const zoomIndex = this.helper.zoomIndex;
-        const inputchange = 2;
-        const node = this.helper.getCell(cell!.row.row,
-          cell!.column.col);
-          console.log(node)
-        const fontSize = node? node.fontSize : 14;
-        
-        this.input!.style.position = "absolute";
-        this.input!.style.left = `${cell!.column.x - scrollX +  inputchange}px`;
-        this.input!.style.top = `${cell!.row.y - scrollY +  inputchange}px`;
-        this.input!.style.width = `${cell!.column.width -  inputchange*inputchange}px`;
-        this.input!.style.height = `${cell!.row.height -  inputchange*inputchange}px`;
-        this.input!.style.fontSize = `${fontSize * zoomIndex}px`; // Adjust font size based on scale
-        this.input!.style.textAlign = "center";
-        // input.style.zIndex = 10;
-        this.input!.style.display = "block";
-        this.input!.focus(); // Optionally focus the input
-    
-        // Get the cell value from the sparse matrix and set it in the input box
-        const cellValue = node ? node.value : ""
-        this.input = cellValue !== null ? cellValue : ""; // Set the input value
-    }
+      ) as HTMLInputElement;
+  
+      if (!this.input) {
+          console.warn("updateInputElement: input element not found");
+          return;
+      }
+  
+      this.input.addEventListener("blur", function () {
+          this.style.display = "none";
+      });
+  
+      // Recalculate input box position
+      const { x: scrollX, y: scrollY } = this.helper.getScroll();
+      const zoomIndex = this.helper.zoomIndex;
+      const inputchange = 2;
+      
+      const node = this.helper.getCell(cell.row.row, cell.column.col);
+      const fontSize = node?.styles?.fontSize ?? 14;
+  
+      // Ensure input element exists before modifying styles
+      Object.assign(this.input.style, {
+          position: "absolute",
+          left: `${cell.column.x - scrollX + inputchange}px`,
+          top: `${cell.row.y - scrollY + inputchange}px`,
+          width: `${cell.column.width - inputchange * inputchange}px`,
+          height: `${cell.row.height - inputchange * inputchange}px`,
+          fontSize: `${fontSize * zoomIndex}px`,
+          textAlign: "center",
+          display: "block",
+      });
+  
+      this.input.focus();
+  
+      // Get the cell value from the sparse matrix and set it in the input box
+      this.input.value = node?.value ?? "";
+  }
+  
 
     hideInputElement() {
         const input =document.getElementById(
@@ -192,10 +198,12 @@ export class mainCellManager{
     }
 
     public draw(): void {
-        console.log("calling draw from main cell manager")
         this.helper.draw();
     }
-  
+
+    public getCurrSelectedCells(){
+      return this.selectionCell.selectedCells;
+    }
+
 }
 
-export { GridHeaderCell };

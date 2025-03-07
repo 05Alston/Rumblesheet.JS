@@ -1,6 +1,5 @@
 import { Helper } from "./helper.js";
 import { SheetRendrer } from "./sheetrendrer.js";
-
 export class Scroll {
     scrollX = 0;
     scrollY = 0;
@@ -121,7 +120,6 @@ export class Scroll {
 
             if (deltaX !== 0) this.updateScrollBar('horizontal');
             if (deltaY !== 0) this.updateScrollBar('vertical');
-            console.log("calling draw")
             this.helper.draw();
         }
 

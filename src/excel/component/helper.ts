@@ -2,7 +2,8 @@ import { Sheet } from "../excel.js";
 import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
 import { SheetRendrer } from "./sheetrendrer.js";
-import { GridHeaderCell, GridHeaderManager } from "./GridManager.js";
+import {  GridHeaderManager } from "./GridManager.js";
+import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
 
 export class Helper {
@@ -10,7 +11,7 @@ export class Helper {
   private sheetRendrer: SheetRendrer;
   public sheet: Sheet;
   private SparseMatrix: SparseMatrix;
-  private GridHeaderCell!: GridHeaderCell;
+  private IGridHeaderCell!: IGridHeaderCell;
   private GridHeaderManager?: GridHeaderManager;
   public canvases: { [key: string]: HTMLCanvasElement };
   public contexts: { [key: string]: CanvasRenderingContext2D };
@@ -30,7 +31,7 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
-  private mainCellManager!: mainCellManager;
+  public mainCellManager!: mainCellManager;
 
   constructor(Sheet: Sheet) {
     this.sheet = Sheet;
@@ -133,7 +134,6 @@ export class Helper {
   }
 
   public getCell(x: number, y: number): Cell | null {
-    console.log(x, y);
     return this.SparseMatrix.getCell(x, y);
   }
 
@@ -203,7 +203,6 @@ export class Helper {
       });
     });
 
-    console.log("Matrix updated:", this.SparseMatrix);
   }
 
   public updateDrawForFeatures(): void {
@@ -237,11 +236,15 @@ export class Helper {
       direction === "horizontal"
         ? this.scroll.maxScrollX
         : this.scroll.maxScrollY;
+      
+    // Get the relevant dimension based on direction
+    const clientSize =
+    direction === "horizontal"
+        ? scrollElement.clientWidth
+        : scrollElement.clientHeight;
 
     // Calculate and return the scroll ratio
-    return (
-      scrollElement.clientHeight / (scrollElement.clientHeight + maxScroll)
-    );
+    return clientSize / (clientSize + maxScroll);
   }
 
   public getScroll(): { x: number; y: number } {
@@ -277,22 +280,21 @@ export class Helper {
   }
 
   //Get Horizontal header cells
-  getHorizontalHeaderCells(scrollX: number): GridHeaderCell[] {
+  getHorizontalHeaderCells(scrollX: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsHorizontal(scrollX);
   }
 
   // Get Vertical header cells
-  getVerticalHeaderCells(scrollY: number): GridHeaderCell[] {
+  getVerticalHeaderCells(scrollY: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
 
   draw() {
-    console.log("calling draw");
     this.sheetRendrer.draw();
   }
 
   public binarySearch(
-    cells: GridHeaderCell[],
+    cells: IGridHeaderCell[],
     value: number,
     property: string
   ) {
@@ -318,5 +320,8 @@ export class Helper {
 
     return low;
   }
+
+  public setCell(rowNumber:number, columnNumber:number, value:string | null){
+    this.SparseMatrix.setCell(rowNumber, columnNumber, value)
+  }
 }
-export { GridHeaderCell };

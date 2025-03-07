@@ -1,5 +1,7 @@
-import { GridHeaderCell, mainCellManager } from "../mainCellManager.js";
+import {  mainCellManager } from "../mainCellManager.js";
 import { Cell } from "../../../dataStructure/sparseMatrix.js";
+import { IGridHeaderCell } from "../../../dataStructure/interfaces.js";
+import { DEFAULT_HIGHLIGHT_FILL_COLOR, DEFAULT_HIGHLIGHT_BORDER_COLOR, DEFAULT_HIGHLIGHT_LINE_WIDTH, DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR, DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH,  DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR } from "../../../dataStructure/constants.js";
 
 export class selectionCell{
     private maincellManager! : mainCellManager;
@@ -8,8 +10,8 @@ export class selectionCell{
     private isScrolling: boolean;
     private startPoint!: { x: number; y: number };
     private endPoint!: { x: number; y: number };
-    private clickedCell_headercells!: {column:GridHeaderCell, row:GridHeaderCell} |null;
-    public selectedCells!: { column: GridHeaderCell | undefined; row: GridHeaderCell | undefined; cell: Cell |null }[];
+    private clickedCell_headercells!: {column:IGridHeaderCell, row:IGridHeaderCell} |null;
+    public selectedCells!: { column: IGridHeaderCell | undefined; row: IGridHeaderCell | undefined; cell: Cell |null }[];
 
 
     constructor(maincellManager:mainCellManager){
@@ -78,7 +80,6 @@ export class selectionCell{
         }
     
         if (y - scrollY < 0 && event.movementY < 0) {
-          console.log(y - scrollY);
           this.maincellManager.scroll(0, -10); // Scroll up
         } else if (
           y - scrollY > canvas.clientHeight - edgeDistance &&
@@ -97,9 +98,7 @@ export class selectionCell{
         const { x: scrollX, y: scrollY } = this.maincellManager.getCanvasCoordinates(event);
     
         this.clickedCell_headercells = this.maincellManager.getCellFromCoordinates(scrollX, scrollY);
-        console.log(this.clickedCell_headercells);
         if (this.clickedCell_headercells) {
-            console.log("in the else")
             this.deselectCurrentCells();
             this.maincellManager.updateInputElement(this.clickedCell_headercells);
             this.selectCell(this.clickedCell_headercells);
@@ -109,7 +108,7 @@ export class selectionCell{
       }
     
 
-      private selectCell(cell:{column:GridHeaderCell, row:GridHeaderCell} |null) {
+      private selectCell(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.maincellManager.updateInputElement(cell); 
         this.maincellManager.draw(); 
         this.drawHighlight();
@@ -119,7 +118,6 @@ export class selectionCell{
         if (this.selectedCells.length > 0) {
             this.selectedCells = [];
             this.maincellManager.hideInputElement(); // Hide the input element if it's visible
-            console.log("deselect calling draw")
             this.maincellManager.draw(); // Redraw the sheet to remove any highlighting
         }
     }
@@ -139,7 +137,6 @@ export class selectionCell{
 
     drawHighlight() {
         this.maincellManager.draw();
-        console.log("in the draw highlight ")
         const ctx = this.canvases.spreadsheet.getContext("2d")!;
         const { x: scrollX, y: scrollY } =
         this.maincellManager.getScroll();
@@ -147,9 +144,8 @@ export class selectionCell{
         if (this.selectedCells.length === 0) return;
         let width = null;
         let height = null;
-        ctx.strokeStyle = "green"; // Green border
-        ctx.lineWidth = 4;
-    
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_LINE_WIDTH;
         // Get the boundary of the selected area
         const minX = Math.min(...this.selectedCells.map((cell) => cell.column!.x));
         const maxX = Math.max(
@@ -165,7 +161,6 @@ export class selectionCell{
             return cell.row!.y + cell.row!.height;
           })
         );
-        console.log("33333333333333333333333333",this.selectedCells)
 
         // Use a single function to draw on both horizontal and vertical canvases
         this.drawRectangleOnHeaderCanvas(
@@ -176,33 +171,29 @@ export class selectionCell{
         );
 
         // Draw the border around the entire selection area
-        console.log(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY)
-        ctx.fillStyle = "rgb(131,242,143,0.6)";
+        ctx.fillStyle = DEFAULT_HIGHLIGHT_FILL_COLOR;
         ctx.fillRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);
         ctx.strokeRect(minX - scrollX, minY - scrollY, maxX - minX, maxY - minY);
-    
+
     }
 
     private drawRectangleOnHeaderCanvas(type:string, x:number, y:number, width:number = 0, height:number = 0, isHorizontal:boolean) {
       const context =  this.maincellManager.getContexts();
       const ctx = context[type];
-      ctx.strokeStyle = "black"; // Black border
-      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.fillStyle = "rgb(131,242,143,0.3)";
+      ctx.fillStyle = DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR;
       ctx.fillRect(x, y, width, height);
-  
-  
+
       if (isHorizontal) {
         // Draw a solid green line at the bottom
-        ctx.strokeStyle = "green";
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH;
         ctx.moveTo(x, 20);
         ctx.lineTo(x + width, 20);
       } else {
         // Draw a solid green line on the right side
-        ctx.strokeStyle = "green";
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
+        ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH ;
         ctx.moveTo(30, y);
         ctx.lineTo(30, y + height);
       }
