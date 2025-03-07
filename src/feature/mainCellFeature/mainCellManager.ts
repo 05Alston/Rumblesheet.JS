@@ -34,7 +34,6 @@ export class mainCellManager{
 
           const rowNumber = row!.row;
           const columnNumber = column!.col;
-
           // Update SparseMatrix with new value
           this.helper.setCell(rowNumber, columnNumber, value);
       } else {
@@ -47,7 +46,7 @@ export class mainCellManager{
         console.log(event)
           // this.updateCellValue(event.value);
           // this.cellFunctionality.selectedCell = null;
-          // this.sheetRenderer.draw();
+          this.helper.draw();
       }
     }
 
@@ -107,8 +106,8 @@ export class mainCellManager{
     }
 
     public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
-        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(startPoint.x);
-        const verticalHeaderCells = this.helper.getVerticalHeaderCells(startPoint.y); 
+        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(0);
+        const verticalHeaderCells = this.helper.getVerticalHeaderCells(0); 
 
         const left = Math.min(startPoint.x, endPoint.x);
         const right = Math.max(startPoint.x, endPoint.x);
@@ -133,7 +132,6 @@ export class mainCellManager{
             });
           }
         }
-    
         return cells;
     }
 
@@ -141,38 +139,50 @@ export class mainCellManager{
         this.selectionCell.updatePosForScrolling()
     }
 
-    public updateInputElement(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
-        this.input = document.getElementById(
+    public updateInputElement(cell: { column: IGridHeaderCell; row: IGridHeaderCell } | null) {
+      if (!cell || !cell.column || !cell.row) {
+          return;
+      }
+  
+      this.input = document.getElementById(
           `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
-        ) as HTMLInputElement;
-        this.input!.addEventListener('blur', function() {
-          this.style.display = 'none';
-        });
-    
-        // Recalculate input box position
-        const { x: scrollX, y: scrollY } =
-          this.helper.getScroll();
-        const zoomIndex = this.helper.zoomIndex;
-        const inputchange = 2;
-        const node = this.helper.getCell(cell!.row.row,
-          cell!.column.col);
-        const fontSize = node? node.styles.fontSize ?? 14 : 14;
-        
-        this.input!.style.position = "absolute";
-        this.input!.style.left = `${cell!.column.x - scrollX +  inputchange}px`;
-        this.input!.style.top = `${cell!.row.y - scrollY +  inputchange}px`;
-        this.input!.style.width = `${cell!.column.width -  inputchange*inputchange}px`;
-        this.input!.style.height = `${cell!.row.height -  inputchange*inputchange}px`;
-        this.input!.style.fontSize = `${fontSize * zoomIndex}px`; // Adjust font size based on scale
-        this.input!.style.textAlign = "center";
-        // input.style.zIndex = 10;
-        this.input!.style.display = "block";
-        this.input!.focus(); // Optionally focus the input
-    
-        // Get the cell value from the sparse matrix and set it in the input box
-        const cellValue = node ? node.value : ""
-        this.input.value = cellValue !== null ? cellValue : ""; // Set the input value
-    }
+      ) as HTMLInputElement;
+  
+      if (!this.input) {
+          console.warn("updateInputElement: input element not found");
+          return;
+      }
+  
+      this.input.addEventListener("blur", function () {
+          this.style.display = "none";
+      });
+  
+      // Recalculate input box position
+      const { x: scrollX, y: scrollY } = this.helper.getScroll();
+      const zoomIndex = this.helper.zoomIndex;
+      const inputchange = 2;
+      
+      const node = this.helper.getCell(cell.row.row, cell.column.col);
+      const fontSize = node?.styles?.fontSize ?? 14;
+  
+      // Ensure input element exists before modifying styles
+      Object.assign(this.input.style, {
+          position: "absolute",
+          left: `${cell.column.x - scrollX + inputchange}px`,
+          top: `${cell.row.y - scrollY + inputchange}px`,
+          width: `${cell.column.width - inputchange * inputchange}px`,
+          height: `${cell.row.height - inputchange * inputchange}px`,
+          fontSize: `${fontSize * zoomIndex}px`,
+          textAlign: "center",
+          display: "block",
+      });
+  
+      this.input.focus();
+  
+      // Get the cell value from the sparse matrix and set it in the input box
+      this.input.value = node?.value ?? "";
+  }
+  
 
     hideInputElement() {
         const input =document.getElementById(

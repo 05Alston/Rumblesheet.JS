@@ -1,7 +1,7 @@
 import { Sheet } from "../excel.js";
 import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
-import { SheetRendrer } from "./sheetRendrer.js";
+import { SheetRendrer } from "./sheetrendrer.js";
 import {  GridHeaderManager } from "./GridManager.js";
 import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
@@ -236,11 +236,15 @@ export class Helper {
       direction === "horizontal"
         ? this.scroll.maxScrollX
         : this.scroll.maxScrollY;
+      
+    // Get the relevant dimension based on direction
+    const clientSize =
+    direction === "horizontal"
+        ? scrollElement.clientWidth
+        : scrollElement.clientHeight;
 
     // Calculate and return the scroll ratio
-    return (
-      scrollElement.clientHeight / (scrollElement.clientHeight + maxScroll)
-    );
+    return clientSize / (clientSize + maxScroll);
   }
 
   public getScroll(): { x: number; y: number } {
@@ -318,8 +322,6 @@ export class Helper {
   }
 
   public setCell(rowNumber:number, columnNumber:number, value:string | null){
-    if (value){
     this.SparseMatrix.setCell(rowNumber, columnNumber, value)
-    }
   }
 }
