@@ -36,7 +36,7 @@ export class selectionCell{
         this.handleCellClick(event);
     
         if (!this.isDragging) {
-            this.selectedCells = []; 
+            this.selectedCells = [];
             this.isDragging = true;
             this.isScrolling = true; 
             this.updateSelectedCells(this.startPoint);
@@ -100,10 +100,10 @@ export class selectionCell{
         this.clickedCell_headercells = this.maincellManager.getCellFromCoordinates(scrollX, scrollY);
         if (this.clickedCell_headercells) {
             this.deselectCurrentCells();
-            this.maincellManager.updateInputElement(this.clickedCell_headercells);
+            // this.maincellManager.updateInputElement(this.clickedCell_headercells);
             this.selectCell(this.clickedCell_headercells);
             this.updateSelectedCells(this.startPoint);
-            this.drawHighlight();
+            // this.drawHighlight();
         }
       }
     
@@ -111,7 +111,7 @@ export class selectionCell{
       private selectCell(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.maincellManager.updateInputElement(cell); 
         this.maincellManager.draw(); 
-        this.drawHighlight();
+        // this.drawHighlight();
       }
 
       public deselectCurrentCells() {

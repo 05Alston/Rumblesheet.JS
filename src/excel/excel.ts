@@ -261,8 +261,8 @@ export class Sheet {
         const verticalScroll = this.createScrollbar('vertical');
         const horizontalScroll = this.createScrollbar('horizontal');
 
-        const inputEle = document.createElement('input');
-        inputEle.setAttribute('type', 'text');
+        const inputEle = document.createElement('div');
+        inputEle.setAttribute('contenteditable', 'true');
         inputEle.id = `input_${this.row}_${this.col}_${this.index}`;
         inputEle.className = 'input';
 

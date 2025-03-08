@@ -21,6 +21,8 @@ export const DEFAULT_CELL_FONT_COLOR = "#000000";
 export const DEFAULT_FONT_FAMILTY = EFontFamilies.arial;
 export const DEFAULT_CELL_BG_COLOR = "#ffffff";
 export const DEFAULT_CELL_INDENT = 0;
+export const DEFAULT_CELL_WIDTH = 100;
+export const DEFAULT_CELL_HEIGHT = 30;
 
 
 export const DEFAULT_CELL_STYLES: ICellStyles = {

@@ -1,3 +1,4 @@
+import { DEFAULT_CELL_HEIGHT, DEFAULT_CELL_WIDTH } from "../../dataStructure/constants.js";
 import { Helper } from "./helper";
 
 class GridHeaderCell {
@@ -43,8 +44,8 @@ export class GridHeaderManager {
     private totalCol: number;
     private initialLoadCount: number = 20;
     private loadIncrement: number = 40;
-    private baseCellWidth: number = 120;
-    private baseCellHeight: number = 40;
+    private baseCellWidth: number = DEFAULT_CELL_WIDTH;
+    private baseCellHeight: number = DEFAULT_CELL_HEIGHT;
     private minimumCellWidHei: number = 2;
     private minZoom: number;
     private maxZoom: number;
