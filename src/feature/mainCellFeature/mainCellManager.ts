@@ -191,6 +191,7 @@ export class mainCellManager {
       display: "block",
     });
     this.input.innerText = node?.value ?? ""; // Set the input value
+    this.input.focus()
   }
 
   hideInputElement() {
