@@ -2,14 +2,14 @@ import { Excel, Sheet } from "../excel/excel.js";
 import { Ribbon } from "../ribbon/ribbon.js";
 import { ThemeManager } from "../theme/theme.js";
 import { EventManager } from "./eventManager.js";
-import { plug } from "../plugin/plugin.js";
+import { Plugin } from "../plugin/plugin.js";
 
 
 export class excelsHandler {
     mainContainer: HTMLElement;
     maxRow: number;
     maxCol: number;
-    selectedDiv: HTMLElement | null;
+    selectedExcel: HTMLElement | null;
     currentRowCount: number;
     rowArr: Excel[][];
     currExcelRow?: number;
@@ -18,14 +18,14 @@ export class excelsHandler {
         name: string;
         instance: Sheet;
     };
-    themes!: ThemeManager;
-    plug!:plug;
+    themeManager!: ThemeManager;
+    plugin!: Plugin;
 
     constructor(mainContainer: HTMLElement, maxRow: number, maxCol: number) {
         this.mainContainer = mainContainer;
         this.maxRow = maxRow;
         this.maxCol = maxCol;
-        this.selectedDiv = null;
+        this.selectedExcel = null;
         this.currentRowCount = 0;
         this.rowArr = [];
         this.init();
@@ -34,16 +34,16 @@ export class excelsHandler {
     private init(): void {
         this.mainContainer.style.display = 'flex';
         this.mainContainer.style.flexDirection = 'column';
-        this.themes = new ThemeManager();
-        this.themes.updateTheme("violet");
+        this.themeManager = new ThemeManager();
+        this.plugin = new Plugin(this);
+ 
+        this.themeManager.updateTheme("violet");
         this.addNewRow();
-        this.handleClick = this.handleClick.bind(this);
+        this.handleResize();
         this.setupEventListeners();
-        this.plug = new plug(this);
     }
 
     private setupEventListeners(): void {
-        const form = document.querySelector('form');
         const addNewRowButton = document.querySelector('.add-new-row');
         const addNewColButton = document.querySelector('.add-new-col');
         const deleteExcelButton = document.querySelector('.delete-excel');
@@ -61,19 +61,20 @@ export class excelsHandler {
             }
         });
 
-        this.mainContainer.addEventListener('click', this.handleClick);
+        this.mainContainer.addEventListener('click', (e) => this.handleClick(e));
     }
 
     private handleClick(event: MouseEvent): void {
-        if (this.selectedDiv) {
-            this.selectedDiv.style.border = '1px solid black';
+        // Remove border from previously selected excel
+        if (this.selectedExcel) {
+            this.selectedExcel.style.border = '1px solid black';
         }
 
         const targetDiv = (event.target as HTMLElement).closest('div[aria-rowindex][aria-colindex]') as HTMLElement;
 
         if (targetDiv) {
             targetDiv.style.border = '1px solid red';
-            this.selectedDiv = targetDiv;
+            this.selectedExcel = targetDiv;
         }
     }
 

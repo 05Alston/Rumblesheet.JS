@@ -176,7 +176,7 @@ export class EventManager {
     if (uploadButton) {
       uploadButton.addEventListener(
         "click",
-        this.excelsHandler.plug.handleFileUpload.bind(this.excelsHandler.plug)
+        this.excelsHandler.plugin.handleFileUpload.bind(this.excelsHandler.plugin)
       );
     } else {
       console.error("Upload button not found.");

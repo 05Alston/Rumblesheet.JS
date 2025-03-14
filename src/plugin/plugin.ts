@@ -1,6 +1,6 @@
 import { FileUploader } from "./file/filehandler.js";
 import { excelsHandler } from '../core/initiater.js';
-export class plug {
+export class Plugin {
     excelsHandler:excelsHandler;
     currSheetObj: any;
     FileUploader: FileUploader;
