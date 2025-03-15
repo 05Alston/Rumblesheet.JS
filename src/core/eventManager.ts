@@ -1,6 +1,11 @@
 import { Ribbon } from "../ribbon/ribbon.js";
 import { excelsHandler } from "./initiater.js";
-import { ETextAlign, ribbonDataActions } from "../dataStructure/interfaces.js";
+import {
+  EFontFamilies,
+  ETextAlign,
+  ETextBaseLine,
+  ribbonDataActions,
+} from "../dataStructure/interfaces.js";
 import {
   activePossibleActions,
   alignmentActions,
@@ -11,6 +16,7 @@ import {
   INDENT_VALUE_CHANGE_VALUE,
   indentActions,
   instantActions,
+  textBaseLineActions,
 } from "../dataStructure/constants.js";
 
 // eventManager.ts
@@ -224,6 +230,10 @@ export class EventManager {
       this.handleGroupRibbonActions(alignmentActions, ele);
       this.updateCellFormatting(action, true);
     }
+    else if(textBaseLineActions.includes(action)){
+      this.handleGroupRibbonActions(textBaseLineActions,ele);
+      this.updateCellFormatting(action,true)
+    }
     // Handling indent actions
     else if (indentActions.includes(action)) {
       this.handleGroupRibbonActions(indentActions, ele);
@@ -285,6 +295,16 @@ export class EventManager {
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) -
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
+            case ribbonDataActions.textBaselineTop:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.top;
+              console.log("done")
+              break;
+            case ribbonDataActions.textBaselineMiddle:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.middle;
+              break;
+            case ribbonDataActions.textBaselineBottom:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.bottom;
+              break;
             case ribbonDataActions.cut:
               //todo - to be handled
               break;
@@ -295,7 +315,7 @@ export class EventManager {
               //todo - to be handled
               break;
             case ribbonDataActions.fontFamily:
-              cellDetails.cell.styles.fontFamily = newValue;
+              cellDetails.cell.styles.fontFamily = newValue as EFontFamilies;
               break;
             case ribbonDataActions.fontSize:
               cellDetails.cell.styles.fontSize = parseInt(newValue);
@@ -308,11 +328,17 @@ export class EventManager {
               break;
             case ribbonDataActions.increaseIndent:
               //todo - handle properly after resize is implemented
-              cellDetails.cell.styles.textIndent  = (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) + INDENT_VALUE_CHANGE_VALUE;
-            break;
+              cellDetails.cell.styles.textIndent =
+                (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) +
+                INDENT_VALUE_CHANGE_VALUE;
+              break;
             case ribbonDataActions.decreaseIndent:
-              cellDetails.cell.styles.textIndent  = Math.max(0,(cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) - INDENT_VALUE_CHANGE_VALUE);
-            break;
+              cellDetails.cell.styles.textIndent = Math.max(
+                0,
+                (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) -
+                  INDENT_VALUE_CHANGE_VALUE
+              );
+              break;
             default:
               console.log("other button clicked");
               break;
@@ -338,5 +364,4 @@ export class EventManager {
       this.updateCellFormatting(action, true, ele.value);
     }
   }
-
 }
