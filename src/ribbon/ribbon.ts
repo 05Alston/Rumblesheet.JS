@@ -224,6 +224,20 @@ export class Ribbon {
                         <div class="icon icon-increase-indent"></div>
                         <p class="icon-name">Increase Indent</p>
                       </div>
+                      <div class="row">
+                      <div class="feature-icon" role="button" tabindex="0"  data-action = '${ribbonDataActions.textBaselineTop}' >
+                        <div class="icon icon-text-baseline-top"></div>
+                        <p class="icon-name">Align Top</p>
+                      </div>
+                      <div class="feature-icon" role="button" tabindex="0"  data-action = '${ribbonDataActions.textBaselineMiddle}'>
+                        <div class="icon icon-text-baseline-middle"></div>
+                        <p class="icon-name">Align Middle</p>
+                      </div>
+                      <div class="feature-icon" role="button" tabindex="0"  data-action = '${ribbonDataActions.textBaselineBottom}' >
+                        <div class="icon icon-text-baseline-bottom"></div>
+                        <p class="icon-name">Align Bottom</p>
+                      </div>
+                    </div>
                     </div>
                   </div>
                   <div class="name">Alignment</div>
