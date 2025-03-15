@@ -123,8 +123,8 @@ export class mainCellManager {
   }
 
     public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
-        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(startPoint.x);
-        const verticalHeaderCells = this.helper.getVerticalHeaderCells(startPoint.y); 
+        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(0);
+        const verticalHeaderCells = this.helper.getVerticalHeaderCells(0); 
 
     const left = Math.min(startPoint.x, endPoint.x);
     const right = Math.max(startPoint.x, endPoint.x);

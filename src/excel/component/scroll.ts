@@ -1,5 +1,5 @@
 import { Helper } from "./helper.js";
-import { SheetRendrer } from "./sheetRendrer.js";
+import { SheetRendrer } from "./sheetrendrer.js";
 export class Scroll {
     scrollX = 0;
     scrollY = 0;

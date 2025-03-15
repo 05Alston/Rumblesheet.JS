@@ -86,6 +86,7 @@ export class GridHeaderManager {
 
     public generateNewCells(): void {
         const cellWidth = Math.max(this.minimumCellWidHei, this.baseCellWidth * this.zoomIndex);
+        console.log("this is the calc of cell Width",cellWidth,this.baseCellWidth,this.zoomIndex);
         const cellHeight = Math.max(this.minimumCellWidHei, this.baseCellHeight * this.zoomIndex);
         this._updateHeaderCells('horizontal', cellWidth);
         this._updateHeaderCells('vertical', cellHeight);
@@ -172,11 +173,15 @@ export class GridHeaderManager {
     }   
 
     public getHeaderCellsHorizontal(scrollX: number): GridHeaderCell[] {
-        return this._getVisibleHeaderCells('horizontal', scrollX, this.viewportWidth);
+        return this.headerCellsHorizontal;
     }
 
     public getHeaderCellsVertical(scrollY: number): GridHeaderCell[] {
-        return this._getVisibleHeaderCells('vertical', scrollY, this.viewportHeight);
+        return this.headerCellsVertical;
+    }
+
+    public getHeaderCells(){
+        return [this.headerCellsHorizontal, this.headerCellsVertical];
     }
 
     public loadMoreContent(direction: 'vertical' | 'horizontal'): boolean {
@@ -221,9 +226,11 @@ export class GridHeaderManager {
         const total = isVertical ? this.totalRow : this.totalCol;
         const loaded = isVertical ? this.helper.loadedRows : this.helper.loadedCols;
         const visible = this.calculateVisibleCells()[isVertical ? 'rows' : 'cols'];
+        console.log(visible,total);
     
         const isInfinite = isVertical ? this.isInfiniteRow : this.isInfiniteCol;
         const isOppositeInfinite = isVertical ? this.isInfiniteCol : this.isInfiniteRow;
+        console.log(isInfinite,isOppositeInfinite)
     
         if (isInfinite) {
             // Infinite scrolling for this direction
@@ -291,6 +298,10 @@ export class GridHeaderManager {
     }
 
     public getTotalContainerWidth(): number {
+        console.log("This is the total Width of the container",this.headerCellsHorizontal.slice(0, this.helper.loadedCols).reduce(
+            (totalWidth, cell) => totalWidth + (this.customColumnWidths.get(cell.col - 1) || cell.width),
+            0
+        ))
         return this.headerCellsHorizontal.slice(0, this.helper.loadedCols).reduce(
             (totalWidth, cell) => totalWidth + (this.customColumnWidths.get(cell.col - 1) || cell.width),
             0
