@@ -1,0 +1,96 @@
+/* icons  */
+  
+.icon-name {
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--gray);
+  padding: 0px;
+  margin: 0px;
+}
+
+.icon {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  height: 20px;
+  width: 20px; /*overwrite height width if needed */
+}
+
+.icon-down {
+  background-image: url("../icons/down.svg");
+  height: 18px;
+  width: 18px;
+}
+
+.icon-paste {
+  background-image: url("../icons/paste.svg");
+  height: 34px;
+  width: 34px;
+}
+
+.icon-paste-20 {
+  background-image: url("../icons/paste.svg");
+}
+
+.icon-copy {
+  background-image: url("../icons/copy.svg");
+}
+
+.icon-cut {
+  background-image: url("../icons/cut.svg");
+}
+
+.icon-bold {
+  background-image: url("../icons//bold.svg");
+}
+
+.icon-italic {
+  background-image: url("../icons//italic.svg");
+}
+
+.icon-underline {
+  background-image: url("../icons//underline.svg");
+}
+
+.icon-fill {
+  background-image: url("../icons//fill.svg");
+}
+.icon-A {
+  background-image: url("../icons//A.svg");
+}
+
+.icon-align-left {
+  background-image: url("../icons//align-left.svg");
+}
+.icon-align-right {
+  background-image: url("../icons//align-right.svg");
+}
+.icon-align-center {
+  background-image: url("../icons//align-center.svg");
+}
+.icon-increase-indent {
+  background-image: url("../icons//increase-indent.svg");
+}
+.icon-decrease-indent {
+  background-image: url("../icons//decrease-indent.svg");
+}
+
+.icon-text-baseline-top {
+  background-image: url("../icons//text-baseline-top.svg");
+}
+.icon-text-baseline-middle {
+  background-image: url("../icons//text-baseline-middle.svg");
+}
+.icon-text-baseline-bottom {
+  background-image: url("../icons//text-baseline-bottom.svg");
+}
+
+.icon-font-size-decrease {
+  background-image: url("../icons//font-size-decrease.svg");
+}
+.icon-font-size-increase {
+  background-image: url("../icons//font-size-increase.svg");
+}
+.icon-fx {
+  background-image: url("../icons//fx.svg");
+}

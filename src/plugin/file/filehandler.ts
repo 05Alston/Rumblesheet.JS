@@ -1,11 +1,11 @@
-import { plug } from "../plugin";
+import { Plugin } from "../plugin";
 
 // fileUploader.ts
 export class FileUploader {
-  private plug: plug;
+  private plugin: Plugin;
 
-  constructor(plug: plug) {
-    this.plug = plug;
+  constructor(plugin: Plugin) {
+    this.plugin = plugin;
   }
 
   /**
