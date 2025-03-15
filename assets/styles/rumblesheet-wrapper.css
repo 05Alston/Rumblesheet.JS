@@ -1,0 +1,161 @@
+.excelWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.excelWrapper .topSection {
+  display: flex;
+  height: 20px;
+}
+.excelWrapper .topSection .nothing {
+  box-shadow: 1px 1px solid gray;
+  width: 30px;
+}
+.excelWrapper .topSection .upperCanvas {
+  flex: 1;
+  position: relative;
+}
+.excelWrapper .topSection .horizontalCanvas {
+  width: calc(100% - 10px);
+  height: 100%;
+}
+.excelWrapper .middleSection {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+.excelWrapper .verticalCanvas {
+  width: 30px;
+  position: relative;
+}
+.excelWrapper .verticalCanvas canvas {
+  width: 100%;
+  height: 100%;
+  background-color: var(--excelHorizontalCanvasBgColor);
+}
+.excelWrapper .fullCanvas {
+  flex: 1;
+  position: relative;
+}
+.excelWrapper .fullCanvas .spreadsheetCanvas {
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+}
+.excelWrapper .fullCanvas .verticalScroll,
+.excelWrapper .fullCanvas .horizontalScroll {
+  position: absolute;
+  background: var(--scrollbarTrackColor);
+}
+.excelWrapper .fullCanvas .verticalScroll {
+  right: 0;
+  top: 0;
+  width: 10px;
+  height: calc(100% - 10px);
+}
+.excelWrapper .fullCanvas .horizontalScroll {
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 10px);
+  height: 10px;
+}
+.excelWrapper .fullCanvas .verticalBar,
+.excelWrapper .fullCanvas .horizontalBar {
+  position: absolute;
+  background: var(--scrollbarThumbColor);
+  border-radius: 5px;
+}
+.excelWrapper .fullCanvas .verticalBar {
+  width: 100%;
+  height: 50%;
+  top: 0;
+}
+.excelWrapper .fullCanvas .horizontalBar {
+  height: 100%;
+  width: 50%;
+  left: 0;
+}
+
+.contentArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* sheetbar */
+.excelWrapper .sheet-bar {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  background-color: var(--footerBgColor);
+  border-top: 1px solid #e0e0e0;
+}
+.excelWrapper .sheet-bar .sheet-controls {
+  display: flex;
+  align-items: center;
+  width: 30px;
+  box-sizing: border-box;
+}
+.excelWrapper .sheet-bar .sheet-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  padding: 2px 5px;
+  background-color: var(--footerAddBtnBgColor);
+  color: var(--footerAddBtnTextColor);
+}
+.excelWrapper .sheet-bar .sheet-controls button:hover {
+  background-color: #e0e0e0;
+}
+.excelWrapper .sheet-bar .sheet-tabs {
+  display: flex;
+  overflow-x: auto;
+  flex-grow: 1;
+}
+.excelWrapper .sheet-bar .sheet-tabs .sheet-tab {
+  padding: 3px 15px;
+  background-color: var(--footerSheetBtnBgColor);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  font-size: small;
+  color: var(--footerSheetBtnTextColor);
+}
+.excelWrapper .sheet-bar .sheet-tabs .sheet-tab .close-tab {
+  position: absolute;
+  right: -5px;
+  top: 5px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+.excelWrapper .sheet-bar .sheet-tabs .sheet-tab.active {
+  background-color: #fff;
+  border-bottom: 2px solid #1a73e8;
+}
+.excelWrapper .sheet-bar .sheet-tabs .sheet-tab:hover {
+  background-color: #e0e0e0;
+}
+.excelWrapper .sheet-bar .sheet-scroll {
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+.excelWrapper .sheet-bar .sheet-scroll button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 5px;
+  color: #5f6368;
+}
+.excelWrapper .sheet-bar .sheet-scroll button:hover {
+  background-color: #e0e0e0;
+}
