@@ -20,16 +20,17 @@ export interface ICell {
 }
 
 export interface ICellStyles {
-  textAlign?: string;
-  textBaseline?: string;
+  textAlign?: ETextAlign;
+  textBaseline?: ETextBaseLine;
   fontSize?: number;
-  fontFamily?: string;
+  fontFamily?: EFontFamilies;
   color?: string;
   fill?: string;
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
   textIndent?: number;
+  textWrapping? : ETextWrapping;
 }
 
 export interface IThemeStructure {
@@ -99,6 +100,11 @@ export enum ETextBaseLine{
 
 }
 
+export enum ETextWrapping{
+  wrap = 'wrap',
+  clip = 'clip'
+}
+
 export enum ribbonDataActions {
   paste = "paste",
   cut = "cut",
@@ -116,5 +122,8 @@ export enum ribbonDataActions {
   decreaseIndent = "decreaseIndent",
   increaseIndent = "increaseIndent",
   fontSize = "fontSize",
-  fontFamily = "fontFamily"
+  fontFamily = "fontFamily",
+  textBaselineTop = 'textBaselineTop',
+  textBaselineMiddle = 'textBaselineMiddle',
+  textBaselineBottom = 'textBaselineBottom'
 }

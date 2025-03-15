@@ -1041,6 +1041,16 @@ table#search-results th {
   .icon-decrease-indent {
     background-image: url("../icons//decrease-indent.svg");
   }
+
+  .icon-text-baseline-top {
+    background-image: url("../icons//text-baseline-top.svg");
+  }
+  .icon-text-baseline-middle {
+    background-image: url("../icons//text-baseline-middle.svg");
+  }
+  .icon-text-baseline-bottom {
+    background-image: url("../icons//text-baseline-bottom.svg");
+  }
   
   .icon-font-size-decrease {
     background-image: url("../icons//font-size-decrease.svg");
@@ -1051,6 +1061,7 @@ table#search-results th {
   .icon-fx {
     background-image: url("../icons//fx.svg");
   }
+
   
   /* media queries  */
   
