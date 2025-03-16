@@ -160,6 +160,10 @@ export class mainCellManager {
   public updateInputElement(
     cell: { column: IGridHeaderCell; row: IGridHeaderCell } | null
   ) {
+    if (!cell || !cell.column || !cell.row) {
+      return;
+    } 
+  
     //getting the input element
     this.input = document.getElementById(
       `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
@@ -169,7 +173,7 @@ export class mainCellManager {
     const { x: scrollX, y: scrollY } = this.helper.getScroll();
     const zoomIndex = this.helper.zoomIndex;
     const inputChange = 2;
-    const node = this.helper.getCell(cell!.row.row, cell!.column.col);
+    const node = this.helper.getCell(cell.row.row, cell.column.col);
     const fontSize = node?.styles.fontSize ?? DEFAULT_FONT_SIZE;
     const textAlign = node?.styles.textAlign ?? DEFAULT_CANVAS_TEXT_ALIGN;
     const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
