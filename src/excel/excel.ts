@@ -1,11 +1,11 @@
-import { excelsHandler } from '../core/excelsHandler.js';
+import { ExcelsHandler } from '../core/excelsHandler.js';
 import { Helper } from './component/helper.js';
 
 export class Excel {
     private rowContainer: HTMLElement;
     private row: number;
     private col: number;
-    private excelHandler: excelsHandler;  // Replace with the actual type for Grid_maker
+    private excelHandler: ExcelsHandler;  // Replace with the actual type for Grid_maker
     private currExcelRow!: number;
     private currExcelCol!: number;
     private currSheetObj!: Sheet;  // Replace with the actual type for Sheet instance
@@ -16,7 +16,7 @@ export class Excel {
     private sheets!: { name: string; instance: Sheet }[];
     element: any;
 
-    constructor(rowContainer: HTMLElement, row: number, col: number, excelHandler: excelsHandler) {
+    constructor(rowContainer: HTMLElement, row: number, col: number, excelHandler: ExcelsHandler) {
         this.rowContainer = rowContainer;
         this.row = row;
         this.col = col;

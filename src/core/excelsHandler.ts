@@ -3,7 +3,7 @@ import { Excel, Sheet } from "../excel/excel.js";
 import { Plugin } from "../plugin/plugin.js";
 import { ThemeManager } from "../theme/theme.js";
 
-export class excelsHandler {
+export class ExcelsHandler {
     mainContainer: HTMLElement;
     maxExcelRow: number;
     maxExcelCol: number;
