@@ -8,9 +8,10 @@ export class RibbonFunctionalities {
   private scrollLeftBtn!: HTMLElement | null;
   private scrollRightBtn!: HTMLElement | null;
   private focusContent!: HTMLElement | null;
-  private rumbleSheetBody!: HTMLElement | null;
+  private rumblesheetElement!: HTMLElement;
 
-  constructor() {
+  constructor(rumblesheetElement: HTMLElement) {
+    this.rumblesheetElement = rumblesheetElement;
     this.initializeElements();
     this.updateRibbonScrollBtnsVisible();
   }
@@ -25,7 +26,6 @@ export class RibbonFunctionalities {
     this.scrollLeftBtn = document.querySelector(".scroll-left");
     this.scrollRightBtn = document.querySelector(".scroll-right");
     this.focusContent = document.querySelector(".focus-content");
-    this.rumbleSheetBody = document.querySelector(".rumble-sheet");
   }
 
   public toggleTabForTarget(target: HTMLElement): void {
@@ -63,7 +63,7 @@ export class RibbonFunctionalities {
       ".feature-box"
     ) as HTMLElement;
 
-    if (!this.ribbon || !this.focusZone || !this.rumbleSheetBody) return;
+    if (!this.ribbon || !this.focusZone || !this.rumblesheetElement) return;
 
     const ribbonRect = this.ribbon.getBoundingClientRect();
     const offset = 5;
@@ -81,25 +81,25 @@ export class RibbonFunctionalities {
 
     if (
       correspondingMenuBox.offsetWidth + relativeX >=
-      this.rumbleSheetBody.clientWidth
+      this.rumblesheetElement.clientWidth
     ) {
       adjustedX =
         relativeX -
         (correspondingMenuBox.offsetWidth +
           relativeX -
-          this.rumbleSheetBody.clientWidth) -
+          this.rumblesheetElement.clientWidth) -
         fromRightBottomOffset;
     }
 
     if (
       correspondingMenuBox.offsetHeight + relativeY >=
-      this.rumbleSheetBody.clientHeight
+      this.rumblesheetElement.clientHeight
     ) {
       adjustedY =
         relativeY -
         (correspondingMenuBox.offsetHeight +
           relativeY -
-          this.rumbleSheetBody.clientHeight) -
+          this.rumblesheetElement.clientHeight) -
         fromRightBottomOffset;
     }
 

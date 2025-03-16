@@ -1,5 +1,5 @@
 import { Ribbon } from "../ribbon/ribbon.js";
-import { excelsHandler } from "./initiater.js";
+import { excelsHandler } from "./excelsHandler.js";
 import {
   EFontFamilies,
   ETextAlign,
@@ -36,11 +36,12 @@ export class EventManager {
   private scrollLeftBtn!: HTMLElement | null;
   private scrollRightBtn!: HTMLElement | null;
   private focusContent!: HTMLElement | null;
-  private rumbleSheetBody!: HTMLElement | null;
+  private rumblesheetElement!: HTMLElement;
 
-  constructor(excelsHandler: excelsHandler, ribbon: Ribbon) {
+  constructor(excelsHandler: excelsHandler, ribbon: Ribbon, rumblesheetElement: HTMLElement) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
+    this.rumblesheetElement = rumblesheetElement;
     this.initializeElement();
     this.attachEvents();
   }
@@ -60,7 +61,6 @@ export class EventManager {
     this.scrollLeftBtn = document.querySelector(".scroll-left");
     this.scrollRightBtn = document.querySelector(".scroll-right");
     this.focusContent = document.querySelector(".focus-content");
-    this.rumbleSheetBody = document.querySelector(".rumble-sheet");
   }
 
   private attachEvents() {

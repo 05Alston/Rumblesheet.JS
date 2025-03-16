@@ -32,8 +32,7 @@ export class excelsHandler {
     }
 
     private init(): void {
-        this.mainContainer.style.display = 'flex';
-        this.mainContainer.style.flexDirection = 'column';
+
         this.themeManager = new ThemeManager();
         this.plugin = new Plugin(this);
  
@@ -255,27 +254,3 @@ export class excelsHandler {
         this.mainContainer.addEventListener('mousedown', startResize);
     }
 }
-
-
-function init(ribbonContainer: HTMLElement, mainContainer: HTMLElement): void {
-    // Create instances of RibbonMaker and GridMaker
-    const maxRow = 3;
-    const maxCol = 3;
-    const ribbon = new Ribbon(ribbonContainer);
-    const excelHandler = new excelsHandler(mainContainer, maxRow, maxCol);
-    const eventManager = new EventManager(excelHandler,ribbon);
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Get HTML elements from the DOM
-    const ribbonContainer = document.getElementById("ribbon");
-    const mainContainer = document.getElementById("mainContainer");
-
-    // Check if elements exist and initialize
-    if (ribbonContainer instanceof HTMLElement && mainContainer instanceof HTMLElement) {
-        init(ribbonContainer, mainContainer);
-    } else {
-        console.error("Ribbon container or main container not found in the DOM.");
-    }
-});

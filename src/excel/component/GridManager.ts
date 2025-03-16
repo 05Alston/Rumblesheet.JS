@@ -1,5 +1,5 @@
 import { DEFAULT_CELL_HEIGHT, DEFAULT_CELL_WIDTH } from "../../dataStructure/constants.js";
-import { Helper } from "./helper";
+import { Helper } from "./helper.js";
 
 class GridHeaderCell {
     x: number;
