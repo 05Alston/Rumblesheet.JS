@@ -1,4 +1,4 @@
-import { excelsHandler } from '../core/initiater.js';
+import { excelsHandler } from '../core/excelsHandler.js';
 import { Helper } from './component/helper.js';
 
 export class Excel {

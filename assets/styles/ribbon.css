@@ -466,12 +466,7 @@ option {
   padding-left: 30px;
 }
 
-body .rumble-sheet .mainContainer {
-  flex: 1;
-}
-
 /* media queries  */
-
 @media (max-width: 1024px) {
   .ribbon .focus-zone.expanded .focus-content .focus-tab .tab-section .box-6 {
     display: none;

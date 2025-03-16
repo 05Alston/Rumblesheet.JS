@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Excellence</title>
-    <link rel="stylesheet" href="assets\styles\style.css" />
+    <title>Rumblesheet.JS</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/styles/style.css" />
     <link rel="stylesheet" href="assets/styles/variables.css" />
     <link rel="stylesheet" href="assets/styles/ribbon.css" />
     <link rel="stylesheet" href="assets/styles/icons.css" />
@@ -13,11 +15,11 @@
   </head>
 
   <body>
-    <div class="rumble-sheet">
-      <div id="ribbon" class="ribbon"></div>
-      <div class="mainContainer" id="mainContainer"></div>
-    </div>
+    <div id="rumblesheet" class="rumblesheet"></div>
 
-    <script type="module" src="dist/core/initiater.js"></script>
+    <script type="module">
+      import { Rumblesheet } from "./dist/core/rumblesheet.js";
+      new Rumblesheet("rumblesheet");
+    </script>
   </body>
 </html>
