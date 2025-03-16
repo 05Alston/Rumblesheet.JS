@@ -1,7 +1,7 @@
 import { Sheet } from "../excel.js";
 import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
-import { SheetRendrer } from "./sheetrendrer.js";
+import { SheetRendrer } from "./sheetRendrer.js";
 import {  GridHeaderManager } from "./GridManager.js";
 import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
