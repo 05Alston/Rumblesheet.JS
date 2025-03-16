@@ -26,7 +26,7 @@ export class Rumblesheet {
 
     const mainContainer = document.createElement("div");
     mainContainer.id = "mainContainer";
-    mainContainer.className = "main-container";
+    mainContainer.className = "mainContainer";
 
     // Append them to the container
     this.container.appendChild(ribbonContainer);

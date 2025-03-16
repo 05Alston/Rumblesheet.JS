@@ -18,12 +18,8 @@
     <div id="rumblesheet" class="rumblesheet"></div>
 
     <script type="module">
-      try {
-        const { Rumblesheet } = await import("./dist/core/rumblesheet.js");
-        new Rumblesheet("rumblesheet");
-      } catch (error) {
-        console.error("Failed to load Rumblesheet:", error);
-      }
+      import { Rumblesheet } from "./dist/core/rumblesheet.js";
+      new Rumblesheet("rumblesheet");
     </script>
   </body>
 </html>
