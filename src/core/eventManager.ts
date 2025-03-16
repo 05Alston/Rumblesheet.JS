@@ -1,5 +1,5 @@
 import { Ribbon } from "../ribbon/ribbon.js";
-import { excelsHandler } from "./excelsHandler.js";
+import { ExcelsHandler } from "./excelsHandler.js";
 import {
   EFontFamilies,
   ETextAlign,
@@ -21,7 +21,7 @@ import {
 
 // eventManager.ts
 export class EventManager {
-  excelsHandler: excelsHandler;
+  excelsHandler: ExcelsHandler;
   ribbon: Ribbon;
 
   //*Element Declarations
@@ -38,7 +38,7 @@ export class EventManager {
   private focusContent!: HTMLElement | null;
   private rumblesheetElement!: HTMLElement;
 
-  constructor(excelsHandler: excelsHandler, ribbon: Ribbon, rumblesheetElement: HTMLElement) {
+  constructor(excelsHandler: ExcelsHandler, ribbon: Ribbon, rumblesheetElement: HTMLElement) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
     this.rumblesheetElement = rumblesheetElement;

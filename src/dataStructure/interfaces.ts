@@ -1,3 +1,10 @@
+import { Sheet } from "../excel/excel";
+
+export interface ISheetObj {
+  name: string;
+  instance: Sheet;
+}
+
 export interface IGridHeaderCell {
   x: number;
   y: number;

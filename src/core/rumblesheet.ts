@@ -1,9 +1,12 @@
 import { Ribbon } from "../ribbon/ribbon.js";
 import { EventManager } from "./eventManager.js";
-import { excelsHandler } from "./excelsHandler.js";
+import { ExcelsHandler } from "./excelsHandler.js";
 
 export class Rumblesheet {
   container!: HTMLElement;
+  ribbon!: Ribbon;
+  excelHandler!: ExcelsHandler;
+  eventManager!: EventManager;
 
   constructor(containerId: string) {
     document.addEventListener("DOMContentLoaded", () => {
@@ -35,8 +38,12 @@ export class Rumblesheet {
     // Initialize instances
     const maxRow = 3;
     const maxCol = 3;
-    const ribbon = new Ribbon(ribbonContainer, this.container);
-    const excelHandler = new excelsHandler(mainContainer, maxRow, maxCol);
-    new EventManager(excelHandler, ribbon, this.container);
+    this.ribbon = new Ribbon(ribbonContainer, this.container);
+    this.excelHandler = new ExcelsHandler(mainContainer, maxRow, maxCol);
+    this.eventManager = new EventManager(
+      this.excelHandler,
+      this.ribbon,
+      this.container
+    );
   }
 }

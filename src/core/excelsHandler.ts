@@ -1,33 +1,28 @@
+import { ISheetObj } from "../dataStructure/interfaces.js";
 import { Excel, Sheet } from "../excel/excel.js";
-import { Ribbon } from "../ribbon/ribbon.js";
-import { ThemeManager } from "../theme/theme.js";
-import { EventManager } from "./eventManager.js";
 import { Plugin } from "../plugin/plugin.js";
+import { ThemeManager } from "../theme/theme.js";
 
-
-export class excelsHandler {
+export class ExcelsHandler {
     mainContainer: HTMLElement;
-    maxRow: number;
-    maxCol: number;
+    maxExcelRow: number;
+    maxExcelCol: number;
     selectedExcel: HTMLElement | null;
-    currentRowCount: number;
-    rowArr: Excel[][];
+    totalExcelRows: number;
+    excelsRowArr: Excel[][];
     currExcelRow?: number;
     currExcelCol?: number;
-    currSheetObj?: {
-        name: string;
-        instance: Sheet;
-    };
+    currSheetObj?: ISheetObj
     themeManager!: ThemeManager;
     plugin!: Plugin;
 
-    constructor(mainContainer: HTMLElement, maxRow: number, maxCol: number) {
+    constructor(mainContainer: HTMLElement, maxExcelRow: number, maxExcelCol: number) {
         this.mainContainer = mainContainer;
-        this.maxRow = maxRow;
-        this.maxCol = maxCol;
+        this.maxExcelRow = maxExcelRow;
+        this.maxExcelCol = maxExcelCol;
         this.selectedExcel = null;
-        this.currentRowCount = 0;
-        this.rowArr = [];
+        this.totalExcelRows = 0;
+        this.excelsRowArr = [];
         this.init();
     }
 
@@ -37,20 +32,20 @@ export class excelsHandler {
         this.plugin = new Plugin(this);
  
         this.themeManager.updateTheme("violet");
-        this.addNewRow();
+        this.addNewExcelRow();
         this.handleResize();
         this.setupEventListeners();
     }
 
     private setupEventListeners(): void {
-        const addNewRowButton = document.querySelector('.add-new-row');
-        const addNewColButton = document.querySelector('.add-new-col');
+        const addNewExcelRowButton = document.querySelector('.add-new-row');
+        const addNewExcelColButton = document.querySelector('.add-new-col');
         const deleteExcelButton = document.querySelector('.delete-excel');
 
-        addNewRowButton?.addEventListener('click', () => this.addNewRow());
-        addNewColButton?.addEventListener('click', () => {
+        addNewExcelRowButton?.addEventListener('click', () => this.addNewExcelRow());
+        addNewExcelColButton?.addEventListener('click', () => {
             if (this.currExcelRow !== undefined) {
-                this.addNewCol(this.currExcelRow);
+                this.addNewExcelCol(this.currExcelRow);
             }
         });
 
@@ -86,29 +81,29 @@ export class excelsHandler {
         this.currSheetObj = sheetObj;
     }
 
-    private addNewRow(): void {
-        if (this.currentRowCount >= this.maxRow) {
+    private addNewExcelRow(): void {
+        if (this.totalExcelRows >= this.maxExcelRow) {
             alert('No more rows can be added');
             return;
         }
 
-        this.currentRowCount += 1;
+        this.totalExcelRows += 1;
         const row = document.createElement('div');
         row.className = 'row';
-        row.id = `row_${this.currentRowCount}`;
+        row.id = `row_${this.totalExcelRows}`;
         row.style.flex = '1';
-        const excel = new Excel(row, this.currentRowCount, 1, this);
-        this.rowArr[this.currentRowCount - 1] = [excel];
+        const excel = new Excel(row, this.totalExcelRows, 1, this);
+        this.excelsRowArr[this.totalExcelRows - 1] = [excel];
         this.mainContainer.appendChild(row);
         this.addResizeHandles();
         this.handleResize();
     }
 
-    private addNewCol(rowNum: number): void {
-        if (rowNum > this.currentRowCount) return;
+    private addNewExcelCol(rowNum: number): void {
+        if (rowNum > this.totalExcelRows) return;
 
-        let colCount = this.rowArr[rowNum - 1].length;
-        if (colCount >= this.maxCol) {
+        let colCount = this.excelsRowArr[rowNum - 1].length;
+        if (colCount >= this.maxExcelCol) {
             alert('No more columns can be added');
             return;
         }
@@ -118,7 +113,7 @@ export class excelsHandler {
         if (!row) return;
 
         const excel = new Excel(row, rowNum, colCount, this);
-        this.rowArr[rowNum - 1].push(excel);
+        this.excelsRowArr[rowNum - 1].push(excel);
         this.addResizeHandles();
         this.handleResize();
     }
@@ -132,14 +127,14 @@ export class excelsHandler {
             }
         }
 
-        this.rowArr[rowNum - 1].splice(colNum - 1, 1);
+        this.excelsRowArr[rowNum - 1].splice(colNum - 1, 1);
 
-        if (this.rowArr[rowNum - 1].length === 0) {
+        if (this.excelsRowArr[rowNum - 1].length === 0) {
             this.deleteRow(rowNum);
             return;
         }
 
-        this.rowArr.forEach((row, rowIndex) => {
+        this.excelsRowArr.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
                 const updatedColNum = colIndex + 1;
                 if (updatedColNum >= colNum) {
@@ -158,9 +153,9 @@ export class excelsHandler {
             this.mainContainer.removeChild(rowElement);
         }
 
-        this.rowArr.splice(rowNum - 1, 1);
+        this.excelsRowArr.splice(rowNum - 1, 1);
 
-        for (let i = rowNum; i <= this.currentRowCount; i++) {
+        for (let i = rowNum; i <= this.totalExcelRows; i++) {
             const rowElement = document.getElementById(`row_${i}`);
             if (rowElement) {
                 rowElement.id = `row_${i - 1}`;
@@ -171,15 +166,15 @@ export class excelsHandler {
             }
         }
 
-        this.currentRowCount--;
+        this.totalExcelRows--;
         this.addResizeHandles();
     }
 
     private addResizeHandles(): void {
-        this.rowArr.forEach((row, rowIndex) => {
+        this.excelsRowArr.forEach((row, rowIndex) => {
             const rowElement = document.getElementById(`row_${rowIndex + 1}`);
 
-            if (rowElement && rowIndex < this.rowArr.length - 1) {
+            if (rowElement && rowIndex < this.excelsRowArr.length - 1) {
                 const rowResizeHandle = document.createElement('div');
                 rowResizeHandle.className = 'row-resize-handle';
                 rowElement.appendChild(rowResizeHandle);
