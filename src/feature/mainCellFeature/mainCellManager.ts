@@ -7,6 +7,7 @@ import {
 import {
   DEFAULT_CANVAS_TEXT_ALIGN,
   DEFAULT_CELL_BG_COLOR,
+  DEFAULT_CELL_FONT_COLOR,
   DEFAULT_CELL_WIDTH,
   DEFAULT_FONT_SIZE,
   DEFAULT_MIN_PADDING_IN_CELL,
@@ -137,8 +138,19 @@ export class mainCellManager {
         const endRowIndex = this.helper.binarySearch(verticalHeaderCells, bottom, 'y');
 
     const cells = [];
+    console.log(startColIndex,endColIndex)
+    console.log(startRowIndex,endRowIndex)
     for (let i = startColIndex; i <= endColIndex; i++) {
       for (let j = startRowIndex; j <= endRowIndex; j++) {
+        if(this.helper.getCell(
+          verticalHeaderCells[j].row,
+          horizontalHeaderCells[i].col
+        )){
+          console.log(console.log( this.helper.getCell(
+            verticalHeaderCells[j].row,
+            horizontalHeaderCells[i].col
+          ),))
+        }
         cells.push({
           column: horizontalHeaderCells[i],
           row: verticalHeaderCells[j],
@@ -179,6 +191,10 @@ export class mainCellManager {
     const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
     ? "center"
     : node?.styles.textBaseline || "center"
+    const bold = node?.styles.bold ? 'bold' : 'normal';
+    const italic = node?.styles.italic ? 'italic' : 'normal';
+    const color = node?.styles.color ? node?.styles.color  : DEFAULT_CELL_FONT_COLOR
+    const bgColor = node?.styles.fill ? node.styles.fill : DEFAULT_CELL_BG_COLOR
 
     Object.assign(this.input.style, {
       position: "absolute",
@@ -189,10 +205,13 @@ export class mainCellManager {
       fontSize: `${fontSize * zoomIndex}px`, // Adjust font size based on scale
       textAlign: textAlign,
       lineHeight: `${fontSize * zoomIndex}px`,
-      backgroundColor: DEFAULT_CELL_BG_COLOR,
       alignContent: alignContent,
       padding: `0px ${DEFAULT_MIN_PADDING_IN_CELL - 1}px`,// shiv don't know why is this -1 to be used
       display: "block",
+      fontWeight : bold,
+      fontStyle : italic,
+      color : color,
+      backgroundColor : bgColor
     });
     this.input.innerText = node?.value ?? ""; // Set the input value
     this.input.focus()
