@@ -1,7 +1,6 @@
 import { Helper } from "../../excel/component/helper.js";
 import { selectionCell } from "./selection/selection.js";
 import {
-  ETextBaseLine,
   IGridHeaderCell,
 } from "../../dataStructure/interfaces.js";
 import {
@@ -11,6 +10,7 @@ import {
   DEFAULT_FONT_SIZE,
   DEFAULT_MIN_PADDING_IN_CELL,
 } from "../../dataStructure/constants.js";
+import { ETextBaseLine } from "../../dataStructure/enums.js";
 export class mainCellManager {
   public helper: Helper;
   public input!: HTMLElement | null;

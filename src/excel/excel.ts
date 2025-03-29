@@ -48,7 +48,7 @@ export class Excel {
     private createExcel(){
         this.excel.innerHTML = '';
         const wrapper = document.createElement('div');
-        wrapper.className = 'excelWrapper';
+        wrapper.className = 'excel-wrapper';
 
         this.contentArea = document.createElement('div');
         this.contentArea.className = 'contentArea';
@@ -215,7 +215,7 @@ export class Sheet {
     private createTopSection(): HTMLElement {
         const topSection = document.createElement('div');
         topSection.id = `topsection_${this.row}_${this.col}_${this.index}`;
-        topSection.className = 'topSection';
+        topSection.className = 'top-section';
 
         const nothing = document.createElement('div');
         nothing.id = `nothing_${this.row}_${this.col}_${this.index}`;
