@@ -8,11 +8,11 @@ import { SheetMaker } from "./sheetMaker.js";
 import { SheetRendrer } from "./sheetrendrer.js";
 
 export class Helper {
-  private scroll: Scroll;
-  private sheetRendrer: SheetRendrer;
+  public scroll: Scroll;
+  public sheetRendrer: SheetRendrer;
   public sheet: SheetMaker;
-  private SparseMatrix: SparseMatrix;
-  private GridHeaderManager?: GridHeaderManager;
+  public SparseMatrix: SparseMatrix;
+  public GridHeaderManager?: GridHeaderManager;
   public canvases: { [key: string]: HTMLCanvasElement };
   public contexts: { [key: string]: CanvasRenderingContext2D };
   public verticalScroll?: {
@@ -53,12 +53,7 @@ export class Helper {
     this.scroll = new Scroll(this);
     this.sheetRendrer = new SheetRendrer(this);
     this.scroll.setRenderer(this.sheetRendrer);
-    this.initiatefeature();
-  }
-
-  private initiatefeature() {
-    // to add helper to feature classes
-    this.mainCellManager = new mainCellManager(this);
+    this.mainCellManager = this.sheet.mainCellManager!;
   }
 
   private initCanvases() {
@@ -99,7 +94,7 @@ export class Helper {
     return this.canvases;
   }
 
-  public getContexts(){
+  public getContexts() {
     return this.contexts;
   }
 
@@ -202,11 +197,12 @@ export class Helper {
         }
       });
     });
-
   }
 
   public updateDrawForFeatures(): void {
-    this.mainCellManager.updatepositions();
+    if (this.sheet.mainCellManager){
+      this.sheet.mainCellManager.updateDrawForScrolling();
+    } 
   }
 
   public getScrollRatio(direction: "horizontal" | "vertical"): number {
@@ -236,10 +232,10 @@ export class Helper {
       direction === "horizontal"
         ? this.scroll.maxScrollX
         : this.scroll.maxScrollY;
-      
+
     // Get the relevant dimension based on direction
     const clientSize =
-    direction === "horizontal"
+      direction === "horizontal"
         ? scrollElement.clientWidth
         : scrollElement.clientHeight;
 
@@ -253,8 +249,8 @@ export class Helper {
 
   // Customize scroll
 
-  public Scroll(x: number, y: number): void {
-    this.scroll.scroll(x, y);
+  public setScroll(x: number, y: number): void {
+    this.scroll.setScroll(x, y);
   }
 
   // update the max scroll by getting new width and height from grid header manager
@@ -321,7 +317,11 @@ export class Helper {
     return low;
   }
 
-  public setCell(rowNumber:number, columnNumber:number, value:string | null){
-    this.SparseMatrix.setCell(rowNumber, columnNumber, value)
+  public setCell(
+    rowNumber: number,
+    columnNumber: number,
+    value: string | null
+  ) {
+    this.SparseMatrix.setCell(rowNumber, columnNumber, value);
   }
 }

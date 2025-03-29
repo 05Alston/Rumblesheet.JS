@@ -11,21 +11,20 @@ import {
   DEFAULT_MIN_PADDING_IN_CELL,
 } from "../../dataStructure/constants.js";
 import { ETextBaseLine } from "../../dataStructure/enums.js";
-export class mainCellManager {
-  public helper: Helper;
+import { SheetMaker } from "../../excel/component/sheetMaker.js";
+
+export class mainCellManager extends Helper {
   public input!: HTMLElement | null;
   private selectionCell!: selectionCell;
-    private canvases: { [key: string]: HTMLCanvasElement; };
 
-    constructor(helper:Helper){
-    this.helper = helper;
-    this.canvases = this.helper.getCanvases();
+    constructor(sheet: SheetMaker) {
+    super(sheet);
     this.initiateFeature();
     this.setupInputEventListener();
   }
 
   private setupInputEventListener() {
-    const { row, col, index } = this.helper.sheet;
+    const { row, col, index } = this.sheet;
     const input = document.getElementById(`input_${row}_${col}_${index}`);
 
     if (input) {
@@ -46,7 +45,7 @@ export class mainCellManager {
       const columnNumber = column!.col;
 
       // Update SparseMatrix with new value
-      this.helper.setCell(rowNumber, columnNumber, value);
+      this.setCell(rowNumber, columnNumber, value);
     } else {
           console.warn('No cell is currently selected.');
     }
@@ -77,7 +76,7 @@ export class mainCellManager {
           const { row, column } =  this.selectionCell.selectedCells[0];
       const rowNumber = row!.row;
       const columnNumber = column!.col;
-      this.helper.setCell(rowNumber, columnNumber, value);
+      this.setCell(rowNumber, columnNumber, value);
     }
   }
 
@@ -86,35 +85,23 @@ export class mainCellManager {
         this.selectionCell = new selectionCell(this)
   }
 
-    public getCanvases(){
-    return this.canvases;
-  }
-
-    public getContexts(){
-    return this.helper.getContexts();
-  }
-
     public getCanvasCoordinates(event:PointerEvent) {
     const rect = this.canvases.spreadsheet.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const { x: scrollX, y: scrollY } = this.helper.getScroll();
+    const { x: scrollX, y: scrollY } = this.getScroll();
 
     // Adjust for scaling and scrolling
     return {
-      x: x + scrollX * this.helper.zoomIndex,
-          y: y + scrollY * this.helper.zoomIndex
+      x: x + scrollX * this.zoomIndex,
+          y: y + scrollY * this.zoomIndex
     };
   }
 
-    public scroll(x: number, y: number){
-    this.helper.Scroll(x, y);
-  }
-
     public getCellFromCoordinates(x:number, y:number):{column:IGridHeaderCell, row:IGridHeaderCell} |null {
-    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
-    const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
+    const horizontalHeaderCells = this.getHorizontalHeaderCells(x);
+    const verticalHeaderCells = this.getVerticalHeaderCells(y);
 
         const column = horizontalHeaderCells.find(cell => x >= cell.x && x < cell.x + cell.width);
         const row = verticalHeaderCells.find(cell => y >= cell.y && y < cell.y + cell.height);
@@ -123,18 +110,18 @@ export class mainCellManager {
   }
 
     public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
-        const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(0);
-        const verticalHeaderCells = this.helper.getVerticalHeaderCells(0); 
+        const horizontalHeaderCells = this.getHorizontalHeaderCells(0);
+        const verticalHeaderCells = this.getVerticalHeaderCells(0); 
 
     const left = Math.min(startPoint.x, endPoint.x);
     const right = Math.max(startPoint.x, endPoint.x);
     const top = Math.min(startPoint.y, endPoint.y);
     const bottom = Math.max(startPoint.y, endPoint.y);
 
-        const startColIndex = this.helper.binarySearch(horizontalHeaderCells, left, 'x');
-        const endColIndex = this.helper.binarySearch(horizontalHeaderCells, right, 'x');
-        const startRowIndex = this.helper.binarySearch(verticalHeaderCells, top, 'y');
-        const endRowIndex = this.helper.binarySearch(verticalHeaderCells, bottom, 'y');
+        const startColIndex = this.binarySearch(horizontalHeaderCells, left, 'x');
+        const endColIndex = this.binarySearch(horizontalHeaderCells, right, 'x');
+        const startRowIndex = this.binarySearch(verticalHeaderCells, top, 'y');
+        const endRowIndex = this.binarySearch(verticalHeaderCells, bottom, 'y');
 
     const cells = [];
     for (let i = startColIndex; i <= endColIndex; i++) {
@@ -142,7 +129,7 @@ export class mainCellManager {
         cells.push({
           column: horizontalHeaderCells[i],
           row: verticalHeaderCells[j],
-          cell: this.helper.getCell(
+          cell: this.getCell(
             verticalHeaderCells[j].row,
             horizontalHeaderCells[i].col
           ),
@@ -153,8 +140,9 @@ export class mainCellManager {
     return cells;
   }
 
-  public updatepositions(): void {
-        this.selectionCell.updatePosForScrolling()
+  // This function is used to update the drawing with features when scrolling
+  public updateDrawForScrolling(): void {
+    this.selectionCell.updateDrawForScrolling()
   }
 
   public updateInputElement(
@@ -166,14 +154,14 @@ export class mainCellManager {
   
     //getting the input element
     this.input = document.getElementById(
-      `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
+      `input_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
     ) as HTMLElement;
 
     // Recalculate input box position
-    const { x: scrollX, y: scrollY } = this.helper.getScroll();
-    const zoomIndex = this.helper.zoomIndex;
+    const { x: scrollX, y: scrollY } = this.getScroll();
+    const zoomIndex = this.zoomIndex;
     const inputChange = 2;
-    const node = this.helper.getCell(cell.row.row, cell.column.col);
+    const node = this.getCell(cell.row.row, cell.column.col);
     const fontSize = node?.styles.fontSize ?? DEFAULT_FONT_SIZE;
     const textAlign = node?.styles.textAlign ?? DEFAULT_CANVAS_TEXT_ALIGN;
     const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
@@ -200,19 +188,11 @@ export class mainCellManager {
 
   hideInputElement() {
     const input = document.getElementById(
-      `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
+      `input_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
     );
     if (input) {
       input.style.display = "none";
     }
-  }
-
-    public getScroll(){
-    return this.helper.getScroll();
-  }
-
-  public draw(): void {
-    this.helper.draw();
   }
 
     public getCurrSelectedCells(){

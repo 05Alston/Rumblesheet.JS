@@ -37,8 +37,6 @@ export class ExcelsHandler {
 
     this.themeManager.updateTheme("violet");
     this.addNewExcelRow();
-    this.addNewExcelCol(1);
-    this.deleteExcel(1,2);
     this.handleResize();
     this.setupEventListeners();
   }

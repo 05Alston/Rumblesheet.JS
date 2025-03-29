@@ -1,121 +1,129 @@
-import { Helper } from "./helper";
+import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
+import { Helper } from "./helper.js";
 
 export class SheetMaker {
-    name: string;
-    row: number;
-    col: number;
-    index: number;
-    elements: { topSection: HTMLElement; middleSection: HTMLElement };
-    helper?: Helper;
+  name: string;
+  row: number;
+  col: number;
+  index: number;
+  elements: { topSection: HTMLElement; middleSection: HTMLElement };
+  helper?: Helper;
+  mainCellManager?: mainCellManager;
 
-    constructor(name: string, row: number, col: number, index: number) {
-        this.name = name;
-        this.row = row;
-        this.col = col;
-        this.index = index;
+  constructor(name: string, row: number, col: number, index: number) {
+    this.name = name;
+    this.row = row;
+    this.col = col;
+    this.index = index;
 
-        this.elements = {
-            topSection: this.createTopSection(),
-            middleSection: this.createMiddleSection()
-        };
-        this.waitForSectionsToRender();
-    }
+    this.elements = {
+      topSection: this.createTopSection(),
+      middleSection: this.createMiddleSection(),
+    };
+    this.waitForSectionsToRender();
+  }
 
-    waitForSectionsToRender() {
-        const observer = new MutationObserver((mutationsList) => {
-          for (const mutation of mutationsList) {
-            // Check if the added nodes include both topSection and middleSection
-            if (
-              document.body.contains(this.elements.topSection) &&
-              document.body.contains(this.elements.middleSection)
-            ) {
-              // Once both sections are added, instantiate this.helper
-              this.helper = new Helper(this); 
-              observer.disconnect(); // Stop observing
-              break;
-            }
-          }
-        });
-    
-        // Start observing the DOM for changes
-        observer.observe(document.body, { childList: true, subtree: true });
+  waitForSectionsToRender() {
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        // Check if the added nodes include both topSection and middleSection
+        if (
+          document.body.contains(this.elements.topSection) &&
+          document.body.contains(this.elements.middleSection)
+        ) {
+          // Once both sections are added, instantiate this.helper
+          this.helper = new Helper(this);
+          this.initiatefeature();
+          observer.disconnect(); // Stop observing
+          break;
+        }
       }
+    });
 
-    private createTopSection(): HTMLElement {
-        const topSection = document.createElement('div');
-        topSection.id = `topsection_${this.row}_${this.col}_${this.index}`;
-        topSection.className = 'top-section';
+    // Start observing the DOM for changes
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 
-        const nothing = document.createElement('div');
-        nothing.id = `nothing_${this.row}_${this.col}_${this.index}`;
-        nothing.className = 'nothing';
+  private initiatefeature() {
+    // to add helper to feature classes
+    this.mainCellManager = new mainCellManager(this);
+  }
 
-        const upperCanvas = document.createElement('div');
-        upperCanvas.id = `upperCanvas_${this.row}_${this.col}_${this.index}`;
-        upperCanvas.className = 'upperCanvas';
+  private createTopSection(): HTMLElement {
+    const topSection = document.createElement("div");
+    topSection.id = `topsection_${this.row}_${this.col}_${this.index}`;
+    topSection.className = "top-section";
 
-        const horizontalCanvas = document.createElement('canvas');
-        horizontalCanvas.id = `horizontalCanvas_${this.row}_${this.col}_${this.index}`;
-        horizontalCanvas.className = 'horizontalCanvas';
+    const nothing = document.createElement("div");
+    nothing.id = `nothing_${this.row}_${this.col}_${this.index}`;
+    nothing.className = "nothing";
 
-        upperCanvas.appendChild(horizontalCanvas);
-        topSection.appendChild(nothing);
-        topSection.appendChild(upperCanvas);
+    const upperCanvas = document.createElement("div");
+    upperCanvas.id = `upperCanvas_${this.row}_${this.col}_${this.index}`;
+    upperCanvas.className = "upperCanvas";
 
-        return topSection;
-    }
+    const horizontalCanvas = document.createElement("canvas");
+    horizontalCanvas.id = `horizontalCanvas_${this.row}_${this.col}_${this.index}`;
+    horizontalCanvas.className = "horizontalCanvas";
 
-    private createMiddleSection(): HTMLElement {
-        const midSection = document.createElement('div');
-        midSection.id = `midSection_${this.row}_${this.col}_${this.index}`;
-        midSection.className = 'middleSection';
+    upperCanvas.appendChild(horizontalCanvas);
+    topSection.appendChild(nothing);
+    topSection.appendChild(upperCanvas);
 
-        const verticalCanvasWrapper = document.createElement('div');
-        verticalCanvasWrapper.id = `verticalCanvasWrapper_${this.row}_${this.col}_${this.index}`;
-        verticalCanvasWrapper.className = 'verticalCanvas';
+    return topSection;
+  }
 
-        const verticalCanvas = document.createElement('canvas');
-        verticalCanvas.id = `verticalCanvas_${this.row}_${this.col}_${this.index}`;
+  private createMiddleSection(): HTMLElement {
+    const midSection = document.createElement("div");
+    midSection.id = `midSection_${this.row}_${this.col}_${this.index}`;
+    midSection.className = "middleSection";
 
-        verticalCanvasWrapper.appendChild(verticalCanvas);
+    const verticalCanvasWrapper = document.createElement("div");
+    verticalCanvasWrapper.id = `verticalCanvasWrapper_${this.row}_${this.col}_${this.index}`;
+    verticalCanvasWrapper.className = "verticalCanvas";
 
-        const fullCanvas = document.createElement('div');
-        fullCanvas.id = `fullCanvas_${this.row}_${this.col}_${this.index}`;
-        fullCanvas.className = 'fullCanvas';
+    const verticalCanvas = document.createElement("canvas");
+    verticalCanvas.id = `verticalCanvas_${this.row}_${this.col}_${this.index}`;
 
-        const spreadsheetCanvas = document.createElement('canvas');
-        spreadsheetCanvas.id = `spreadsheetCanvas_${this.row}_${this.col}_${this.index}`;
-        spreadsheetCanvas.className = 'spreadsheetCanvas';
+    verticalCanvasWrapper.appendChild(verticalCanvas);
 
-        const verticalScroll = this.createScrollbar('vertical');
-        const horizontalScroll = this.createScrollbar('horizontal');
+    const fullCanvas = document.createElement("div");
+    fullCanvas.id = `fullCanvas_${this.row}_${this.col}_${this.index}`;
+    fullCanvas.className = "fullCanvas";
 
-        const inputEle = document.createElement('div');
-        inputEle.setAttribute('contenteditable', 'true');
-        inputEle.id = `input_${this.row}_${this.col}_${this.index}`;
-        inputEle.className = 'input';
+    const spreadsheetCanvas = document.createElement("canvas");
+    spreadsheetCanvas.id = `spreadsheetCanvas_${this.row}_${this.col}_${this.index}`;
+    spreadsheetCanvas.className = "spreadsheetCanvas";
 
-        fullCanvas.appendChild(inputEle);
-        fullCanvas.appendChild(spreadsheetCanvas);
-        fullCanvas.appendChild(verticalScroll);
-        fullCanvas.appendChild(horizontalScroll);
+    const verticalScroll = this.createScrollbar("vertical");
+    const horizontalScroll = this.createScrollbar("horizontal");
 
-        midSection.appendChild(verticalCanvasWrapper);
-        midSection.appendChild(fullCanvas);
+    const inputEle = document.createElement("div");
+    inputEle.setAttribute("contenteditable", "true");
+    inputEle.id = `input_${this.row}_${this.col}_${this.index}`;
+    inputEle.className = "input";
 
-        return midSection;
-    }
+    fullCanvas.appendChild(inputEle);
+    fullCanvas.appendChild(spreadsheetCanvas);
+    fullCanvas.appendChild(verticalScroll);
+    fullCanvas.appendChild(horizontalScroll);
 
-    private createScrollbar(orientation: 'vertical' | 'horizontal'): HTMLElement {
-        const scroll = document.createElement('div');
-        scroll.id = `${orientation}Scroll_${this.row}_${this.col}_${this.index}`;
-        scroll.className = `${orientation}Scroll`;
+    midSection.appendChild(verticalCanvasWrapper);
+    midSection.appendChild(fullCanvas);
 
-        const bar = document.createElement('div');
-        bar.id = `${orientation}Bar_${this.row}_${this.col}_${this.index}`;
-        bar.className = `${orientation}Bar`;
+    return midSection;
+  }
 
-        scroll.appendChild(bar);
-        return scroll;
-    }
+  private createScrollbar(orientation: "vertical" | "horizontal"): HTMLElement {
+    const scroll = document.createElement("div");
+    scroll.id = `${orientation}Scroll_${this.row}_${this.col}_${this.index}`;
+    scroll.className = `${orientation}Scroll`;
+
+    const bar = document.createElement("div");
+    bar.id = `${orientation}Bar_${this.row}_${this.col}_${this.index}`;
+    bar.className = `${orientation}Bar`;
+
+    scroll.appendChild(bar);
+    return scroll;
+  }
 }

@@ -1,7 +1,7 @@
 import {  mainCellManager } from "../mainCellManager.js";
 import { Cell } from "../../../dataStructure/sparseMatrix.js";
 import { IGridHeaderCell } from "../../../dataStructure/interfaces.js";
-import { DEFAULT_HIGHLIGHT_FILL_COLOR, DEFAULT_HIGHLIGHT_BORDER_COLOR, DEFAULT_HIGHLIGHT_LINE_WIDTH, DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR, DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH,  DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR } from "../../../dataStructure/constants.js";
+import { DEFAULT_HIGHLIGHT_FILL_COLOR, DEFAULT_HIGHLIGHT_BORDER_COLOR, DEFAULT_HIGHLIGHT_LINE_WIDTH, DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR, DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH,  DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR, DEFAULT_HORIZONTAL_CANVAS_HEIGHT, DEFAULT_VERTICAL_CANVAS_WIDTH } from "../../../dataStructure/constants.js";
 
 export class selectionCell{
     private maincellManager! : mainCellManager;
@@ -70,21 +70,21 @@ export class selectionCell{
         const canvas = this.canvases.spreadsheet;
     
         if (x - scrollX < 0 && event.movementX < 0) {
-          this.maincellManager.scroll(-10, 0);
+          this.maincellManager.setScroll(-10, 0);
         } else if (
           x - scrollX > canvas.clientWidth - edgeDistance &&
           event.movementX > 0
         ) {
-          this.maincellManager.scroll(10, 0);
+          this.maincellManager.setScroll(10, 0);
         }
     
         if (y - scrollY < 0 && event.movementY < 0) {
-          this.maincellManager.scroll(0, -10); // Scroll up
+          this.maincellManager.setScroll(0, -10); // Scroll up
         } else if (
           y - scrollY > canvas.clientHeight - edgeDistance &&
           event.movementY > 0
         ) {
-          this.maincellManager.scroll(0, 10); // Scroll down
+          this.maincellManager.setScroll(0, 10); // Scroll down
         }
     
         this.maincellManager.updateInputElement(this.clickedCell_headercells)
@@ -121,11 +121,10 @@ export class selectionCell{
         }
     }
 
-    public updatePosForScrolling(): void {
+    public updateDrawForScrolling(): void {
         this.maincellManager.updateInputElement(this.clickedCell_headercells);
         this.selectCell(this.clickedCell_headercells);
         this.drawHighlight();
-
     }
 
     public updateSelectedCells(endPoint:{ x: number; y: number }) {
@@ -187,14 +186,14 @@ export class selectionCell{
         // Draw a solid green line at the bottom
         ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
         ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH;
-        ctx.moveTo(x, 20);
-        ctx.lineTo(x + width, 20);
+        ctx.moveTo(x, DEFAULT_HORIZONTAL_CANVAS_HEIGHT);
+        ctx.lineTo(x + width, DEFAULT_HORIZONTAL_CANVAS_HEIGHT);
       } else {
         // Draw a solid green line on the right side
         ctx.strokeStyle = DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR;
         ctx.lineWidth = DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH ;
-        ctx.moveTo(30, y);
-        ctx.lineTo(30, y + height);
+        ctx.moveTo(DEFAULT_VERTICAL_CANVAS_WIDTH, y);
+        ctx.lineTo(DEFAULT_VERTICAL_CANVAS_WIDTH, y + height);
       }
   
       ctx.stroke(); // Finalize the drawing
