@@ -7,7 +7,6 @@ enum EPreDefinedThemes {
   VIOLET = "violet"
 }
 
-
 export class ThemeManager {
   //define variables
   activeTheme!: IThemeStructure;

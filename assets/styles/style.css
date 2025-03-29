@@ -8,6 +8,11 @@ body {
   font-family: var(--font-family);
 }
 
+#sample {
+  height: 100%;
+  width: 100%;
+}
+
 .rumblesheet {
   display: flex;
   height: 100%;

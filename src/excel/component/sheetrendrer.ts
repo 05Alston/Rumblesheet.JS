@@ -1,6 +1,7 @@
 import { Helper } from "./helper";
-import { ETextAlign, ETextBaseLine, IGridHeaderCell } from "../../dataStructure/interfaces.js";
+import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
 import { DEFAULT_CANVAS_LINE_WIDTH, DEFAULT_CANVAS_TEXT_ALIGN, DEFAULT_CANVAS_TEXT_BASELINE,  DEFAULT_CANVAS_LINES_COLOR, DEFAULT_CANVAS_TEXT_COLOR, DEFAULT_CANVAS_FONT_FAMILY, DEFAULT_MIN_PADDING_IN_CELL, DEFAULT_CELL_BG_COLOR, DEFAULT_CELL_FONT_COLOR, DEFAULT_FONT_SIZE } from "../../dataStructure/constants.js";
+import { ETextAlign, ETextBaseLine } from "../../dataStructure/enums.js";
 
 export class SheetRendrer {
   private zoomIndex: number;

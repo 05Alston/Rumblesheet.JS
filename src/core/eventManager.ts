@@ -1,23 +1,22 @@
-import { Ribbon } from "../ribbon/ribbon.js";
-import { ExcelsHandler } from "./excelsHandler.js";
-import {
-  EFontFamilies,
-  ETextAlign,
-  ETextBaseLine,
-  ribbonDataActions,
-} from "../dataStructure/interfaces.js";
 import {
   activePossibleActions,
   alignmentActions,
   DEFAULT_CELL_INDENT,
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_SIZE_CHANGE_VALUE,
-  DEFAULT_MIN_PADDING_IN_CELL,
   INDENT_VALUE_CHANGE_VALUE,
   indentActions,
   instantActions,
   textBaseLineActions,
 } from "../dataStructure/constants.js";
+import {
+  EFontFamilies,
+  ERibbonDataActions,
+  ETextAlign,
+  ETextBaseLine,
+} from "../dataStructure/enums.js";
+import { Ribbon } from "../ribbon/ribbon.js";
+import { ExcelsHandler } from "./excelsHandler.js";
 
 // eventManager.ts
 export class EventManager {
@@ -38,7 +37,11 @@ export class EventManager {
   private focusContent!: HTMLElement | null;
   private rumblesheetElement!: HTMLElement;
 
-  constructor(excelsHandler: ExcelsHandler, ribbon: Ribbon, rumblesheetElement: HTMLElement) {
+  constructor(
+    excelsHandler: ExcelsHandler,
+    ribbon: Ribbon,
+    rumblesheetElement: HTMLElement
+  ) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
     this.rumblesheetElement = rumblesheetElement;
@@ -182,7 +185,9 @@ export class EventManager {
     if (uploadButton) {
       uploadButton.addEventListener(
         "click",
-        this.excelsHandler.plugin.handleFileUpload.bind(this.excelsHandler.plugin)
+        this.excelsHandler.plugin.handleFileUpload.bind(
+          this.excelsHandler.plugin
+        )
       );
     } else {
       console.error("Upload button not found.");
@@ -217,7 +222,7 @@ export class EventManager {
     if (!ele) {
       return;
     }
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
 
     // Handling toggle actions (Bold, Italic, Underline)
     if (activePossibleActions.includes(action)) {
@@ -229,10 +234,9 @@ export class EventManager {
     else if (alignmentActions.includes(action)) {
       this.handleGroupRibbonActions(alignmentActions, ele);
       this.updateCellFormatting(action, true);
-    }
-    else if(textBaseLineActions.includes(action)){
-      this.handleGroupRibbonActions(textBaseLineActions,ele);
-      this.updateCellFormatting(action,true)
+    } else if (textBaseLineActions.includes(action)) {
+      this.handleGroupRibbonActions(textBaseLineActions, ele);
+      this.updateCellFormatting(action, true);
     }
     // Handling indent actions
     else if (indentActions.includes(action)) {
@@ -246,7 +250,7 @@ export class EventManager {
   }
 
   private handleGroupRibbonActions(
-    group: ribbonDataActions[],
+    group: ERibbonDataActions[],
     currEle: HTMLElement
   ) {
     group.forEach((groupAction) => {
@@ -257,7 +261,7 @@ export class EventManager {
   }
 
   private updateCellFormatting(
-    action: ribbonDataActions,
+    action: ERibbonDataActions,
     isActive: boolean,
     newValue: string = ""
   ) {
@@ -267,72 +271,72 @@ export class EventManager {
       selectedCells.forEach((cellDetails) => {
         if (cellDetails && cellDetails.cell) {
           switch (action) {
-            case ribbonDataActions.bold:
+            case ERibbonDataActions.bold:
               cellDetails.cell.styles.bold = isActive;
               break;
-            case ribbonDataActions.italic:
+            case ERibbonDataActions.italic:
               cellDetails.cell.styles.italic = isActive;
               break;
-            case ribbonDataActions.underline:
+            case ERibbonDataActions.underline:
               cellDetails.cell.styles.underline = isActive;
               break;
-            case ribbonDataActions.alignLeft:
+            case ERibbonDataActions.alignLeft:
               cellDetails.cell.styles.textAlign = ETextAlign.left;
               break;
-            case ribbonDataActions.alignRight:
+            case ERibbonDataActions.alignRight:
               cellDetails.cell.styles.textAlign = ETextAlign.right;
               break;
-            case ribbonDataActions.alignCenter:
+            case ERibbonDataActions.alignCenter:
               cellDetails.cell.styles.textAlign = ETextAlign.center;
               break;
-            case ribbonDataActions.increaseFont:
+            case ERibbonDataActions.increaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) +
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ribbonDataActions.decreaseFont:
+            case ERibbonDataActions.decreaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) -
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ribbonDataActions.textBaselineTop:
+            case ERibbonDataActions.textBaselineTop:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.top;
-              console.log("done")
+              console.log("done");
               break;
-            case ribbonDataActions.textBaselineMiddle:
+            case ERibbonDataActions.textBaselineMiddle:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.middle;
               break;
-            case ribbonDataActions.textBaselineBottom:
+            case ERibbonDataActions.textBaselineBottom:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.bottom;
               break;
-            case ribbonDataActions.cut:
+            case ERibbonDataActions.cut:
               //todo - to be handled
               break;
-            case ribbonDataActions.copy:
+            case ERibbonDataActions.copy:
               //todo - to be handled
               break;
-            case ribbonDataActions.paste:
+            case ERibbonDataActions.paste:
               //todo - to be handled
               break;
-            case ribbonDataActions.fontFamily:
+            case ERibbonDataActions.fontFamily:
               cellDetails.cell.styles.fontFamily = newValue as EFontFamilies;
               break;
-            case ribbonDataActions.fontSize:
+            case ERibbonDataActions.fontSize:
               cellDetails.cell.styles.fontSize = parseInt(newValue);
               break;
-            case ribbonDataActions.fillColor:
+            case ERibbonDataActions.fillColor:
               cellDetails.cell.styles.fill = newValue;
               break;
-            case ribbonDataActions.textColor:
+            case ERibbonDataActions.textColor:
               cellDetails.cell.styles.color = newValue;
               break;
-            case ribbonDataActions.increaseIndent:
+            case ERibbonDataActions.increaseIndent:
               //todo - handle properly after resize is implemented
               cellDetails.cell.styles.textIndent =
                 (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) +
                 INDENT_VALUE_CHANGE_VALUE;
               break;
-            case ribbonDataActions.decreaseIndent:
+            case ERibbonDataActions.decreaseIndent:
               cellDetails.cell.styles.textIndent = Math.max(
                 0,
                 (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) -
@@ -351,7 +355,7 @@ export class EventManager {
 
   private handleSelectChange(selectElement: HTMLSelectElement) {
     const ele = selectElement as HTMLSelectElement;
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
     if (ele && ele.value && action) {
       this.updateCellFormatting(action, true, ele.value);
     }
@@ -359,7 +363,7 @@ export class EventManager {
 
   private handleColorElement(inputTypeColorEle: HTMLElement) {
     const ele = inputTypeColorEle as HTMLInputElement;
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
     if (ele && ele.value && action) {
       this.updateCellFormatting(action, true, ele.value);
     }
