@@ -13,7 +13,6 @@ export class selectionCell{
     private clickedCell_headercells!: {column:IGridHeaderCell, row:IGridHeaderCell} |null;
     public selectedCells!: { column: IGridHeaderCell | undefined; row: IGridHeaderCell | undefined; cell: Cell |null }[];
 
-
     constructor(maincellManager:mainCellManager){
         this.maincellManager = maincellManager;
         this.canvases = this.maincellManager.getCanvases();

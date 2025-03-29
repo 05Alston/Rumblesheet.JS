@@ -27,43 +27,35 @@ export class EventManager {
 
   //Ribbon Specific
   private tabButtons!: NodeListOf<HTMLElement>;
-  private tabContents!: NodeListOf<HTMLElement>;
   private toggleContentBtn!: HTMLElement | null;
   private focusZone!: HTMLElement | null;
   private featureMenuBtns!: NodeListOf<HTMLElement>;
-  private ribbonEle!: HTMLElement | null;
   private scrollLeftBtn!: HTMLElement | null;
   private scrollRightBtn!: HTMLElement | null;
-  private focusContent!: HTMLElement | null;
-  private rumblesheetElement!: HTMLElement;
 
-  constructor(
-    excelsHandler: ExcelsHandler,
-    ribbon: Ribbon,
-    rumblesheetElement: HTMLElement
-  ) {
+  constructor(excelsHandler: ExcelsHandler, ribbon: Ribbon) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
-    this.rumblesheetElement = rumblesheetElement;
     this.initializeElement();
     this.attachEvents();
   }
 
-  private get helper() {
+  private get currentSheetObjHelper() {
     return this.excelsHandler.currSheetObj?.instance.helper;
   }
 
   private initializeElement() {
     //ribbon elements initalization
-    this.tabButtons = document.querySelectorAll(".tablist-items");
-    this.tabContents = document.querySelectorAll(".focus-tab");
-    this.toggleContentBtn = document.getElementById("toggle-content");
-    this.focusZone = document.querySelector(".focus-zone");
-    this.featureMenuBtns = document.querySelectorAll(".feature-menu");
-    this.ribbonEle = document.getElementById("ribbon");
-    this.scrollLeftBtn = document.querySelector(".scroll-left");
-    this.scrollRightBtn = document.querySelector(".scroll-right");
-    this.focusContent = document.querySelector(".focus-content");
+    this.tabButtons = document.querySelectorAll(".rumblesheet .tablist-items");
+    this.toggleContentBtn = document.querySelector(
+      ".rumblesheet #toggle-content"
+    );
+    this.focusZone = document.querySelector(".rumblesheet .focus-zone");
+    this.featureMenuBtns = document.querySelectorAll(
+      ".rumblesheet .feature-menu"
+    );
+    this.scrollLeftBtn = document.querySelector(".rumblesheet .scroll-left");
+    this.scrollRightBtn = document.querySelector(".rumblesheet .scroll-right");
   }
 
   private attachEvents() {
@@ -266,7 +258,8 @@ export class EventManager {
     newValue: string = ""
   ) {
     console.log(action, isActive);
-    const selectedCells = this.helper?.mainCellManager.getCurrSelectedCells();
+    const selectedCells =
+      this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
       selectedCells.forEach((cellDetails) => {
         if (cellDetails && cellDetails.cell) {
@@ -350,7 +343,7 @@ export class EventManager {
         }
       });
     }
-    this.helper?.mainCellManager.draw();
+    this.currentSheetObjHelper?.mainCellManager.draw();
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {

@@ -1,5 +1,6 @@
 import { ISheetObj } from "../dataStructure/interfaces.js";
-import { Excel, Sheet } from "../excel/excel.js";
+import { SheetMaker } from "../excel/component/sheetMaker.js";
+import { Excel } from "../excel/excel.js";
 import { Plugin } from "../plugin/plugin.js";
 import { ThemeManager } from "../theme/theme.js";
 
@@ -36,6 +37,8 @@ export class ExcelsHandler {
 
     this.themeManager.updateTheme("violet");
     this.addNewExcelRow();
+    this.addNewExcelCol(1);
+    this.deleteExcel(1,2);
     this.handleResize();
     this.setupEventListeners();
   }
@@ -82,10 +85,7 @@ export class ExcelsHandler {
   updateCurrExcel(
     excelRow: number,
     excelCol: number,
-    sheetObj: {
-      name: string;
-      instance: Sheet;
-    }
+    sheetObj: ISheetObj
   ): void {
     this.currExcelRow = excelRow;
     this.currExcelCol = excelCol;
@@ -99,13 +99,13 @@ export class ExcelsHandler {
     }
 
     this.totalExcelRows += 1;
-    const row = document.createElement("div");
-    row.className = "row";
-    row.id = `row_${this.totalExcelRows}`;
-    row.style.flex = "1";
-    const excel = new Excel(row, this.totalExcelRows, 1, this);
+    const rowElement = document.createElement("div");
+    rowElement.className = "row";
+    rowElement.id = `row_${this.totalExcelRows}`;
+    rowElement.style.flex = "1";
+    const excel = new Excel(rowElement, this.totalExcelRows, 1, this);
     this.excelsRowArr[this.totalExcelRows - 1] = [excel];
-    this.mainContainer.appendChild(row);
+    this.mainContainer.appendChild(rowElement);
     this.addResizeHandles();
     this.handleResize();
   }
@@ -146,11 +146,11 @@ export class ExcelsHandler {
     }
 
     this.excelsRowArr.forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
+      row.forEach((Excel, colIndex) => {
         const updatedColNum = colIndex + 1;
         if (updatedColNum >= colNum) {
-          cell.element.style.gridColumn = String(updatedColNum);
-          cell.element.dataset.col = String(updatedColNum);
+          Excel.excel.style.gridColumn = String(updatedColNum);
+          Excel.excel.dataset.col = String(updatedColNum);
         }
       });
     });

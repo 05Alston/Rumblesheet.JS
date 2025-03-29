@@ -1,17 +1,17 @@
-import { Sheet } from "../excel.js";
-import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
-import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
-import { SheetRendrer } from "./sheetrendrer.js";
-import {  GridHeaderManager } from "./GridManager.js";
-import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
+import { ECanvasType } from "../../dataStructure/enums.js";
+import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
+import { Cell, SparseMatrix } from "../../dataStructure/sparseMatrix.js";
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
+import { GridHeaderManager } from "./gridManager.js";
+import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
+import { SheetMaker } from "./sheetMaker.js";
+import { SheetRendrer } from "./sheetrendrer.js";
 
 export class Helper {
   private scroll: Scroll;
   private sheetRendrer: SheetRendrer;
-  public sheet: Sheet;
+  public sheet: SheetMaker;
   private SparseMatrix: SparseMatrix;
-  private IGridHeaderCell!: IGridHeaderCell;
   private GridHeaderManager?: GridHeaderManager;
   public canvases: { [key: string]: HTMLCanvasElement };
   public contexts: { [key: string]: CanvasRenderingContext2D };
@@ -33,7 +33,7 @@ export class Helper {
   public loadedCols: number = 0;
   public mainCellManager!: mainCellManager;
 
-  constructor(Sheet: Sheet) {
+  constructor(Sheet: SheetMaker) {
     this.sheet = Sheet;
     this.totalRow = 100;
     this.totalCol = 60;
@@ -62,7 +62,7 @@ export class Helper {
   }
 
   private initCanvases() {
-    ["spreadsheet", "vertical", "horizontal"].forEach((type) => {
+    Object.values(ECanvasType).forEach((type) => {
       const canvas = document.getElementById(
         `${type}Canvas_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
       ) as HTMLCanvasElement;

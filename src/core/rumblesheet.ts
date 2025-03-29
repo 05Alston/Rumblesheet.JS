@@ -48,10 +48,6 @@ export class Rumblesheet {
     const maxCol = 3;
     this.ribbon = new Ribbon(ribbonContainer, rumblesheetContainer);
     this.excelHandler = new ExcelsHandler(mainContainer, maxRow, maxCol);
-    this.eventManager = new EventManager(
-      this.excelHandler,
-      this.ribbon,
-      rumblesheetContainer
-    );
+    this.eventManager = new EventManager(this.excelHandler, this.ribbon);
   }
 }
