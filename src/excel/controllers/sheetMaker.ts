@@ -1,5 +1,5 @@
-import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
-import { Helper } from "./helper.js";
+import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
+import { Helper } from "../helper/helper.js";
 
 export class SheetMaker {
   name: string;
@@ -8,7 +8,7 @@ export class SheetMaker {
   index: number;
   elements: { topSection: HTMLElement; middleSection: HTMLElement };
   helper?: Helper;
-  mainCellManager?: mainCellManager;
+  mainCellManager?: MainCellManager;
 
   constructor(name: string, row: number, col: number, index: number) {
     this.name = name;
@@ -46,7 +46,7 @@ export class SheetMaker {
 
   private initiatefeature() {
     // to add helper to feature classes
-    this.mainCellManager = new mainCellManager(this);
+    this.mainCellManager = new MainCellManager(this);
   }
 
   private createTopSection(): HTMLElement {

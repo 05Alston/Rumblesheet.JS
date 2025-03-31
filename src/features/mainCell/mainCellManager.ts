@@ -1,23 +1,21 @@
-import { Helper } from "../../excel/component/helper.js";
-import { selectionCell } from "./selection/selection.js";
-import {
-  IGridHeaderCell,
-} from "../../dataStructure/interfaces.js";
 import {
   DEFAULT_CANVAS_TEXT_ALIGN,
   DEFAULT_CELL_BG_COLOR,
   DEFAULT_CELL_WIDTH,
   DEFAULT_FONT_SIZE,
   DEFAULT_MIN_PADDING_IN_CELL,
-} from "../../dataStructure/constants.js";
-import { ETextBaseLine } from "../../dataStructure/enums.js";
-import { SheetMaker } from "../../excel/component/sheetMaker.js";
+} from "../../data/constants.js";
+import { ETextBaseLine } from "../../data/enums.js";
+import { IGridHeaderCell } from "../../data/interfaces.js";
+import { Helper } from "../../excel/helper/helper.js";
+import { SheetMaker } from "../../excel/controllers/sheetMaker.js";
+import { Selection } from "./selection/selection.js";
 
-export class mainCellManager extends Helper {
+export class MainCellManager extends Helper {
   public input!: HTMLElement | null;
-  private selectionCell!: selectionCell;
+  private selectionCell!: Selection;
 
-    constructor(sheet: SheetMaker) {
+  constructor(sheet: SheetMaker) {
     super(sheet);
     this.initiateFeature();
     this.setupInputEventListener();
@@ -28,15 +26,21 @@ export class mainCellManager extends Helper {
     const input = document.getElementById(`input_${row}_${col}_${index}`);
 
     if (input) {
-        input.addEventListener("input", (event: Event) => {this.handleInputChange(event)});
-        input.addEventListener('keydown', (event: Event) => {this.handleKeyDown(event)});
-          input.addEventListener('blur', (event: Event) => {this.handleInputBlur(event)});
+      input.addEventListener("input", (event: Event) => {
+        this.handleInputChange(event);
+      });
+      input.addEventListener("keydown", (event: Event) => {
+        this.handleKeyDown(event);
+      });
+      input.addEventListener("blur", (event: Event) => {
+        this.handleInputBlur(event);
+      });
     } else {
-          console.error('Input element not found');
+      console.error("Input element not found");
     }
   }
 
-    private handleInputChange(event:Event) {
+  private handleInputChange(event: Event) {
     if (this.selectionCell.selectedCells) {
       const { row, column } = this.selectionCell.selectedCells[0];
       const value = (event.target! as HTMLElement).innerText;
@@ -47,19 +51,19 @@ export class mainCellManager extends Helper {
       // Update SparseMatrix with new value
       this.setCell(rowNumber, columnNumber, value);
     } else {
-          console.warn('No cell is currently selected.');
+      console.warn("No cell is currently selected.");
     }
-    const element = (event.target) as HTMLElement;
+    const element = event.target as HTMLElement;
 
     if (element.scrollHeight > element.offsetHeight) {
       let currentWidth = parseInt(element.style.width) || element.offsetWidth;
       element.style.width = `${currentWidth + DEFAULT_CELL_WIDTH}px`;
-  }
+    }
   }
 
-    private handleKeyDown(event:Event) {
-      if ((event as KeyboardEvent).key === 'Enter') {
-        console.log(event)
+  private handleKeyDown(event: Event) {
+    if ((event as KeyboardEvent).key === "Enter") {
+      console.log(event);
       // this.updateCellValue(event.value);
       // this.cellFunctionality.selectedCell = null;
       // this.sheetRenderer.draw();
@@ -71,21 +75,21 @@ export class mainCellManager extends Helper {
     this.selectionCell.selectedCells[0].cell = null;
   }
 
-    public updateCellValue(value:string | null) {
-      if ( this.selectionCell.selectedCells[0]) {
-          const { row, column } =  this.selectionCell.selectedCells[0];
+  public updateCellValue(value: string | null) {
+    if (this.selectionCell.selectedCells[0]) {
+      const { row, column } = this.selectionCell.selectedCells[0];
       const rowNumber = row!.row;
       const columnNumber = column!.col;
       this.setCell(rowNumber, columnNumber, value);
     }
   }
 
-    private initiateFeature(){
+  private initiateFeature() {
     // For adding new feature call here
-        this.selectionCell = new selectionCell(this)
+    this.selectionCell = new Selection(this);
   }
 
-    public getCanvasCoordinates(event:PointerEvent) {
+  public getCanvasCoordinates(event: PointerEvent) {
     const rect = this.canvases.spreadsheet.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -95,33 +99,43 @@ export class mainCellManager extends Helper {
     // Adjust for scaling and scrolling
     return {
       x: x + scrollX * this.zoomIndex,
-          y: y + scrollY * this.zoomIndex
+      y: y + scrollY * this.zoomIndex,
     };
   }
 
-    public getCellFromCoordinates(x:number, y:number):{column:IGridHeaderCell, row:IGridHeaderCell} |null {
+  public getCellFromCoordinates(
+    x: number,
+    y: number
+  ): { column: IGridHeaderCell; row: IGridHeaderCell } | null {
     const horizontalHeaderCells = this.getHorizontalHeaderCells(x);
     const verticalHeaderCells = this.getVerticalHeaderCells(y);
 
-        const column = horizontalHeaderCells.find(cell => x >= cell.x && x < cell.x + cell.width);
-        const row = verticalHeaderCells.find(cell => y >= cell.y && y < cell.y + cell.height);
-    
+    const column = horizontalHeaderCells.find(
+      (cell) => x >= cell.x && x < cell.x + cell.width
+    );
+    const row = verticalHeaderCells.find(
+      (cell) => y >= cell.y && y < cell.y + cell.height
+    );
+
     return column && row ? { column, row } : null;
   }
 
-    public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
-        const horizontalHeaderCells = this.getHorizontalHeaderCells(0);
-        const verticalHeaderCells = this.getVerticalHeaderCells(0); 
+  public getCellsFromRect(
+    startPoint: { x: number; y: number },
+    endPoint: { x: number; y: number }
+  ) {
+    const horizontalHeaderCells = this.getHorizontalHeaderCells(0);
+    const verticalHeaderCells = this.getVerticalHeaderCells(0);
 
     const left = Math.min(startPoint.x, endPoint.x);
     const right = Math.max(startPoint.x, endPoint.x);
     const top = Math.min(startPoint.y, endPoint.y);
     const bottom = Math.max(startPoint.y, endPoint.y);
 
-        const startColIndex = this.binarySearch(horizontalHeaderCells, left, 'x');
-        const endColIndex = this.binarySearch(horizontalHeaderCells, right, 'x');
-        const startRowIndex = this.binarySearch(verticalHeaderCells, top, 'y');
-        const endRowIndex = this.binarySearch(verticalHeaderCells, bottom, 'y');
+    const startColIndex = this.binarySearch(horizontalHeaderCells, left, "x");
+    const endColIndex = this.binarySearch(horizontalHeaderCells, right, "x");
+    const startRowIndex = this.binarySearch(verticalHeaderCells, top, "y");
+    const endRowIndex = this.binarySearch(verticalHeaderCells, bottom, "y");
 
     const cells = [];
     for (let i = startColIndex; i <= endColIndex; i++) {
@@ -142,7 +156,7 @@ export class mainCellManager extends Helper {
 
   // This function is used to update the drawing with features when scrolling
   public updateDrawForScrolling(): void {
-    this.selectionCell.updateDrawForScrolling()
+    this.selectionCell.updateDrawForScrolling();
   }
 
   public updateInputElement(
@@ -150,8 +164,8 @@ export class mainCellManager extends Helper {
   ) {
     if (!cell || !cell.column || !cell.row) {
       return;
-    } 
-  
+    }
+
     //getting the input element
     this.input = document.getElementById(
       `input_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
@@ -164,9 +178,10 @@ export class mainCellManager extends Helper {
     const node = this.getCell(cell.row.row, cell.column.col);
     const fontSize = node?.styles.fontSize ?? DEFAULT_FONT_SIZE;
     const textAlign = node?.styles.textAlign ?? DEFAULT_CANVAS_TEXT_ALIGN;
-    const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
-    ? "center"
-    : node?.styles.textBaseline || "center"
+    const alignContent =
+      node?.styles.textBaseline === ETextBaseLine.middle
+        ? "center"
+        : node?.styles.textBaseline || "center";
 
     Object.assign(this.input.style, {
       position: "absolute",
@@ -179,11 +194,11 @@ export class mainCellManager extends Helper {
       lineHeight: `${fontSize * zoomIndex}px`,
       backgroundColor: DEFAULT_CELL_BG_COLOR,
       alignContent: alignContent,
-      padding: `0px ${DEFAULT_MIN_PADDING_IN_CELL - 1}px`,// shiv don't know why is this -1 to be used
+      padding: `0px ${DEFAULT_MIN_PADDING_IN_CELL - 1}px`, // shiv don't know why is this -1 to be used
       display: "block",
     });
     this.input.innerText = node?.value ?? ""; // Set the input value
-    this.input.focus()
+    this.input.focus();
   }
 
   hideInputElement() {
@@ -195,7 +210,7 @@ export class mainCellManager extends Helper {
     }
   }
 
-    public getCurrSelectedCells(){
+  public getCurrSelectedCells() {
     return this.selectionCell.selectedCells;
   }
 }

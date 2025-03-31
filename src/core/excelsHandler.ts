@@ -1,5 +1,4 @@
-import { ISheetObj } from "../dataStructure/interfaces.js";
-import { SheetMaker } from "../excel/component/sheetMaker.js";
+import { ISheetObj } from "../data/interfaces.js";
 import { Excel } from "../excel/excel.js";
 import { Plugin } from "../plugin/plugin.js";
 import { ThemeManager } from "../theme/theme.js";
@@ -249,6 +248,7 @@ export class ExcelsHandler {
       }
 
       currentElement.style.display = "none";
+      /* SonarQube ignore next line */  
       currentElement.offsetHeight; // Force reflow
       currentElement.style.display = "";
     };

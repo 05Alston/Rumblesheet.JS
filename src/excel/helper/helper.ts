@@ -1,11 +1,11 @@
-import { ECanvasType } from "../../dataStructure/enums.js";
-import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
-import { Cell, SparseMatrix } from "../../dataStructure/sparseMatrix.js";
-import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
-import { GridHeaderManager } from "./gridManager.js";
-import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
-import { SheetMaker } from "./sheetMaker.js";
-import { SheetRendrer } from "./sheetrendrer.js";
+import { ECanvasType } from "../../data/enums.js";
+import { IGridHeaderCell } from "../../data/interfaces.js";
+import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
+import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
+import { GridHeaderManager } from "../controllers/gridManager.js";
+import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
+import { SheetMaker } from "../controllers/sheetMaker.js";
+import { SheetRendrer } from "../controllers/sheetRendrer.js";
 
 export class Helper {
   public scroll: Scroll;
@@ -31,7 +31,7 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
-  public mainCellManager!: mainCellManager;
+  public mainCellManager!: MainCellManager;
 
   constructor(Sheet: SheetMaker) {
     this.sheet = Sheet;

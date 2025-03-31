@@ -8,13 +8,13 @@ import {
   indentActions,
   instantActions,
   textBaseLineActions,
-} from "../dataStructure/constants.js";
+} from "../data/constants.js";
 import {
   EFontFamilies,
   ERibbonDataActions,
   ETextAlign,
   ETextBaseLine,
-} from "../dataStructure/enums.js";
+} from "../data/enums.js";
 import { Ribbon } from "../ribbon/ribbon.js";
 import { ExcelsHandler } from "./excelsHandler.js";
 

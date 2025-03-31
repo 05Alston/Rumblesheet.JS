@@ -1,6 +1,6 @@
-import { Ribbon } from "../ribbon/ribbon.js";
-import { EventManager } from "./eventManager.js";
-import { ExcelsHandler } from "./excelsHandler.js";
+import { EventManager } from "./core/eventManager.js";
+import { ExcelsHandler } from "./core/excelsHandler.js";
+import { Ribbon } from "./ribbon/ribbon.js";
 
 export class Rumblesheet {
   wrapperContainer!: HTMLElement;
@@ -22,31 +22,45 @@ export class Rumblesheet {
   }
 
   private init() {
-    // Create rumblesheet container element
+    const rumblesheetContainer = this.createRumblesheetContainer();
+    const ribbonContainer = this.createRibbonContainer(rumblesheetContainer);
+    const mainContainer = this.createMainContainer(rumblesheetContainer);
+
+    this.wrapperContainer.appendChild(rumblesheetContainer);
+
+    this.initializeInstances(ribbonContainer, mainContainer);
+  }
+
+  private createRumblesheetContainer(): HTMLElement {
     const rumblesheetContainer = document.createElement("div");
     rumblesheetContainer.id = "rumblesheet";
     rumblesheetContainer.className = "rumblesheet";
+    return rumblesheetContainer;
+  }
 
-    // Create ribbon and main container elements
+  private createRibbonContainer(parent: HTMLElement): HTMLElement {
     const ribbonContainer = document.createElement("div");
     ribbonContainer.id = "ribbon";
     ribbonContainer.className = "ribbon";
+    parent.appendChild(ribbonContainer);
+    return ribbonContainer;
+  }
 
+  private createMainContainer(parent: HTMLElement): HTMLElement {
     const mainContainer = document.createElement("div");
     mainContainer.id = "mainContainer";
     mainContainer.className = "mainContainer";
+    parent.appendChild(mainContainer);
+    return mainContainer;
+  }
 
-    // Append them to the rumblesheet container
-    rumblesheetContainer.appendChild(ribbonContainer);
-    rumblesheetContainer.appendChild(mainContainer);
-
-    // Append the rumblesheet container to the wrapper container
-    this.wrapperContainer.appendChild(rumblesheetContainer);
-
-    // Initialize instances
+  private initializeInstances(
+    ribbonContainer: HTMLElement,
+    mainContainer: HTMLElement
+  ): void {
     const maxRow = 3;
     const maxCol = 3;
-    this.ribbon = new Ribbon(ribbonContainer, rumblesheetContainer);
+    this.ribbon = new Ribbon(ribbonContainer, ribbonContainer.parentElement!);
     this.excelHandler = new ExcelsHandler(mainContainer, maxRow, maxCol);
     this.eventManager = new EventManager(this.excelHandler, this.ribbon);
   }

@@ -1,4 +1,4 @@
-import { SheetMaker } from "../excel/component/sheetMaker";
+import { SheetMaker } from "../excel/controllers/sheetMaker";
 import {
   EFontFamilies,
   ETextAlign,

@@ -1,4 +1,4 @@
-import { ITheme,IThemeStructure } from "../dataStructure/interfaces";
+import { ITheme,IThemeStructure } from "../data/interfaces";
 
 enum EPreDefinedThemes {
   NORMAL = "normal",

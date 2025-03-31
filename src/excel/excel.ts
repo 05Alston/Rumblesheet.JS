@@ -1,6 +1,6 @@
 import { ExcelsHandler } from "../core/excelsHandler.js";
-import { ISheetObj } from "../dataStructure/interfaces.js";
-import { SheetMaker } from "./component/sheetMaker.js";
+import { ISheetObj } from "../data/interfaces.js";
+import { SheetMaker } from "./controllers/sheetMaker.js";
 
 export class Excel {
   private rowContainer: HTMLElement;
