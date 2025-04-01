@@ -33,7 +33,6 @@ export class SheetMaker {
         ) {
           // Once both sections are added, instantiate this.helper
           this.helper = new Helper(this);
-          this.initiatefeature();
           observer.disconnect(); // Stop observing
           break;
         }
@@ -42,11 +41,6 @@ export class SheetMaker {
 
     // Start observing the DOM for changes
     observer.observe(document.body, { childList: true, subtree: true });
-  }
-
-  private initiatefeature() {
-    // to add helper to feature classes
-    this.mainCellManager = new MainCellManager(this);
   }
 
   private createTopSection(): HTMLElement {

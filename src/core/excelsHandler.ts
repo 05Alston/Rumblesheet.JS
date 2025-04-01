@@ -248,7 +248,7 @@ export class ExcelsHandler {
       }
 
       currentElement.style.display = "none";
-      /* SonarQube ignore next line */  
+      /* SonarQube ignore next line */
       currentElement.offsetHeight; // Force reflow
       currentElement.style.display = "";
     };
