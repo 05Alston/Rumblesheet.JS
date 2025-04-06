@@ -60,7 +60,6 @@ export class EventManager {
 
   private attachEvents() {
     this.attachRibbonEvents();
-    this.uploadBtnEvents();
   }
 
   //* Attach Events Functions
@@ -169,46 +168,7 @@ export class EventManager {
     this.attachRibbonFeatureEvents();
   }
 
-  private uploadBtnEvents(): void {
-    //todo not updated as per use till now
-    const uploadButton = document.getElementById(
-      "uploadButton"
-    ) as HTMLButtonElement;
-    if (uploadButton) {
-      uploadButton.addEventListener(
-        "click",
-        this.excelsHandler.plugin.handleFileUpload.bind(
-          this.excelsHandler.plugin
-        )
-      );
-    } else {
-      console.error("Upload button not found.");
-    }
-  }
-
   //* Handler Functions
-
-  handleFileUpload(): void {
-    //todo yet to be updated
-    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    const file = fileInput.files ? fileInput.files[0] : null;
-
-    if (file) {
-      this.handleCsvUpload(file);
-    } else {
-      // console.log("No file selected.");
-    }
-  }
-
-  public async handleCsvUpload(file: File): Promise<void> {
-    //todo yet to be updated
-    const fileData = await file.text();
-    const rows: string[][] = fileData
-      .split("\n")
-      .map((line) => line.split(",").map((value) => value.trim()));
-
-    alert("CSV uploaded and matrix populated successfully.");
-  }
 
   public performRibbonAction(ele: HTMLElement) {
     if (!ele) {

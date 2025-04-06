@@ -3,76 +3,75 @@ import { ISheetObj } from "../data/interfaces.js";
 import { SheetMaker } from "./controllers/sheetMaker.js";
 
 export class Excel {
-  private rowContainer: HTMLElement;
-  private row: number;
-  private col: number;
-  private excelHandler: ExcelsHandler; // Replace with the actual type for Grid_maker
-  public excel!: HTMLElement;
+  private readonly excelRowContainer: HTMLElement;
+  private readonly excelRowNumber: number;
+  private readonly excelColNumber: number;
+  private readonly excelsHandler: ExcelsHandler;
+  public excelElement!: HTMLElement;
   private contentArea!: HTMLElement;
-  private activeSheetIndex: number;
-  private sheets!: ISheetObj[];
+  private activeSheetIndex: number = 0;
+  private readonly sheetsArr: ISheetObj[] = [];
 
   constructor(
-    rowContainer: HTMLElement,
-    row: number,
-    col: number,
-    excelHandler: ExcelsHandler
+    excelRowContainer: HTMLElement,
+    excelRowNumber: number,
+    excelColNumber: number,
+    excelsHandler: ExcelsHandler
   ) {
-    this.rowContainer = rowContainer;
-    this.row = row;
-    this.col = col;
-    this.excelHandler = excelHandler;
-    this.activeSheetIndex = 0;
+    this.excelRowContainer = excelRowContainer;
+    this.excelRowNumber = excelRowNumber;
+    this.excelColNumber = excelColNumber;
+    this.excelsHandler = excelsHandler;
     this.init();
   }
 
   private init(): void {
-    this.constructExcel();
-    this.excelHandler.updateCurrExcel(
-      this.row,
-      this.col,
-      this.sheets[this.activeSheetIndex]
-    );
+    this.createExcelElement();
+    this.createInitialSheet();
+    this.appendChildrenToExcelElement();
+    this.updateContentArea();
+    this.notifyExcelsHandler();
     this.handleEvents();
   }
 
-  private constructExcel(): void {
-    this.excel = document.createElement("div");
-    this.excel.className = "excel resizable";
-    this.excel.id = `rowCol${this.row}_${this.col}`;
-    this.excel.role = "gridcell";
-    this.excel.ariaRowIndex = "this.row";
-    this.excel.ariaColIndex = "this.col";
-    this.excel.style.flex = "1";
-    this.rowContainer.appendChild(this.excel);
-    this.sheets = [
-      {
-        name: "Sheet1",
-        instance: new SheetMaker("Sheet1", this.row, this.col, 0),
-      },
-    ];
-    this.createExcel();
+  private createExcelElement(): void {
+    this.excelElement = document.createElement("div");
+    this.excelElement.className = "excel resizable";
+    this.excelElement.id = `row-${this.excelRowNumber}-col-${this.excelColNumber}`;
+    this.excelElement.role = "gridcell";
+    this.excelElement.ariaRowIndex = `${this.excelRowNumber}`;
+    this.excelElement.ariaColIndex = `${this.excelColNumber}`;
+    this.excelRowContainer.appendChild(this.excelElement);
   }
 
-  private createExcel() {
-    this.excel.innerHTML = "";
-    const wrapper = document.createElement("div");
-    wrapper.className = "excel-wrapper";
+  private createInitialSheet(): void {
+    const sheetName = "Sheet1";
+    this.sheetsArr.push({
+      name: sheetName,
+      instance: new SheetMaker(
+        sheetName,
+        this.excelRowNumber,
+        this.excelColNumber,
+        0
+      ),
+    });
+  }
+
+  private appendChildrenToExcelElement() {
+    this.excelElement.innerHTML = "";
 
     this.contentArea = document.createElement("div");
-    this.contentArea.className = "contentArea";
-    this.updateContentArea();
+    this.contentArea.className = "content-area";
 
     const sheetBar = this.createSheetBar();
 
-    wrapper.appendChild(this.contentArea);
-    wrapper.appendChild(sheetBar);
-    this.excel.appendChild(wrapper);
+    this.excelElement.append(this.contentArea, sheetBar);
   }
 
   private updateContentArea(): void {
     this.contentArea.innerHTML = "";
-    const activeSheet = this.sheets[this.activeSheetIndex].instance;
+    const activeSheet = this.sheetsArr[this.activeSheetIndex].instance;
+    // todo : redefine top and middle section
     this.contentArea.appendChild(activeSheet.elements.topSection);
     this.contentArea.appendChild(activeSheet.elements.middleSection);
   }
@@ -96,29 +95,31 @@ export class Excel {
             <button class="scroll-right">▶</button>
         `;
 
-    sheetBar.appendChild(controls);
-    sheetBar.appendChild(tabs);
-    sheetBar.appendChild(scroll);
+    sheetBar.append(controls, tabs, scroll);
 
     const addSheetButton = controls.querySelector(".add-sheet") as HTMLElement;
-    addSheetButton.onclick = () => this.addSheet();
+    addSheetButton.addEventListener("click", () => this.addSheet());
 
-    tabs.onclick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.classList.contains("sheet-tab")) {
-        const index = parseInt(target.dataset.index ?? "0");
-        this.switchSheet(index);
-      } else if (target.classList.contains("close-tab")) {
-        const index = parseInt(target.dataset.index ?? "0");
-        this.removeSheet(index);
-      }
-    };
+    tabs.addEventListener("click", (e: MouseEvent) =>
+      this.handleSheetTabClick(e)
+    );
 
     return sheetBar;
   }
 
+  private handleSheetTabClick(e: MouseEvent): void {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains("sheet-tab")) {
+      const index = parseInt(target.dataset.index ?? "0");
+      this.switchSheet(index);
+    } else if (target.classList.contains("close-tab")) {
+      const index = parseInt(target.dataset.index ?? "0");
+      this.removeSheet(index);
+    }
+  }
+
   private updateSheetTabs(tabsContainer: HTMLElement): void {
-    tabsContainer.innerHTML = this.sheets
+    tabsContainer.innerHTML = this.sheetsArr
       .map(
         (sheet, index) => `
             <div class="sheet-tab ${
@@ -133,36 +134,41 @@ export class Excel {
   }
 
   private addSheet(): void {
-    const newIndex = this.sheets.length;
+    const newIndex = this.sheetsArr.length;
     // todo : check if the name already exists
     const newName = `Sheet${newIndex + 1}`;
-    this.sheets.push({
+    this.sheetsArr.push({
       name: newName,
-      instance: new SheetMaker(newName, this.row, this.col, newIndex),
+      instance: new SheetMaker(
+        newName,
+        this.excelRowNumber,
+        this.excelColNumber,
+        newIndex
+      ),
     });
     this.switchSheet(newIndex);
-    this.updateSheetTabs(this.excel.querySelector(".sheet-tabs")!);
+    this.updateSheetTabs(this.excelElement.querySelector(".sheet-tabs")!);
   }
 
   private switchSheet(index: number): void {
     if (
       index !== this.activeSheetIndex &&
       index >= 0 &&
-      index < this.sheets.length
+      index < this.sheetsArr.length
     ) {
       this.activeSheetIndex = index;
       this.updateContentArea();
-      this.updateSheetTabs(this.excel.querySelector(".sheet-tabs")!);
+      this.updateSheetTabs(this.excelElement.querySelector(".sheet-tabs")!);
     }
   }
 
   private removeSheet(index: number): void {
-    if (this.sheets.length <= 1) {
+    if (this.sheetsArr.length <= 1) {
       alert("You cannot remove the last sheet.");
       return;
     }
 
-    this.sheets.splice(index, 1);
+    this.sheetsArr.splice(index, 1);
 
     if (index === this.activeSheetIndex) {
       this.activeSheetIndex = Math.max(0, index - 1);
@@ -171,21 +177,25 @@ export class Excel {
     }
 
     this.updateContentArea();
-    this.updateSheetTabs(this.excel.querySelector(".sheet-tabs")!);
+    this.updateSheetTabs(this.excelElement.querySelector(".sheet-tabs")!);
   }
 
   private handleEvents(): void {
-    this.excel.addEventListener("click", (e: MouseEvent) => {
+    this.excelElement.addEventListener("click", (e: MouseEvent) => {
       this.handleMouseDown(e);
     });
   }
 
   private handleMouseDown(e: MouseEvent): void {
     e.preventDefault();
-    this.excelHandler.updateCurrExcel(
-      this.row,
-      this.col,
-      this.sheets[this.activeSheetIndex]
+    this.notifyExcelsHandler();
+  }
+
+  private notifyExcelsHandler(): void {
+    this.excelsHandler.updateCurrExcel(
+      this.excelRowNumber,
+      this.excelColNumber,
+      this.sheetsArr[this.activeSheetIndex]
     );
   }
 }

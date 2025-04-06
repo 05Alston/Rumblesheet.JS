@@ -1,82 +1,82 @@
-.excel-wrapper {
+.excel {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 }
-.excel-wrapper .top-section {
+.excel .top-section {
   display: flex;
   height: 20px;
 }
-.excel-wrapper .top-section .nothing {
+.excel .top-section .nothing {
   box-shadow: 1px 1px solid gray;
   width: 30px;
 }
-.excel-wrapper .top-section .upperCanvas {
+.excel .top-section .upperCanvas {
   flex: 1;
   position: relative;
 }
-.excel-wrapper .top-section .horizontalCanvas {
+.excel .top-section .horizontalCanvas {
   width: calc(100% - 10px);
   height: 100%;
 }
-.excel-wrapper .middleSection {
+.excel .middleSection {
   display: flex;
   flex: 1;
   position: relative;
 }
-.excel-wrapper .verticalCanvas {
+.excel .verticalCanvas {
   width: 30px;
   position: relative;
 }
-.excel-wrapper .verticalCanvas canvas {
+.excel .verticalCanvas canvas {
   width: 100%;
   height: 100%;
   background-color: var(--excelHorizontalCanvasBgColor);
 }
-.excel-wrapper .fullCanvas {
+.excel .fullCanvas {
   flex: 1;
   position: relative;
 }
-.excel-wrapper .fullCanvas .spreadsheetCanvas {
+.excel .fullCanvas .spreadsheetCanvas {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
 }
-.excel-wrapper .fullCanvas .verticalScroll,
-.excel-wrapper .fullCanvas .horizontalScroll {
+.excel .fullCanvas .verticalScroll,
+.excel .fullCanvas .horizontalScroll {
   position: absolute;
   background: var(--scrollbarTrackColor);
 }
-.excel-wrapper .fullCanvas .verticalScroll {
+.excel .fullCanvas .verticalScroll {
   right: 0;
   top: 0;
   width: 10px;
   height: calc(100% - 10px);
 }
-.excel-wrapper .fullCanvas .horizontalScroll {
+.excel .fullCanvas .horizontalScroll {
   bottom: 0;
   left: 0;
   width: calc(100% - 10px);
   height: 10px;
 }
-.excel-wrapper .fullCanvas .verticalBar,
-.excel-wrapper .fullCanvas .horizontalBar {
+.excel .fullCanvas .verticalBar,
+.excel .fullCanvas .horizontalBar {
   position: absolute;
   background: var(--scrollbarThumbColor);
   border-radius: 5px;
 }
-.excel-wrapper .fullCanvas .verticalBar {
+.excel .fullCanvas .verticalBar {
   width: 100%;
   height: 50%;
   top: 0;
 }
-.excel-wrapper .fullCanvas .horizontalBar {
+.excel .fullCanvas .horizontalBar {
   height: 100%;
   width: 50%;
   left: 0;
 }
 
-.contentArea {
+.content-area {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -84,20 +84,20 @@
 }
 
 /* sheetbar */
-.excel-wrapper .sheet-bar {
+.excel .sheet-bar {
   display: flex;
   align-items: center;
   height: 24px;
   background-color: var(--footerBgColor);
   border-top: 1px solid #e0e0e0;
 }
-.excel-wrapper .sheet-bar .sheet-controls {
+.excel .sheet-bar .sheet-controls {
   display: flex;
   align-items: center;
   width: 30px;
   box-sizing: border-box;
 }
-.excel-wrapper .sheet-bar .sheet-controls button {
+.excel .sheet-bar .sheet-controls button {
   background: none;
   border: none;
   cursor: pointer;
@@ -107,15 +107,15 @@
   background-color: var(--footerAddBtnBgColor);
   color: var(--footerAddBtnTextColor);
 }
-.excel-wrapper .sheet-bar .sheet-controls button:hover {
+.excel .sheet-bar .sheet-controls button:hover {
   background-color: #e0e0e0;
 }
-.excel-wrapper .sheet-bar .sheet-tabs {
+.excel .sheet-bar .sheet-tabs {
   display: flex;
   overflow-x: auto;
   flex-grow: 1;
 }
-.excel-wrapper .sheet-bar .sheet-tabs .sheet-tab {
+.excel .sheet-bar .sheet-tabs .sheet-tab {
   padding: 3px 15px;
   background-color: var(--footerSheetBtnBgColor);
   cursor: pointer;
@@ -124,7 +124,7 @@
   font-size: small;
   color: var(--footerSheetBtnTextColor);
 }
-.excel-wrapper .sheet-bar .sheet-tabs .sheet-tab .close-tab {
+.excel .sheet-bar .sheet-tabs .sheet-tab .close-tab {
   position: absolute;
   right: -5px;
   top: 5px;
@@ -136,19 +136,19 @@
   font-size: 12px;
   font-weight: bold;
 }
-.excel-wrapper .sheet-bar .sheet-tabs .sheet-tab.active {
+.excel .sheet-bar .sheet-tabs .sheet-tab.active {
   background-color: #fff;
   border-bottom: 2px solid #1a73e8;
 }
-.excel-wrapper .sheet-bar .sheet-tabs .sheet-tab:hover {
+.excel .sheet-bar .sheet-tabs .sheet-tab:hover {
   background-color: #e0e0e0;
 }
-.excel-wrapper .sheet-bar .sheet-scroll {
+.excel .sheet-bar .sheet-scroll {
   display: flex;
   align-items: center;
   padding: 0 5px;
 }
-.excel-wrapper .sheet-bar .sheet-scroll button {
+.excel .sheet-bar .sheet-scroll button {
   background: none;
   border: none;
   cursor: pointer;
@@ -156,6 +156,6 @@
   padding: 2px 5px;
   color: #5f6368;
 }
-.excel-wrapper .sheet-bar .sheet-scroll button:hover {
+.excel .sheet-bar .sheet-scroll button:hover {
   background-color: #e0e0e0;
 }
