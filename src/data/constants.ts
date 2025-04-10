@@ -1,14 +1,15 @@
 import {
   EFontFamilies,
+  ERibbonDataActions,
   ETextAlign,
   ETextBaseLine,
   ETextWrapping,
-  ICellStyles,
-  ribbonDataActions,
-} from "./interfaces.js";
+} from "./enums.js";
+import { ICellStyles } from "./interfaces.js";
 
 //* constants for all canvas
-
+export const DEFAULT_HORIZONTAL_CANVAS_HEIGHT = 20;
+export const DEFAULT_VERTICAL_CANVAS_WIDTH = 30;
 export const DEFAULT_CANVAS_LINES_COLOR = "#000000";
 export const DEFAULT_CANVAS_TEXT_COLOR = "#000000";
 export const DEFAULT_CANVAS_FONT_FAMILY = EFontFamilies.arial;
@@ -27,15 +28,14 @@ export const DEFAULT_CELL_INDENT = 0;
 export const DEFAULT_CELL_WIDTH = 120;
 export const DEFAULT_CELL_HEIGHT = 40;
 
-
 export const DEFAULT_CELL_STYLES: ICellStyles = {
   textAlign: DEFAULT_CANVAS_TEXT_ALIGN,
   textBaseline: DEFAULT_CANVAS_TEXT_BASELINE,
   fontSize: DEFAULT_FONT_SIZE,
   fontFamily: DEFAULT_CANVAS_FONT_FAMILY,
   color: DEFAULT_CELL_FONT_COLOR,
-  textIndent : DEFAULT_CELL_INDENT,
-  textWrapping : DEFAULT_CANVAS_TEXT_WRAPPING
+  textIndent: DEFAULT_CELL_INDENT,
+  textWrapping: DEFAULT_CANVAS_TEXT_WRAPPING,
 };
 
 export const DEFAULT_MIN_PADDING_IN_CELL = 8;
@@ -64,29 +64,29 @@ export const FONT_FAMILY_ARRAY: EFontFamilies[] = [
   EFontFamilies.rubik,
 ];
 export const activePossibleActions = [
-  ribbonDataActions.bold,
-  ribbonDataActions.italic,
-  ribbonDataActions.underline,
+  ERibbonDataActions.bold,
+  ERibbonDataActions.italic,
+  ERibbonDataActions.underline,
 ];
 export const alignmentActions = [
-  ribbonDataActions.alignCenter,
-  ribbonDataActions.alignLeft,
-  ribbonDataActions.alignRight,
+  ERibbonDataActions.alignCenter,
+  ERibbonDataActions.alignLeft,
+  ERibbonDataActions.alignRight,
 ];
 
 export const textBaseLineActions = [
-  ribbonDataActions.textBaselineBottom,
-  ribbonDataActions.textBaselineMiddle,
-  ribbonDataActions.textBaselineTop,
+  ERibbonDataActions.textBaselineBottom,
+  ERibbonDataActions.textBaselineMiddle,
+  ERibbonDataActions.textBaselineTop,
 ];
 export const indentActions = [
-  ribbonDataActions.increaseIndent,
-  ribbonDataActions.decreaseIndent,
+  ERibbonDataActions.increaseIndent,
+  ERibbonDataActions.decreaseIndent,
 ];
 export const instantActions = [
-  ribbonDataActions.increaseFont,
-  ribbonDataActions.decreaseFont,
-  ribbonDataActions.copy,
-  ribbonDataActions.paste,
-  ribbonDataActions.cut,
+  ERibbonDataActions.increaseFont,
+  ERibbonDataActions.decreaseFont,
+  ERibbonDataActions.copy,
+  ERibbonDataActions.paste,
+  ERibbonDataActions.cut,
 ];

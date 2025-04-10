@@ -1,4 +1,4 @@
-import { ITheme,IThemeStructure } from "../dataStructure/interfaces";
+import { ITheme,IThemeStructure } from "../data/interfaces";
 
 enum EPreDefinedThemes {
   NORMAL = "normal",
@@ -6,7 +6,6 @@ enum EPreDefinedThemes {
   GREEN = "green",
   VIOLET = "violet"
 }
-
 
 export class ThemeManager {
   //define variables

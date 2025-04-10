@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="assets/styles/ribbon.css" />
     <link rel="stylesheet" href="assets/styles/icons.css" />
     <link rel="stylesheet" href="assets/styles/main-container.css" />
-    <link rel="stylesheet" href="assets/styles/rumblesheet-wrapper.css" />
+    <link rel="stylesheet" href="assets/styles/excel.css" />
   </head>
 
   <body>
-    <div id="rumblesheet" class="rumblesheet"></div>
+    <div id="sample"></div>
 
     <script type="module">
-      import { Rumblesheet } from "./dist/core/rumblesheet.js";
-      new Rumblesheet("rumblesheet");
+      import { Rumblesheet } from "./dist/rumblesheet.js";
+      const sheet = new Rumblesheet("sample");
     </script>
   </body>
 </html>

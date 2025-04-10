@@ -1,33 +1,22 @@
 import { RibbonFunctionalities } from "./ribbonFunctionalities.js";
 import {
-  EFontFamilies,
-  ribbonDataActions,
-} from "../dataStructure/interfaces.js";
-import {
   DEFAULT_FONT_FAMILTY,
   DEFAULT_FONT_SIZE,
   FONT_FAMILY_ARRAY,
   FONT_SIZES_ARRAY,
-} from "../dataStructure/constants.js";
-
-enum TabList {
-  file = "File",
-  home = "Home",
-  graph = "Graph",
-  operations = "Operations",
-  format = "Format",
-}
+} from "../data/constants.js";
+import { EFontFamilies, ERibbonDataActions, ETabList } from "../data/enums.js";
 
 export class Ribbon {
   private ribbonElement: HTMLElement; //ribbon element where the ribbon is to be embedded
   private rumblesheetElement: HTMLElement; //rumblesheet element where the ribbon is to be embedded
   ribbonFunctions!: RibbonFunctionalities;
-  tabs: TabList[] = [
-    TabList.file,
-    TabList.home,
-    TabList.graph,
-    TabList.operations,
-    TabList.format,
+  tabs: ETabList[] = [
+    ETabList.file,
+    ETabList.home,
+    ETabList.graph,
+    ETabList.operations,
+    ETabList.format,
   ];
   fontSizes: number[] = FONT_SIZES_ARRAY;
   fontFamilies: EFontFamilies[] = FONT_FAMILY_ARRAY;
@@ -102,7 +91,7 @@ export class Ribbon {
                   <div class="content divided-in-column">
                     <div class="col">
                       <div class="feature-vertical btn" role="button" tabindex="0" data-action = '${
-                        ribbonDataActions.paste
+                        ERibbonDataActions.paste
                       }' >
                         <div class="icon icon-paste"></div>
                         <p class="icon-name">Paste</p>
@@ -111,13 +100,13 @@ export class Ribbon {
                     <div class="sub-divider collapsed"></div>
                     <div class="col">
                       <div class="feature-horizontal btn" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.cut
+                        ERibbonDataActions.cut
                       }' >
                         <div class="icon icon-cut"></div>
                         <p class="icon-name">Cut</p>
                       </div>
                       <div class="feature-horizontal btn" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.copy
+                        ERibbonDataActions.copy
                       }' >
                         <div class="icon icon-copy"></div>
                         <p class="icon-name">Copy</p>
@@ -139,7 +128,7 @@ export class Ribbon {
                     <div class="row">
                       <select
                         class="select-options"
-                        data-action = '${ribbonDataActions.fontFamily}'
+                        data-action = '${ERibbonDataActions.fontFamily}'
                         name="font-family"
                         id="family-select"
                       >
@@ -156,7 +145,7 @@ export class Ribbon {
                       </select>
                       <select
                         class="select-options"
-                        data-action = '${ribbonDataActions.fontSize}'
+                        data-action = '${ERibbonDataActions.fontSize}'
                         name="font-size"
                         id="size-select"
                       >
@@ -170,13 +159,13 @@ export class Ribbon {
                           .join("")}
                       </select>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.decreaseFont
+                        ERibbonDataActions.decreaseFont
                       }'>
                         <div class="icon icon-font-size-decrease"></div>
                         <p class="icon-name">Font Size Decrease</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.increaseFont
+                        ERibbonDataActions.increaseFont
                       }' >
                         <div class="icon icon-font-size-increase"></div>
                         <p class="icon-name">Font Size Increase</p>
@@ -185,19 +174,19 @@ export class Ribbon {
                     <div class="sub-divider collapsed"></div>
                     <div class="row">
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.bold
+                        ERibbonDataActions.bold
                       }' >
                         <div class="icon icon-bold"></div>
                         <p class="icon-name">Bold</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.italic
+                        ERibbonDataActions.italic
                       }' >
                         <div class="icon icon-italic"></div>
                         <p class="icon-name">Italic</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.underline
+                        ERibbonDataActions.underline
                       }' >
                         <div class="icon icon-underline"></div>
                         <p class="icon-name">Underline</p>
@@ -205,14 +194,14 @@ export class Ribbon {
                       <div class="feature-icon feature-icon-input">
                         <div class="icon icon-fill"></div>
                         <input type="color" data-action = '${
-                          ribbonDataActions.fillColor
+                          ERibbonDataActions.fillColor
                         }' />
                         <p class="icon-name">Fill</p>
                       </div>
                       <div class="feature-icon feature-icon-input">
                         <div class="icon icon-A"></div>
                         <input type="color"  data-action = '${
-                          ribbonDataActions.textColor
+                          ERibbonDataActions.textColor
                         }' />
                         <p class="icon-name">Font Color</p>
                       </div>
@@ -232,19 +221,19 @@ export class Ribbon {
                   <div class="content divided-in-row">
                     <div class="row">
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.alignLeft
+                        ERibbonDataActions.alignLeft
                       }' >
                         <div class="icon icon-align-left"></div>
                         <p class="icon-name">Align Left</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.alignCenter
+                        ERibbonDataActions.alignCenter
                       }'>
                         <div class="icon icon-align-center"></div>
                         <p class="icon-name">Align Center</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.alignRight
+                        ERibbonDataActions.alignRight
                       }' >
                         <div class="icon icon-align-right"></div>
                         <p class="icon-name">Align Right</p>
@@ -253,32 +242,32 @@ export class Ribbon {
                     <div class="sub-divider collapsed"></div>
                     <div class="row">
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.decreaseIndent
+                        ERibbonDataActions.decreaseIndent
                       }' >
                         <div class="icon icon-decrease-indent"></div>
                         <p class="icon-name">Decrease Indent</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.increaseIndent
+                        ERibbonDataActions.increaseIndent
                       }' >
                         <div class="icon icon-increase-indent"></div>
                         <p class="icon-name">Increase Indent</p>
                       </div>
                       <div class="row">
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.textBaselineTop
+                        ERibbonDataActions.textBaselineTop
                       }' >
                         <div class="icon icon-text-baseline-top"></div>
                         <p class="icon-name">Align Top</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.textBaselineMiddle
+                        ERibbonDataActions.textBaselineMiddle
                       }'>
                         <div class="icon icon-text-baseline-middle"></div>
                         <p class="icon-name">Align Middle</p>
                       </div>
                       <div class="feature-icon" role="button" tabindex="0"  data-action = '${
-                        ribbonDataActions.textBaselineBottom
+                        ERibbonDataActions.textBaselineBottom
                       }' >
                         <div class="icon icon-text-baseline-bottom"></div>
                         <p class="icon-name">Align Bottom</p>
@@ -327,19 +316,19 @@ export class Ribbon {
             const tabId = `tab-${index + 1}`;
             let tabContent = "";
             switch (tab) {
-              case TabList.file:
+              case ETabList.file:
                 tabContent = this.getFileTabContent();
                 break;
-              case TabList.home:
+              case ETabList.home:
                 tabContent = this.getHomeTabContent();
                 break;
-              case TabList.graph:
+              case ETabList.graph:
                 tabContent = this.getGraphTabContent();
                 break;
-              case TabList.operations:
+              case ETabList.operations:
                 tabContent = this.getOperationsTabContent();
                 break;
-              case TabList.format:
+              case ETabList.format:
                 tabContent = this.getFormatTabContent();
                 break;
               default:
