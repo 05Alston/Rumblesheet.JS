@@ -1,5 +1,5 @@
 import { Helper } from "../helper/helper.js";
-import { IGridHeaderCell } from "../../data/interfaces.js";
+import { ICell, IGridHeaderCell } from "../../data/interfaces.js";
 import { DEFAULT_CANVAS_LINE_WIDTH, DEFAULT_CANVAS_TEXT_ALIGN, DEFAULT_CANVAS_TEXT_BASELINE,  DEFAULT_CANVAS_LINES_COLOR, DEFAULT_CANVAS_TEXT_COLOR, DEFAULT_CANVAS_FONT_FAMILY, DEFAULT_MIN_PADDING_IN_CELL, DEFAULT_CELL_BG_COLOR, DEFAULT_CELL_FONT_COLOR, DEFAULT_FONT_SIZE } from "../../data/constants.js";
 import { ETextAlign, ETextBaseLine } from "../../data/enums.js";
 
@@ -296,108 +296,111 @@ export class SheetRendrer {
 
   drawSparseMatrixValues(scrollX: number, scrollY: number): void {
     const ctx: CanvasRenderingContext2D = this.contexts!.spreadsheet;
-    const visibleWidth: number =
-      this.canvases!.spreadsheet.width / window.devicePixelRatio;
-    const visibleHeight: number =
-      this.canvases!.spreadsheet.height / window.devicePixelRatio;
-
-    // Map vertical and horizontal cells for faster lookup
+    const visibleWidth: number = this.canvases!.spreadsheet.width / window.devicePixelRatio;
+    const visibleHeight: number = this.canvases!.spreadsheet.height / window.devicePixelRatio;
+  
     const verticalCellMap: Map<number | string, IGridHeaderCell> = new Map(
       this.verticalCells.map((cell: IGridHeaderCell) => [cell.value, cell])
     );
     const horizontalCellMap: Map<string, IGridHeaderCell> = new Map(
-        this.horizontalCells.map((cell: IGridHeaderCell) => [cell.value as string, cell])
+      this.horizontalCells.map((cell: IGridHeaderCell) => [cell.value as string, cell])
     );
-
-    // Iterate through the sparse matrix rows
-    // ------------------------- need to fix a better approach is there ----------------------
-    let rowHeader = this.helper.getRowheader()
+  
+    let rowHeader = this.helper.getRowheader();
     for (const row in rowHeader) {
       let current = rowHeader[row];
-
       while (current) {
-        // Find corresponding header cells
-            const vCell: IGridHeaderCell | undefined = verticalCellMap.get(current.rowValue);
-        const hCell: IGridHeaderCell | undefined = horizontalCellMap.get(
-          this.helper!.numberToColumnName(current.colValue)
-        );
-
-        // If both header cells are found (i.e., the cell is visible)
-        if (vCell && hCell) {
-          const cellX: number = hCell.x - scrollX;
-          const cellY: number = vCell.y - scrollY;
-
-          // Only render cells within the visible area
-          if (
-            cellX < visibleWidth &&
-            cellY < visibleHeight &&
-            cellX + hCell.width > 0 &&
-            cellY + vCell.height > 0
-          ) {
-            // Save context and set text styles
-            ctx.save();
-
-            if (current) {
-              ctx.fillStyle = current.styles.color ?? DEFAULT_CANVAS_TEXT_COLOR;
-              let fontSize = (current.styles?.fontSize ?? DEFAULT_FONT_SIZE)*this.zoomIndex as number;
-              let fontFamily = (current.styles?.fontFamily ?? DEFAULT_CANVAS_FONT_FAMILY);
-              let fontWeight = current.styles?.bold ? "bold" : "normal";
-              let fontStyle = current.styles?.italic ? "italic" : "normal";
-              ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
-            }
-
-            // Clip the rendering area to the cell's rectangle
-            ctx.beginPath();
-            ctx.fillStyle = current.styles.fill ?? DEFAULT_CELL_BG_COLOR
-            ctx.fillRect(cellX+DEFAULT_CANVAS_LINE_WIDTH/2, cellY+DEFAULT_CANVAS_LINE_WIDTH/2, hCell.width-DEFAULT_CANVAS_LINE_WIDTH , vCell.height-DEFAULT_CANVAS_LINE_WIDTH)//todo shiv why i need to do this.
-            ctx.fillStyle = current.styles.color ?? DEFAULT_CELL_FONT_COLOR
-            ctx.rect(cellX, cellY, hCell.width, vCell.height);
-            ctx.clip();
-
-            //todo make seperate funtion for handle text align and baseline
-            // Draw the text if it exists
-            if (current.value !== undefined && current.value !== null) {
-               //default X and Y positon of text in cell
-              let textX: number = cellX + (current.styles.textIndent ?? 0) + hCell.width / 2;
-              let textY: number = cellY + vCell.height / 2;
-              ctx.textAlign = DEFAULT_CANVAS_TEXT_ALIGN as CanvasTextAlign
-
-              if(current.styles.textAlign === ETextAlign.left){
-                textX = cellX + (current.styles.textIndent ?? 0) + DEFAULT_MIN_PADDING_IN_CELL;
-                ctx.textAlign = ETextAlign.left as CanvasTextAlign
-              }
-              else if(current.styles.textAlign === ETextAlign.center){
-                textX = cellX + (current.styles.textIndent ?? 0) + hCell.width / 2;
-                ctx.textAlign = ETextAlign.center as CanvasTextAlign
-              }
-              else if(current.styles.textAlign === ETextAlign.right){
-                textX = cellX + (current.styles.textIndent ?? 0) + hCell.width - DEFAULT_MIN_PADDING_IN_CELL;
-                ctx.textAlign = ETextAlign.right as CanvasTextAlign
-              }
-
-              if(current.styles.textBaseline === ETextBaseLine.top){
-                textY = cellY + DEFAULT_MIN_PADDING_IN_CELL;
-                ctx.textBaseline = ETextBaseLine.top as CanvasTextBaseline
-              }
-              else if(current.styles.textBaseline === ETextBaseLine.middle){
-                textY = cellY + vCell.height / 2;
-                ctx.textBaseline = ETextBaseLine.middle as CanvasTextBaseline
-              }
-              else if(current.styles.textBaseline === ETextBaseLine.bottom){
-                textY = cellY + vCell.height - DEFAULT_MIN_PADDING_IN_CELL;
-                ctx.textBaseline = ETextBaseLine.bottom as CanvasTextBaseline
-              }
-
-              // Draw centered text in the cell
-              ctx.fillText(current.value.toString(), textX, textY);
-            }
-
-            // Restore the context state after rendering the cell
-            ctx.restore();
-          }
+        const vCell = verticalCellMap.get(current.rowValue);
+        const hCell = horizontalCellMap.get(this.helper!.numberToColumnName(current.colValue));
+        if (!vCell || !hCell) {
+          current = current.nextCol;
+          continue;
         }
-
-        // Move to the next column in the current row
+  
+        const cellX = hCell.x - scrollX;
+        const cellY = vCell.y - scrollY;
+  
+        const isMergedRoot = !current.mergedTo || current.mergedTo === current;
+        if (!isMergedRoot) {
+          current = current.nextCol;
+          continue; // Skip non-root merged cells
+        }
+  
+        const { width: mergeCols, height: mergeRows } = this.helper.getMergedRange(current);
+  
+        const rightCell = this.horizontalCells.find(c => c.col === current!.colValue + mergeCols - 1);
+        const bottomCell = this.verticalCells.find(c => c.row === current!.rowValue + mergeRows - 1);
+  
+        if (!rightCell || !bottomCell) {
+          current = current.nextCol;
+          continue;
+        }
+  
+        const mergedWidth = rightCell.x + rightCell.width - hCell.x;
+        const mergedHeight = bottomCell.y + bottomCell.height - vCell.y;
+  
+        if (
+          cellX < visibleWidth &&
+          cellY < visibleHeight &&
+          cellX + mergedWidth > 0 &&
+          cellY + mergedHeight > 0
+        ) {
+          ctx.save();
+  
+          if (current) {
+            ctx.fillStyle = current.styles.color ?? DEFAULT_CANVAS_TEXT_COLOR;
+            const fontSize = (current.styles?.fontSize ?? DEFAULT_FONT_SIZE) * this.zoomIndex;
+            const fontFamily = current.styles?.fontFamily ?? DEFAULT_CANVAS_FONT_FAMILY;
+            const fontWeight = current.styles?.bold ? "bold" : "normal";
+            const fontStyle = current.styles?.italic ? "italic" : "normal";
+            ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
+          }
+  
+          ctx.beginPath();
+          ctx.fillStyle = current.styles.fill ?? DEFAULT_CELL_BG_COLOR;
+          ctx.fillRect(
+            cellX + DEFAULT_CANVAS_LINE_WIDTH / 2,
+            cellY + DEFAULT_CANVAS_LINE_WIDTH / 2,
+            mergedWidth - DEFAULT_CANVAS_LINE_WIDTH,
+            mergedHeight - DEFAULT_CANVAS_LINE_WIDTH
+          );
+          ctx.fillStyle = current.styles.color ?? DEFAULT_CELL_FONT_COLOR;
+          ctx.rect(cellX, cellY, mergedWidth, mergedHeight);
+          ctx.clip();
+  
+          if (current.value !== undefined && current.value !== null) {
+            let textX = cellX + (current.styles.textIndent ?? 0) + hCell.width / 2;
+            let textY = cellY + vCell.height / 2;
+            ctx.textAlign = DEFAULT_CANVAS_TEXT_ALIGN as CanvasTextAlign;
+  
+            if (current.styles.textAlign === ETextAlign.left) {
+              textX = cellX + (current.styles.textIndent ?? 0) + DEFAULT_MIN_PADDING_IN_CELL;
+              ctx.textAlign = ETextAlign.left as CanvasTextAlign;
+            } else if (current.styles.textAlign === ETextAlign.center) {
+              textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth / 2;
+              ctx.textAlign = ETextAlign.center as CanvasTextAlign;
+            } else if (current.styles.textAlign === ETextAlign.right) {
+              textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth - DEFAULT_MIN_PADDING_IN_CELL;
+              ctx.textAlign = ETextAlign.right as CanvasTextAlign;
+            }
+  
+            if (current.styles.textBaseline === ETextBaseLine.top) {
+              textY = cellY + DEFAULT_MIN_PADDING_IN_CELL;
+              ctx.textBaseline = ETextBaseLine.top as CanvasTextBaseline;
+            } else if (current.styles.textBaseline === ETextBaseLine.middle) {
+              textY = cellY + mergedHeight / 2;
+              ctx.textBaseline = ETextBaseLine.middle as CanvasTextBaseline;
+            } else if (current.styles.textBaseline === ETextBaseLine.bottom) {
+              textY = cellY + mergedHeight - DEFAULT_MIN_PADDING_IN_CELL;
+              ctx.textBaseline = ETextBaseLine.bottom as CanvasTextBaseline;
+            }
+  
+            ctx.fillText(current.value.toString(), textX, textY);
+          }
+  
+          ctx.restore();
+        }
+  
         current = current.nextCol;
       }
     }

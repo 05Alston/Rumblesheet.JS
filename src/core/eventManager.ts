@@ -197,7 +197,7 @@ export class EventManager {
     } else if (instantActions.includes(action)) {
       this.updateCellFormatting(action, true);
     } else {
-      console.log("Unhandled action: ", action);
+      // conosle.log("Unhandled action: ", action);
     }
   }
 
@@ -217,7 +217,7 @@ export class EventManager {
     isActive: boolean,
     newValue: string = ""
   ) {
-    console.log(action, isActive);
+    // conosle.log(action, isActive);
     const selectedCells =
       this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
@@ -254,7 +254,7 @@ export class EventManager {
               break;
             case ERibbonDataActions.textBaselineTop:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.top;
-              console.log("done");
+              // conosle.log("done");
               break;
             case ERibbonDataActions.textBaselineMiddle:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.middle;
@@ -297,7 +297,7 @@ export class EventManager {
               );
               break;
             default:
-              console.log("other button clicked");
+              // conosle.log("other button clicked");
               break;
           }
         }

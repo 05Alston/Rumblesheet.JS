@@ -1,5 +1,5 @@
 import { ECanvasType } from "../../data/enums.js";
-import { IGridHeaderCell } from "../../data/interfaces.js";
+import { ICell, IGridHeaderCell } from "../../data/interfaces.js";
 import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
 import { HeaderCellManager } from "../../features/headerCell/headerCellManager.js";
 import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
@@ -7,6 +7,7 @@ import { GridHeaderManager } from "../controllers/gridManager.js";
 import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SheetMaker } from "../controllers/sheetMaker.js";
 import { SheetRendrer } from "../controllers/sheetRendrer.js";
+import { ISelectedCell } from '../../data/interfaces';
 
 export class Helper {
   public scroll: Scroll;
@@ -136,8 +137,8 @@ export class Helper {
       );
   }
 
-  public getCell(x: number, y: number): Cell | null {
-    return this.SparseMatrix.getCell(x, y);
+  public getCell(row: number, col: number): Cell | null {
+    return this.SparseMatrix.getCell(row, col);
   }
 
   public getCellSize(type: 'horizontal' | 'vertical', index: number): number| undefined {
@@ -170,6 +171,10 @@ export class Helper {
 
   public updateCells(): void {
     this.GridHeaderManager?.generateNewCells();
+  }
+
+  public updateCellsForSparse(selectedCell: ISelectedCell[]){
+    this.SparseMatrix.updateCellsForSparse(selectedCell);
   }
 
   public getRowheader(): { [key: number]: Cell | undefined } {
@@ -346,5 +351,29 @@ export class Helper {
     value: string | null
   ) {
     this.SparseMatrix.setCell(rowNumber, columnNumber, value);
+  }
+
+  //Helper to calculate merged range
+  public getMergedRange(rootCell: ICell): { width: number; height: number; isMerged: boolean } {
+    if (!rootCell.mergedTo || rootCell === rootCell.mergedTo) {
+      let width = 1;
+      let height = 1;
+  
+      let colWalker = rootCell;
+      while (colWalker.nextCol && colWalker.nextCol.mergedTo === rootCell) {
+        width++;
+        colWalker = colWalker.nextCol;
+      }
+  
+      let rowWalker = rootCell;
+      while (rowWalker.nextRow && rowWalker.nextRow.mergedTo === rootCell) {
+        height++;
+        rowWalker = rowWalker.nextRow;
+      }
+  
+      return { width, height, isMerged: true };
+    }
+  
+    return { width: 1, height: 1, isMerged: false };
   }
 }
