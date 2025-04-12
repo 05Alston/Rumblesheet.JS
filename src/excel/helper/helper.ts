@@ -1,6 +1,7 @@
 import { ECanvasType } from "../../data/enums.js";
 import { IGridHeaderCell } from "../../data/interfaces.js";
 import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
+import { HeaderCellManager } from "../../features/headerCell/headerCellManager.js";
 import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
 import { GridHeaderManager } from "../controllers/gridManager.js";
 import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
@@ -31,6 +32,7 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
+  public headerCellManager!:HeaderCellManager;
   public mainCellManager!: MainCellManager;
 
   constructor(Sheet: SheetMaker) {
@@ -59,6 +61,7 @@ export class Helper {
   private initiatefeature() {
     // to add helper to feature classes
     this.mainCellManager = new MainCellManager(this);
+    this.headerCellManager = new HeaderCellManager(this)
   }
 
   private initCanvases() {
@@ -137,6 +140,13 @@ export class Helper {
     return this.SparseMatrix.getCell(x, y);
   }
 
+  public getCellSize(type: 'horizontal' | 'vertical', index: number): number| undefined {
+    return this.GridHeaderManager?.getCellSize(type,index);
+  }
+
+  public setCustomCellSize(type: 'horizontal' | 'vertical', index: number, size: number): void {
+    this.GridHeaderManager?.setCustomCellSize(type,index,size);
+  }
   public getRowColofExcel(): { row: number; col: number; index: number } {
     return {
       row: this.sheetMaker.row,
@@ -287,6 +297,16 @@ export class Helper {
   getVerticalHeaderCells(scrollY: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
+
+  getAllHorizontalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllHorizontalHeaderCells();
+  }
+
+  
+  getAllVerticalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllVerticalHeaderCells();
+  }
+
 
   draw() {
     this.sheetRendrer.draw();

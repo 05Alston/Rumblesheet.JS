@@ -146,7 +146,7 @@ export class GridHeaderManager {
         };
     }
 
-    private getCellSize(type: 'horizontal' | 'vertical', index: number): number {
+    public getCellSize(type: 'horizontal' | 'vertical', index: number): number {
         if (type === 'horizontal') {
             return this.customColumnWidths.get(index) || this.baseCellWidth * this.zoomIndex;
         } else {
@@ -154,7 +154,13 @@ export class GridHeaderManager {
         }
     }
 
-    private resizeAllCells(oldzoomIndex: number, newzoomIndex: number): void {
+    setCustomCellSize(type: 'horizontal' | 'vertical', index: number, size: number) {
+        const customSizes = type === 'horizontal' ? this.customColumnWidths : this.customRowHeights;
+        customSizes.set(index, Math.max(this.minimumCellWidHei, size));
+        this.updateCellPositions(type);
+      }
+
+    public resizeAllCells(oldzoomIndex: number, newzoomIndex: number): void {
         this.scaleFactor = newzoomIndex / oldzoomIndex;
 
         // Resize horizontal header cells
@@ -173,15 +179,23 @@ export class GridHeaderManager {
     }   
 
     public getHeaderCellsHorizontal(scrollX: number): GridHeaderCell[] {
-        return this.headerCellsHorizontal;
+        return this._getVisibleHeaderCells('horizontal', scrollX, this.viewportWidth);
     }
 
     public getHeaderCellsVertical(scrollY: number): GridHeaderCell[] {
-        return this.headerCellsVertical;
+        return this._getVisibleHeaderCells('vertical', scrollY, this.viewportHeight);
     }
 
     public getHeaderCells(){
         return [this.headerCellsHorizontal, this.headerCellsVertical];
+    }
+
+    public getAllHorizontalHeaderCells(): GridHeaderCell[] {
+        return this.headerCellsHorizontal
+    }
+
+    public getAllVerticalHeaderCells(): GridHeaderCell[] {
+        return this.headerCellsVertical
     }
 
     public loadMoreContent(direction: 'vertical' | 'horizontal'): boolean {

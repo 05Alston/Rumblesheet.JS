@@ -18,7 +18,7 @@ export class Cell {
     nextRow?: Cell | undefined,
     nextCol?: Cell | undefined,
     prevRow?: Cell | undefined,
-    prevCol?: Cell | undefined,
+    prevCol?: Cell | undefined, 
     styles?: ICellStyles
   ) {
     this.rowValue = rowValue;

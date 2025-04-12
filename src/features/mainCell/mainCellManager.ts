@@ -129,8 +129,8 @@ export class MainCellManager {
     x: number,
     y: number
   ): { column: IGridHeaderCell; row: IGridHeaderCell } | null {
-    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
-    const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
+    const horizontalHeaderCells = this.helper.getAllHorizontalHeaderCells();
+    const verticalHeaderCells = this.helper.getAllVerticalHeaderCells();
 
     const column = horizontalHeaderCells.find(
       (cell) => x >= cell.x && x < cell.x + cell.width
