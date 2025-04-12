@@ -5,6 +5,7 @@ import { SheetRendrer } from "./sheetRendrer.js";
 import {  GridHeaderManager } from "./GridManager.js";
 import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
 import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
+import { headerCellManager } from "../../feature/headerCellManager/headerCellManager.js";
 
 export class Helper {
   private scroll: Scroll;
@@ -32,6 +33,7 @@ export class Helper {
   public loadedRows: number = 0;
   public loadedCols: number = 0;
   public mainCellManager!: mainCellManager;
+  public headerCellManager!:headerCellManager;
 
   constructor(Sheet: Sheet) {
     this.sheet = Sheet;
@@ -59,6 +61,7 @@ export class Helper {
   private initiatefeature() {
     // to add helper to feature classes
     this.mainCellManager = new mainCellManager(this);
+    this.headerCellManager = new headerCellManager(this)
   }
 
   private initCanvases() {
@@ -137,6 +140,13 @@ export class Helper {
     return this.SparseMatrix.getCell(x, y);
   }
 
+  public getCellSize(type: 'horizontal' | 'vertical', index: number): number| undefined {
+    return this.GridHeaderManager?.getCellSize(type,index);
+  }
+
+  public setCustomCellSize(type: 'horizontal' | 'vertical', index: number, size: number): void {
+    this.GridHeaderManager?.setCustomCellSize(type,index,size);
+  }
   public getRowColofExcel(): { row: number; col: number; index: number } {
     return {
       row: this.sheet.row,
@@ -284,6 +294,16 @@ export class Helper {
   getVerticalHeaderCells(scrollY: number): IGridHeaderCell[] {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
+
+  getAllHorizontalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllHorizontalHeaderCells();
+  }
+
+  
+  getAllVerticalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllVerticalHeaderCells();
+  }
+
 
   draw() {
     this.sheetRendrer.draw();

@@ -14,7 +14,7 @@ export class Excel {
     private contentArea!: HTMLElement;
     private activeSheetIndex: number;
     private sheets!: { name: string; instance: Sheet }[];
-    element: any;
+    element!: HTMLElement;
 
     constructor(rowContainer: HTMLElement, row: number, col: number, excelHandler: excelsHandler) {
         this.rowContainer = rowContainer;
