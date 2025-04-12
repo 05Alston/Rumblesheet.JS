@@ -4,7 +4,7 @@ import { ICellStyles } from "./interfaces.js";
 export class Cell {
   public rowValue: number;
   public colValue: number;
-  public value: any;
+  public value: string | null;
   public nextRow?: Cell | undefined;
   public nextCol?: Cell | undefined;
   public prevRow?: Cell | undefined;
@@ -14,7 +14,7 @@ export class Cell {
   constructor(
     rowValue: number,
     colValue: number,
-    value: any,
+    value: string | null,
     nextRow?: Cell | undefined,
     nextCol?: Cell | undefined,
     prevRow?: Cell | undefined,
@@ -173,7 +173,7 @@ export class SparseMatrix {
     }
   }
 
-    private createCell(row:number, col:number, value:string) {
+    private createCell(row:number, col:number, value:string | null) {
     if (this._cellExists(row, col)) return;
 
     const newNode = new Cell(row, col, value);
@@ -190,7 +190,7 @@ export class SparseMatrix {
     }
   }
 
-    private _updateCellValue(row:number, col:number, value:string) {
+    private _updateCellValue(row:number, col:number, value:string | null) {
     let current = this.rowHeaders[row];
     while (current) {
       if (current.colValue === col) {
@@ -269,7 +269,7 @@ export class SparseMatrix {
     return null;
   }
 
-    public setCell(row:number, col:number, value:string) {
+    public setCell(row:number, col:number, value:string | null) {
     if (this._cellExists(row, col)) {
       this._updateCellValue(row, col, value);
     } else {

@@ -1,6 +1,7 @@
-import { Helper } from "./helper";
-import { ETextAlign, ETextBaseLine, IGridHeaderCell } from "../../dataStructure/interfaces.js";
-import { DEFAULT_CANVAS_LINE_WIDTH, DEFAULT_CANVAS_TEXT_ALIGN, DEFAULT_CANVAS_TEXT_BASELINE,  DEFAULT_CANVAS_LINES_COLOR, DEFAULT_CANVAS_TEXT_COLOR, DEFAULT_CANVAS_FONT_FAMILY, DEFAULT_MIN_PADDING_IN_CELL, DEFAULT_CELL_BG_COLOR, DEFAULT_CELL_FONT_COLOR } from "../../dataStructure/constants.js";
+import { Helper } from "../helper/helper.js";
+import { IGridHeaderCell } from "../../data/interfaces.js";
+import { DEFAULT_CANVAS_LINE_WIDTH, DEFAULT_CANVAS_TEXT_ALIGN, DEFAULT_CANVAS_TEXT_BASELINE,  DEFAULT_CANVAS_LINES_COLOR, DEFAULT_CANVAS_TEXT_COLOR, DEFAULT_CANVAS_FONT_FAMILY, DEFAULT_MIN_PADDING_IN_CELL, DEFAULT_CELL_BG_COLOR, DEFAULT_CELL_FONT_COLOR, DEFAULT_FONT_SIZE } from "../../data/constants.js";
+import { ETextAlign, ETextBaseLine } from "../../data/enums.js";
 
 export class SheetRendrer {
   private zoomIndex: number;
@@ -338,7 +339,7 @@ export class SheetRendrer {
 
             if (current) {
               ctx.fillStyle = current.styles.color ?? DEFAULT_CANVAS_TEXT_COLOR;
-              let fontSize = (current.styles?.fontSize ?? vCell.height * 0.6) as number;
+              let fontSize = (current.styles?.fontSize ?? DEFAULT_FONT_SIZE)*this.zoomIndex as number;
               let fontFamily = (current.styles?.fontFamily ?? DEFAULT_CANVAS_FONT_FAMILY);
               let fontWeight = current.styles?.bold ? "bold" : "normal";
               let fontStyle = current.styles?.italic ? "italic" : "normal";
@@ -401,6 +402,4 @@ export class SheetRendrer {
       }
     }
   }
-
-  
 }

@@ -1,11 +1,11 @@
-import {  mainCellManager } from "../mainCellManager.js";
-import { Cell } from "../../../dataStructure/sparseMatrix.js";
-import { IGridHeaderCell } from "../../../dataStructure/interfaces.js";
-import { DEFAULT_HIGHLIGHT_FILL_COLOR, DEFAULT_HIGHLIGHT_BORDER_COLOR, DEFAULT_HIGHLIGHT_LINE_WIDTH, DEFAULT_HIGHLIGHT_HEADER_FILL_COLOR, DEFAULT_HIGHLIGHT_HEADER_LINE_WIDTH,  DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR } from "../../../dataStructure/constants.js";
+import { MainCellManager } from "../mainCellManager.js";
+import { Cell } from "../../../data/sparseMatrix.js";
+import { IGridHeaderCell } from "../../../data/interfaces.js";
+import { DEFAULT_HIGHLIGHT_HEADER_BORDER_COLOR } from '../../../data/constants';
 
 
 export class MergeCell{
-    private maincellManager! : mainCellManager;
+    private maincellManager! : MainCellManager;
     private canvases: { [key: string]: HTMLCanvasElement; };
     private isDragging: boolean;
     private isScrolling: boolean;
@@ -15,7 +15,7 @@ export class MergeCell{
     public selectedCells!: { column: IGridHeaderCell | undefined; row: IGridHeaderCell | undefined; cell: Cell |null }[];
 
 
-    constructor(maincellManager:mainCellManager){
+    constructor(maincellManager:MainCellManager){
         this.maincellManager = maincellManager;
         this.canvases = this.maincellManager.getCanvases();
         this.selectedCells = []

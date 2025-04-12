@@ -1,7 +1,7 @@
-import { headerCellManager } from "../headerCellManager.js";
+import { HeaderCellManager } from "../headerCellManager.js";
 
 export class HeaderResizeFunctionality {
-    private headerCellManager: headerCellManager;
+    private headerCellManager: HeaderCellManager;
     private resizeThreshold: number;
     private isResizing: boolean;
     private resizeStart: number | null;
@@ -9,7 +9,7 @@ export class HeaderResizeFunctionality {
     private resizeIndex: number | null;
     private currentResizePosition: number | null;
     private canvases: { [key: string]: HTMLCanvasElement; };
-    constructor(headerCellManager: headerCellManager) {
+    constructor(headerCellManager: HeaderCellManager) {
         this.headerCellManager = headerCellManager;
         this.resizeThreshold = 5;
         this.isResizing = false;

@@ -1,4 +1,4 @@
-import { Helper } from "./helper.js";
+import { Helper } from "../helper/helper.js";
 import { SheetRendrer } from "./sheetRendrer.js";
 export class Scroll {
     scrollX = 0;
@@ -105,7 +105,7 @@ export class Scroll {
         }
     }
 
-    scroll(deltaX: number, deltaY: number): void {
+    setScroll(deltaX: number, deltaY: number): void {
         const maxScrollSpeed = 100;
         deltaX = Math.max(-maxScrollSpeed, Math.min(deltaX, maxScrollSpeed));
         deltaY = Math.max(-maxScrollSpeed, Math.min(deltaY, maxScrollSpeed));
@@ -146,7 +146,7 @@ export class Scroll {
             if (event.shiftKey) {
                 const deltaX = this.lastMouseX - event.clientX;
                 const deltaY = this.lastMouseY - event.clientY;
-                this.scroll(deltaX, deltaY);
+                this.setScroll(deltaX, deltaY);
                 this.lastMouseX = event.clientX;
                 this.lastMouseY = event.clientY;
             }
@@ -162,9 +162,9 @@ export class Scroll {
             const scrollDelta = delta / scrollRatio;
             
             if (this.scrollbarDirection === 'vertical') {
-                this.scroll(0, scrollDelta);
+                this.setScroll(0, scrollDelta);
             } else {
-                this.scroll(scrollDelta, 0);
+                this.setScroll(scrollDelta, 0);
             }
 
             this.lastMouseX = event.clientX;
@@ -183,7 +183,7 @@ export class Scroll {
             event.preventDefault();
             const deltaX = event.deltaX;
             const deltaY = event.deltaY;
-            this.scroll(deltaX, deltaY);
+            this.setScroll(deltaX, deltaY);
         }
     }
 

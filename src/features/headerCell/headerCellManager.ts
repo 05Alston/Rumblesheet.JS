@@ -1,7 +1,8 @@
-import { Helper } from "../../excel/component/helper.js";
-import { IGridHeaderCell } from "../../dataStructure/interfaces.js";
-import { HeaderResizeFunctionality } from "./Resizing/Resizing.js";
-export class headerCellManager{
+import { IGridHeaderCell } from "../../data/interfaces.js";
+import { Helper } from "../../excel/helper/helper.js";
+import { HeaderResizeFunctionality } from "./resizing/Resizing.js";
+
+export class HeaderCellManager{
     public helper: Helper;
     public input!: HTMLInputElement | null;
     private canvases: { [key: string]: HTMLCanvasElement; };
@@ -42,7 +43,7 @@ export class headerCellManager{
     }
 
     private setupInputEventListener() {
-      const { row, col, index } = this.helper.sheet;
+      const { row, col, index } = this.helper.sheetMaker;
       const input = document.getElementById(`input_${row}_${col}_${index}`);
     }
 
@@ -78,7 +79,7 @@ export class headerCellManager{
     }
 
     public scroll(x: number, y: number){
-        this.helper.Scroll(x, y);
+        this.helper.setScroll(x, y);
     }
 
     public getCellFromCoordinates(x:number, y:number):{column:IGridHeaderCell, row:IGridHeaderCell} |null {
@@ -132,7 +133,7 @@ export class headerCellManager{
 
     public updateInputElement(cell:{column:IGridHeaderCell, row:IGridHeaderCell} |null) {
         this.input = document.getElementById(
-          `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
+          `input_${this.helper.sheetMaker.row}_${this.helper.sheetMaker.col}_${this.helper.sheetMaker.index}`
         ) as HTMLInputElement;
         this.input!.addEventListener('blur', function() {
           this.style.display = 'none';
@@ -165,7 +166,7 @@ export class headerCellManager{
 
     hideInputElement() {
         const input =document.getElementById(
-          `input_${this.helper.sheet.row}_${this.helper.sheet.col}_${this.helper.sheet.index}`
+          `input_${this.helper.sheetMaker.row}_${this.helper.sheetMaker.col}_${this.helper.sheetMaker.index}`
         );
         if (input) {
           input.style.display = "none";

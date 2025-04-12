@@ -1,4 +1,5 @@
-import { Helper } from "./helper";
+import { DEFAULT_CELL_HEIGHT, DEFAULT_CELL_WIDTH } from "../../data/constants.js";
+import { Helper } from "../helper/helper.js";
 
 class GridHeaderCell {
     x: number;
@@ -43,8 +44,8 @@ export class GridHeaderManager {
     private totalCol: number;
     private initialLoadCount: number = 20;
     private loadIncrement: number = 40;
-    private baseCellWidth: number = 120;
-    private baseCellHeight: number = 40;
+    private baseCellWidth: number = DEFAULT_CELL_WIDTH;
+    private baseCellHeight: number = DEFAULT_CELL_HEIGHT;
     private minimumCellWidHei: number = 2;
     private minZoom: number;
     private maxZoom: number;
@@ -85,6 +86,7 @@ export class GridHeaderManager {
 
     public generateNewCells(): void {
         const cellWidth = Math.max(this.minimumCellWidHei, this.baseCellWidth * this.zoomIndex);
+        console.log("this is the calc of cell Width",cellWidth,this.baseCellWidth,this.zoomIndex);
         const cellHeight = Math.max(this.minimumCellWidHei, this.baseCellHeight * this.zoomIndex);
         this._updateHeaderCells('horizontal', cellWidth);
         this._updateHeaderCells('vertical', cellHeight);
@@ -184,6 +186,10 @@ export class GridHeaderManager {
         return this._getVisibleHeaderCells('vertical', scrollY, this.viewportHeight);
     }
 
+    public getHeaderCells(){
+        return [this.headerCellsHorizontal, this.headerCellsVertical];
+    }
+
     public getAllHorizontalHeaderCells(): GridHeaderCell[] {
         return this.headerCellsHorizontal
     }
@@ -234,9 +240,11 @@ export class GridHeaderManager {
         const total = isVertical ? this.totalRow : this.totalCol;
         const loaded = isVertical ? this.helper.loadedRows : this.helper.loadedCols;
         const visible = this.calculateVisibleCells()[isVertical ? 'rows' : 'cols'];
+        console.log(visible,total);
     
         const isInfinite = isVertical ? this.isInfiniteRow : this.isInfiniteCol;
         const isOppositeInfinite = isVertical ? this.isInfiniteCol : this.isInfiniteRow;
+        console.log(isInfinite,isOppositeInfinite)
     
         if (isInfinite) {
             // Infinite scrolling for this direction
@@ -304,6 +312,10 @@ export class GridHeaderManager {
     }
 
     public getTotalContainerWidth(): number {
+        console.log("This is the total Width of the container",this.headerCellsHorizontal.slice(0, this.helper.loadedCols).reduce(
+            (totalWidth, cell) => totalWidth + (this.customColumnWidths.get(cell.col - 1) || cell.width),
+            0
+        ))
         return this.headerCellsHorizontal.slice(0, this.helper.loadedCols).reduce(
             (totalWidth, cell) => totalWidth + (this.customColumnWidths.get(cell.col - 1) || cell.width),
             0

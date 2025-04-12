@@ -1,3 +1,16 @@
+import { SheetMaker } from "../excel/controllers/sheetMaker";
+import {
+  EFontFamilies,
+  ETextAlign,
+  ETextBaseLine,
+  ETextWrapping,
+} from "./enums";
+
+export interface ISheetObj {
+  name: string;
+  instance: SheetMaker;
+}
+
 export interface IGridHeaderCell {
   x: number;
   y: number;
@@ -20,16 +33,17 @@ export interface ICell {
 }
 
 export interface ICellStyles {
-  textAlign?: string;
-  textBaseline?: string;
+  textAlign?: ETextAlign;
+  textBaseline?: ETextBaseLine;
   fontSize?: number;
-  fontFamily?: string;
+  fontFamily?: EFontFamilies;
   color?: string;
   fill?: string;
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
   textIndent?: number;
+  textWrapping?: ETextWrapping;
 }
 
 export interface IThemeStructure {
@@ -74,47 +88,4 @@ export interface IThemeStructure {
 
 export interface ITheme {
   [key: string]: IThemeStructure;
-}
-
-//* Enums
-
-export enum ETextAlign {
-  center = "center",
-  left = "left",
-  right = "right",
-}
-
-export enum EFontFamilies {
-  arial = "Arial",
-  timesNewRoman= "Times new Roman",
-  roboto = "Roboto",
-  openSans = "Opan Sans",
-  rubik = "Rubik"
-}
-
-export enum ETextBaseLine{
-  middle = "middle",
-  top = "top",
-  bottom = "bottom"
-
-}
-
-export enum ribbonDataActions {
-  paste = "paste",
-  cut = "cut",
-  copy = "copy",
-  increaseFont = "increaseFont",
-  decreaseFont = "decreaseFont",
-  bold = "bold",
-  italic = "italic",
-  underline = "underline",
-  fillColor = "fillColor",
-  textColor = "textColor",
-  alignLeft = "alignLeft",
-  alignCenter = "alignCenter",
-  alignRight = "alignRight",
-  decreaseIndent = "decreaseIndent",
-  increaseIndent = "increaseIndent",
-  fontSize = "fontSize",
-  fontFamily = "fontFamily"
 }

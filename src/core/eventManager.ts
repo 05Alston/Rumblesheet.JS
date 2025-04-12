@@ -1,65 +1,65 @@
-import { Ribbon } from "../ribbon/ribbon.js";
-import { excelsHandler } from "./initiater.js";
-import { ETextAlign, ribbonDataActions } from "../dataStructure/interfaces.js";
 import {
   activePossibleActions,
   alignmentActions,
   DEFAULT_CELL_INDENT,
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_SIZE_CHANGE_VALUE,
-  DEFAULT_MIN_PADDING_IN_CELL,
   INDENT_VALUE_CHANGE_VALUE,
   indentActions,
   instantActions,
-} from "../dataStructure/constants.js";
+  textBaseLineActions,
+} from "../data/constants.js";
+import {
+  EFontFamilies,
+  ERibbonDataActions,
+  ETextAlign,
+  ETextBaseLine,
+} from "../data/enums.js";
+import { Ribbon } from "../ribbon/ribbon.js";
+import { ExcelsHandler } from "./excelsHandler.js";
 
 // eventManager.ts
 export class EventManager {
-  excelsHandler: excelsHandler;
+  excelsHandler: ExcelsHandler;
   ribbon: Ribbon;
 
   //*Element Declarations
 
   //Ribbon Specific
   private tabButtons!: NodeListOf<HTMLElement>;
-  private tabContents!: NodeListOf<HTMLElement>;
   private toggleContentBtn!: HTMLElement | null;
   private focusZone!: HTMLElement | null;
   private featureMenuBtns!: NodeListOf<HTMLElement>;
-  private ribbonEle!: HTMLElement | null;
   private scrollLeftBtn!: HTMLElement | null;
   private scrollRightBtn!: HTMLElement | null;
-  private focusContent!: HTMLElement | null;
-  private rumbleSheetBody!: HTMLElement | null;
 
-  constructor(excelsHandler: excelsHandler, ribbon: Ribbon) {
+  constructor(excelsHandler: ExcelsHandler, ribbon: Ribbon) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
     this.initializeElement();
     this.attachEvents();
   }
 
-  private get helper() {
+  private get currentSheetObjHelper() {
     return this.excelsHandler.currSheetObj?.instance.helper;
   }
 
   private initializeElement() {
     //ribbon elements initalization
-    this.tabButtons = document.querySelectorAll(".tablist-items");
-    this.tabContents = document.querySelectorAll(".focus-tab");
-    this.toggleContentBtn = document.getElementById("toggle-content");
-    this.focusZone = document.querySelector(".focus-zone");
-    this.featureMenuBtns = document.querySelectorAll(".feature-menu");
-    this.ribbonEle = document.getElementById("ribbon");
-    this.scrollLeftBtn = document.querySelector(".scroll-left");
-    this.scrollRightBtn = document.querySelector(".scroll-right");
-    this.focusContent = document.querySelector(".focus-content");
-    this.rumbleSheetBody = document.querySelector(".rumble-sheet");
+    this.tabButtons = document.querySelectorAll(".rumblesheet .tablist-items");
+    this.toggleContentBtn = document.querySelector(
+      ".rumblesheet #toggle-content"
+    );
+    this.focusZone = document.querySelector(".rumblesheet .focus-zone");
+    this.featureMenuBtns = document.querySelectorAll(
+      ".rumblesheet .feature-menu"
+    );
+    this.scrollLeftBtn = document.querySelector(".rumblesheet .scroll-left");
+    this.scrollRightBtn = document.querySelector(".rumblesheet .scroll-right");
   }
 
   private attachEvents() {
     this.attachRibbonEvents();
-    this.uploadBtnEvents();
   }
 
   //* Attach Events Functions
@@ -168,50 +168,13 @@ export class EventManager {
     this.attachRibbonFeatureEvents();
   }
 
-  private uploadBtnEvents(): void {
-    //todo not updated as per use till now
-    const uploadButton = document.getElementById(
-      "uploadButton"
-    ) as HTMLButtonElement;
-    if (uploadButton) {
-      uploadButton.addEventListener(
-        "click",
-        this.excelsHandler.plug.handleFileUpload.bind(this.excelsHandler.plug)
-      );
-    } else {
-      console.error("Upload button not found.");
-    }
-  }
-
   //* Handler Functions
-
-  handleFileUpload(): void {
-    //todo yet to be updated
-    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    const file = fileInput.files ? fileInput.files[0] : null;
-
-    if (file) {
-      this.handleCsvUpload(file);
-    } else {
-      // console.log("No file selected.");
-    }
-  }
-
-  public async handleCsvUpload(file: File): Promise<void> {
-    //todo yet to be updated
-    const fileData = await file.text();
-    const rows: string[][] = fileData
-      .split("\n")
-      .map((line) => line.split(",").map((value) => value.trim()));
-
-    alert("CSV uploaded and matrix populated successfully.");
-  }
 
   public performRibbonAction(ele: HTMLElement) {
     if (!ele) {
       return;
     }
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
 
     // Handling toggle actions (Bold, Italic, Underline)
     if (activePossibleActions.includes(action)) {
@@ -222,6 +185,9 @@ export class EventManager {
     // Handling actions like alignment
     else if (alignmentActions.includes(action)) {
       this.handleGroupRibbonActions(alignmentActions, ele);
+      this.updateCellFormatting(action, true);
+    } else if (textBaseLineActions.includes(action)) {
+      this.handleGroupRibbonActions(textBaseLineActions, ele);
       this.updateCellFormatting(action, true);
     }
     // Handling indent actions
@@ -236,7 +202,7 @@ export class EventManager {
   }
 
   private handleGroupRibbonActions(
-    group: ribbonDataActions[],
+    group: ERibbonDataActions[],
     currEle: HTMLElement
   ) {
     group.forEach((groupAction) => {
@@ -247,72 +213,89 @@ export class EventManager {
   }
 
   private updateCellFormatting(
-    action: ribbonDataActions,
+    action: ERibbonDataActions,
     isActive: boolean,
     newValue: string = ""
   ) {
     console.log(action, isActive);
-    const selectedCells = this.helper?.mainCellManager.getCurrSelectedCells();
+    const selectedCells =
+      this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
       selectedCells.forEach((cellDetails) => {
         if (cellDetails && cellDetails.cell) {
           switch (action) {
-            case ribbonDataActions.bold:
+            case ERibbonDataActions.bold:
               cellDetails.cell.styles.bold = isActive;
               break;
-            case ribbonDataActions.italic:
+            case ERibbonDataActions.italic:
               cellDetails.cell.styles.italic = isActive;
               break;
-            case ribbonDataActions.underline:
+            case ERibbonDataActions.underline:
               cellDetails.cell.styles.underline = isActive;
               break;
-            case ribbonDataActions.alignLeft:
+            case ERibbonDataActions.alignLeft:
               cellDetails.cell.styles.textAlign = ETextAlign.left;
               break;
-            case ribbonDataActions.alignRight:
+            case ERibbonDataActions.alignRight:
               cellDetails.cell.styles.textAlign = ETextAlign.right;
               break;
-            case ribbonDataActions.alignCenter:
+            case ERibbonDataActions.alignCenter:
               cellDetails.cell.styles.textAlign = ETextAlign.center;
               break;
-            case ribbonDataActions.increaseFont:
+            case ERibbonDataActions.increaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) +
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ribbonDataActions.decreaseFont:
+            case ERibbonDataActions.decreaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) -
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ribbonDataActions.cut:
+            case ERibbonDataActions.textBaselineTop:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.top;
+              console.log("done");
+              break;
+            case ERibbonDataActions.textBaselineMiddle:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.middle;
+              break;
+            case ERibbonDataActions.textBaselineBottom:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.bottom;
+              break;
+            case ERibbonDataActions.cut:
               //todo - to be handled
               break;
-            case ribbonDataActions.copy:
+            case ERibbonDataActions.copy:
               //todo - to be handled
               break;
-            case ribbonDataActions.paste:
+            case ERibbonDataActions.paste:
               //todo - to be handled
               break;
-            case ribbonDataActions.fontFamily:
-              cellDetails.cell.styles.fontFamily = newValue;
+            case ERibbonDataActions.fontFamily:
+              cellDetails.cell.styles.fontFamily = newValue as EFontFamilies;
               break;
-            case ribbonDataActions.fontSize:
+            case ERibbonDataActions.fontSize:
               cellDetails.cell.styles.fontSize = parseInt(newValue);
               break;
-            case ribbonDataActions.fillColor:
+            case ERibbonDataActions.fillColor:
               cellDetails.cell.styles.fill = newValue;
               break;
-            case ribbonDataActions.textColor:
+            case ERibbonDataActions.textColor:
               cellDetails.cell.styles.color = newValue;
               break;
-            case ribbonDataActions.increaseIndent:
+            case ERibbonDataActions.increaseIndent:
               //todo - handle properly after resize is implemented
-              cellDetails.cell.styles.textIndent  = (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) + INDENT_VALUE_CHANGE_VALUE;
-            break;
-            case ribbonDataActions.decreaseIndent:
-              cellDetails.cell.styles.textIndent  = Math.max(0,(cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) - INDENT_VALUE_CHANGE_VALUE);
-            break;
+              cellDetails.cell.styles.textIndent =
+                (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) +
+                INDENT_VALUE_CHANGE_VALUE;
+              break;
+            case ERibbonDataActions.decreaseIndent:
+              cellDetails.cell.styles.textIndent = Math.max(
+                0,
+                (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) -
+                  INDENT_VALUE_CHANGE_VALUE
+              );
+              break;
             default:
               console.log("other button clicked");
               break;
@@ -320,12 +303,12 @@ export class EventManager {
         }
       });
     }
-    this.helper?.mainCellManager.draw();
+    this.currentSheetObjHelper?.mainCellManager.draw();
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {
     const ele = selectElement as HTMLSelectElement;
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
     if (ele && ele.value && action) {
       this.updateCellFormatting(action, true, ele.value);
     }
@@ -333,10 +316,9 @@ export class EventManager {
 
   private handleColorElement(inputTypeColorEle: HTMLElement) {
     const ele = inputTypeColorEle as HTMLInputElement;
-    const action = ele.dataset.action as ribbonDataActions;
+    const action = ele.dataset.action as ERibbonDataActions;
     if (ele && ele.value && action) {
       this.updateCellFormatting(action, true, ele.value);
     }
   }
-
 }
