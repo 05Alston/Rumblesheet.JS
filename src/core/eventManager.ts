@@ -8,13 +8,13 @@ import {
   indentActions,
   instantActions,
   textBaseLineActions,
-} from "../dataStructure/constants.js";
+} from "../data/constants.js";
 import {
   EFontFamilies,
   ERibbonDataActions,
   ETextAlign,
   ETextBaseLine,
-} from "../dataStructure/enums.js";
+} from "../data/enums.js";
 import { Ribbon } from "../ribbon/ribbon.js";
 import { ExcelsHandler } from "./excelsHandler.js";
 
@@ -27,48 +27,39 @@ export class EventManager {
 
   //Ribbon Specific
   private tabButtons!: NodeListOf<HTMLElement>;
-  private tabContents!: NodeListOf<HTMLElement>;
   private toggleContentBtn!: HTMLElement | null;
   private focusZone!: HTMLElement | null;
   private featureMenuBtns!: NodeListOf<HTMLElement>;
-  private ribbonEle!: HTMLElement | null;
   private scrollLeftBtn!: HTMLElement | null;
   private scrollRightBtn!: HTMLElement | null;
-  private focusContent!: HTMLElement | null;
-  private rumblesheetElement!: HTMLElement;
 
-  constructor(
-    excelsHandler: ExcelsHandler,
-    ribbon: Ribbon,
-    rumblesheetElement: HTMLElement
-  ) {
+  constructor(excelsHandler: ExcelsHandler, ribbon: Ribbon) {
     this.excelsHandler = excelsHandler;
     this.ribbon = ribbon;
-    this.rumblesheetElement = rumblesheetElement;
     this.initializeElement();
     this.attachEvents();
   }
 
-  private get helper() {
+  private get currentSheetObjHelper() {
     return this.excelsHandler.currSheetObj?.instance.helper;
   }
 
   private initializeElement() {
     //ribbon elements initalization
-    this.tabButtons = document.querySelectorAll(".tablist-items");
-    this.tabContents = document.querySelectorAll(".focus-tab");
-    this.toggleContentBtn = document.getElementById("toggle-content");
-    this.focusZone = document.querySelector(".focus-zone");
-    this.featureMenuBtns = document.querySelectorAll(".feature-menu");
-    this.ribbonEle = document.getElementById("ribbon");
-    this.scrollLeftBtn = document.querySelector(".scroll-left");
-    this.scrollRightBtn = document.querySelector(".scroll-right");
-    this.focusContent = document.querySelector(".focus-content");
+    this.tabButtons = document.querySelectorAll(".rumblesheet .tablist-items");
+    this.toggleContentBtn = document.querySelector(
+      ".rumblesheet #toggle-content"
+    );
+    this.focusZone = document.querySelector(".rumblesheet .focus-zone");
+    this.featureMenuBtns = document.querySelectorAll(
+      ".rumblesheet .feature-menu"
+    );
+    this.scrollLeftBtn = document.querySelector(".rumblesheet .scroll-left");
+    this.scrollRightBtn = document.querySelector(".rumblesheet .scroll-right");
   }
 
   private attachEvents() {
     this.attachRibbonEvents();
-    this.uploadBtnEvents();
   }
 
   //* Attach Events Functions
@@ -177,46 +168,7 @@ export class EventManager {
     this.attachRibbonFeatureEvents();
   }
 
-  private uploadBtnEvents(): void {
-    //todo not updated as per use till now
-    const uploadButton = document.getElementById(
-      "uploadButton"
-    ) as HTMLButtonElement;
-    if (uploadButton) {
-      uploadButton.addEventListener(
-        "click",
-        this.excelsHandler.plugin.handleFileUpload.bind(
-          this.excelsHandler.plugin
-        )
-      );
-    } else {
-      console.error("Upload button not found.");
-    }
-  }
-
   //* Handler Functions
-
-  handleFileUpload(): void {
-    //todo yet to be updated
-    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    const file = fileInput.files ? fileInput.files[0] : null;
-
-    if (file) {
-      this.handleCsvUpload(file);
-    } else {
-      // console.log("No file selected.");
-    }
-  }
-
-  public async handleCsvUpload(file: File): Promise<void> {
-    //todo yet to be updated
-    const fileData = await file.text();
-    const rows: string[][] = fileData
-      .split("\n")
-      .map((line) => line.split(",").map((value) => value.trim()));
-
-    alert("CSV uploaded and matrix populated successfully.");
-  }
 
   public performRibbonAction(ele: HTMLElement) {
     if (!ele) {
@@ -266,7 +218,8 @@ export class EventManager {
     newValue: string = ""
   ) {
     console.log(action, isActive);
-    const selectedCells = this.helper?.mainCellManager.getCurrSelectedCells();
+    const selectedCells =
+      this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
       selectedCells.forEach((cellDetails) => {
         if (cellDetails && cellDetails.cell) {
@@ -350,7 +303,7 @@ export class EventManager {
         }
       });
     }
-    this.helper?.mainCellManager.draw();
+    this.currentSheetObjHelper?.mainCellManager.draw();
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {

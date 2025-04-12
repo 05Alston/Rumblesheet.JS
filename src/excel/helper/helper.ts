@@ -1,18 +1,19 @@
-import { Sheet } from "../excel.js";
-import { Scroll } from "./scroll.js"; // Assuming Scroll is imported from scroll.ts
-import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
-import { SheetRendrer } from "./sheetRendrer.js";
-import {  GridHeaderManager } from "./GridManager.js";
-import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
-import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
+import { ECanvasType } from "../../data/enums.js";
+import { IGridHeaderCell } from "../../data/interfaces.js";
+import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
+import { HeaderCellManager } from "../../features/headerCell/headerCellManager.js";
+import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
+import { GridHeaderManager } from "../controllers/gridManager.js";
+import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
+import { SheetMaker } from "../controllers/sheetMaker.js";
+import { SheetRendrer } from "../controllers/sheetRendrer.js";
 
 export class Helper {
-  private scroll: Scroll;
-  private sheetRendrer: SheetRendrer;
-  public sheet: Sheet;
-  private SparseMatrix: SparseMatrix;
-  private IGridHeaderCell!: IGridHeaderCell;
-  private GridHeaderManager?: GridHeaderManager;
+  public scroll: Scroll;
+  public sheetRendrer: SheetRendrer;
+  public sheetMaker: SheetMaker;
+  public SparseMatrix: SparseMatrix;
+  public GridHeaderManager?: GridHeaderManager;
   public canvases: { [key: string]: HTMLCanvasElement };
   public contexts: { [key: string]: CanvasRenderingContext2D };
   public verticalScroll?: {
@@ -31,10 +32,11 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
-  public mainCellManager!: mainCellManager;
+  public headerCellManager!:HeaderCellManager;
+  public mainCellManager!: MainCellManager;
 
-  constructor(Sheet: Sheet) {
-    this.sheet = Sheet;
+  constructor(Sheet: SheetMaker) {
+    this.sheetMaker = Sheet;
     this.totalRow = 100;
     this.totalCol = 60;
     this.canvases = {};
@@ -58,18 +60,19 @@ export class Helper {
 
   private initiatefeature() {
     // to add helper to feature classes
-    this.mainCellManager = new mainCellManager(this);
+    this.mainCellManager = new MainCellManager(this);
+    this.headerCellManager = new HeaderCellManager(this)
   }
 
   private initCanvases() {
-    ["spreadsheet", "vertical", "horizontal"].forEach((type) => {
+    Object.values(ECanvasType).forEach((type) => {
       const canvas = document.getElementById(
-        `${type}Canvas_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+        `${type}Canvas_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
       ) as HTMLCanvasElement;
 
       if (!canvas) {
         throw new Error(
-          `Canvas not found: ${type}Canvas_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+          `Canvas not found: ${type}Canvas_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
         );
       }
       this.canvases[type] = canvas;
@@ -78,19 +81,19 @@ export class Helper {
 
     this.verticalScroll = {
       scroll: document.getElementById(
-        `verticalScroll_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+        `verticalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
       ),
       bar: document.getElementById(
-        `verticalBar_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+        `verticalBar_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
       ),
     };
 
     this.horizontalScroll = {
       scroll: document.getElementById(
-        `horizontalScroll_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+        `horizontalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
       ),
       bar: document.getElementById(
-        `horizontalBar_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
+        `horizontalBar_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
       ),
     };
   }
@@ -99,7 +102,7 @@ export class Helper {
     return this.canvases;
   }
 
-  public getContexts(){
+  public getContexts() {
     return this.contexts;
   }
 
@@ -137,11 +140,18 @@ export class Helper {
     return this.SparseMatrix.getCell(x, y);
   }
 
+  public getCellSize(type: 'horizontal' | 'vertical', index: number): number| undefined {
+    return this.GridHeaderManager?.getCellSize(type,index);
+  }
+
+  public setCustomCellSize(type: 'horizontal' | 'vertical', index: number, size: number): void {
+    this.GridHeaderManager?.setCustomCellSize(type,index,size);
+  }
   public getRowColofExcel(): { row: number; col: number; index: number } {
     return {
-      row: this.sheet.row,
-      col: this.sheet.col,
-      index: this.sheet.index,
+      row: this.sheetMaker.row,
+      col: this.sheetMaker.col,
+      index: this.sheetMaker.index,
     };
   }
 
@@ -202,19 +212,18 @@ export class Helper {
         }
       });
     });
-
   }
 
   public updateDrawForFeatures(): void {
-    this.mainCellManager.updatepositions();
+    this.mainCellManager.updateDrawForScrolling();
   }
 
   public getScrollRatio(direction: "horizontal" | "vertical"): number {
     // Determine the ID of the scroll element based on the direction
     const scrollElementId =
       direction === "horizontal"
-        ? `horizontalScroll_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`
-        : `verticalScroll_${this.sheet.row}_${this.sheet.col}_${this.sheet.index}`;
+        ? `horizontalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        : `verticalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`;
 
     // Get the scroll element by its ID
     const scrollElement = document.getElementById(scrollElementId);
@@ -236,10 +245,10 @@ export class Helper {
       direction === "horizontal"
         ? this.scroll.maxScrollX
         : this.scroll.maxScrollY;
-      
+
     // Get the relevant dimension based on direction
     const clientSize =
-    direction === "horizontal"
+      direction === "horizontal"
         ? scrollElement.clientWidth
         : scrollElement.clientHeight;
 
@@ -253,8 +262,8 @@ export class Helper {
 
   // Customize scroll
 
-  public Scroll(x: number, y: number): void {
-    this.scroll.scroll(x, y);
+  public setScroll(x: number, y: number): void {
+    this.scroll.setScroll(x, y);
   }
 
   // update the max scroll by getting new width and height from grid header manager
@@ -289,6 +298,16 @@ export class Helper {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
 
+  getAllHorizontalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllHorizontalHeaderCells();
+  }
+
+  
+  getAllVerticalHeaderCells():IGridHeaderCell[]{
+    return this.GridHeaderManager!.getAllVerticalHeaderCells();
+  }
+
+
   draw() {
     this.sheetRendrer.draw();
   }
@@ -321,7 +340,11 @@ export class Helper {
     return low;
   }
 
-  public setCell(rowNumber:number, columnNumber:number, value:string | null){
-    this.SparseMatrix.setCell(rowNumber, columnNumber, value)
+  public setCell(
+    rowNumber: number,
+    columnNumber: number,
+    value: string | null
+  ) {
+    this.SparseMatrix.setCell(rowNumber, columnNumber, value);
   }
 }

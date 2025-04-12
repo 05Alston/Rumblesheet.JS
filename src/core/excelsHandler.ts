@@ -1,20 +1,18 @@
-import { ISheetObj } from "../dataStructure/interfaces.js";
-import { Excel, Sheet } from "../excel/excel.js";
-import { Plugin } from "../plugin/plugin.js";
+import { ISheetObj } from "../data/interfaces.js";
+import { Excel } from "../excel/excel.js";
 import { ThemeManager } from "../theme/theme.js";
 
 export class ExcelsHandler {
-  mainContainer: HTMLElement;
-  maxExcelRow: number;
-  maxExcelCol: number;
-  selectedExcel: HTMLElement | null;
-  totalExcelRows: number;
-  excelsRowArr: Excel[][];
+  private readonly mainContainer: HTMLElement;
+  private readonly maxExcelRow: number;
+  private readonly maxExcelCol: number;
+  private selectedExcel: HTMLElement | null = null;
+  private totalExcelRows: number = 0;
+  private excelsRowArr: Excel[][] = [];
   currExcelRow?: number;
   currExcelCol?: number;
   currSheetObj?: ISheetObj;
   themeManager!: ThemeManager;
-  plugin!: Plugin;
 
   constructor(
     mainContainer: HTMLElement,
@@ -24,23 +22,25 @@ export class ExcelsHandler {
     this.mainContainer = mainContainer;
     this.maxExcelRow = maxExcelRow;
     this.maxExcelCol = maxExcelCol;
-    this.selectedExcel = null;
-    this.totalExcelRows = 0;
-    this.excelsRowArr = [];
     this.init();
   }
 
   private init(): void {
-    this.themeManager = new ThemeManager();
-    this.plugin = new Plugin(this);
-
-    this.themeManager.updateTheme("violet");
+    this.setupTheme();
     this.addNewExcelRow();
     this.handleResize();
     this.setupEventListeners();
   }
 
+  private setupTheme(): void {
+    this.themeManager = new ThemeManager();
+    this.themeManager.updateTheme("violet");
+  }
+
   private setupEventListeners(): void {
+    this.mainContainer.addEventListener("click", (event) =>
+      this.handleClick(event)
+    );
     const addNewExcelRowButton = document.querySelector(".add-new-row");
     const addNewExcelColButton = document.querySelector(".add-new-col");
     const deleteExcelButton = document.querySelector(".delete-excel");
@@ -53,14 +53,11 @@ export class ExcelsHandler {
         this.addNewExcelCol(this.currExcelRow);
       }
     });
-
     deleteExcelButton?.addEventListener("click", () => {
       if (this.currExcelRow !== undefined && this.currExcelCol !== undefined) {
         this.deleteExcel(this.currExcelRow, this.currExcelCol);
       }
     });
-
-    this.mainContainer.addEventListener("click", (e) => this.handleClick(e));
   }
 
   private handleClick(event: MouseEvent): void {
@@ -79,13 +76,10 @@ export class ExcelsHandler {
     }
   }
 
-  updateCurrExcel(
+  public updateCurrExcel(
     excelRow: number,
     excelCol: number,
-    sheetObj: {
-      name: string;
-      instance: Sheet;
-    }
+    sheetObj: ISheetObj
   ): void {
     this.currExcelRow = excelRow;
     this.currExcelCol = excelCol;
@@ -98,14 +92,14 @@ export class ExcelsHandler {
       return;
     }
 
-    this.totalExcelRows += 1;
-    const row = document.createElement("div");
-    row.className = "row";
-    row.id = `row_${this.totalExcelRows}`;
-    row.style.flex = "1";
-    const excel = new Excel(row, this.totalExcelRows, 1, this);
+    this.totalExcelRows++;
+    const rowElement = document.createElement("div");
+    rowElement.className = "row";
+    rowElement.id = `row-${this.totalExcelRows}`;
+
+    const excel = new Excel(rowElement, this.totalExcelRows, 1, this);
     this.excelsRowArr[this.totalExcelRows - 1] = [excel];
-    this.mainContainer.appendChild(row);
+    this.mainContainer.appendChild(rowElement);
     this.addResizeHandles();
     this.handleResize();
   }
@@ -120,7 +114,7 @@ export class ExcelsHandler {
     }
 
     colCount += 1;
-    const row = document.getElementById(`row_${rowNum}`);
+    const row = document.getElementById(`row-${rowNum}`);
     if (!row) return;
 
     const excel = new Excel(row, rowNum, colCount, this);
@@ -130,7 +124,7 @@ export class ExcelsHandler {
   }
 
   private deleteExcel(rowNum: number, colNum: number): void {
-    const rowElement = document.getElementById(`row_${rowNum}`);
+    const rowElement = document.getElementById(`row-${rowNum}`);
     if (rowElement) {
       const cells = rowElement.querySelectorAll(".excel");
       if (cells[colNum - 1]) {
@@ -146,11 +140,11 @@ export class ExcelsHandler {
     }
 
     this.excelsRowArr.forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
+      row.forEach((Excel, colIndex) => {
         const updatedColNum = colIndex + 1;
         if (updatedColNum >= colNum) {
-          cell.element.style.gridColumn = String(updatedColNum);
-          cell.element.dataset.col = String(updatedColNum);
+          Excel.excelElement.style.gridColumn = String(updatedColNum);
+          Excel.excelElement.dataset.col = String(updatedColNum);
         }
       });
     });
@@ -159,7 +153,7 @@ export class ExcelsHandler {
   }
 
   private deleteRow(rowNum: number): void {
-    const rowElement = document.getElementById(`row_${rowNum}`);
+    const rowElement = document.getElementById(`row-${rowNum}`);
     if (rowElement) {
       this.mainContainer.removeChild(rowElement);
     }
@@ -167,9 +161,9 @@ export class ExcelsHandler {
     this.excelsRowArr.splice(rowNum - 1, 1);
 
     for (let i = rowNum; i <= this.totalExcelRows; i++) {
-      const rowElement = document.getElementById(`row_${i}`);
+      const rowElement = document.getElementById(`row-${i}`);
       if (rowElement) {
-        rowElement.id = `row_${i - 1}`;
+        rowElement.id = `row-${i - 1}`;
         const cells = rowElement.querySelectorAll(".excel");
         cells.forEach((cell) => {
           (cell as HTMLElement).dataset.row = String(i - 1);
@@ -183,7 +177,7 @@ export class ExcelsHandler {
 
   private addResizeHandles(): void {
     this.excelsRowArr.forEach((row, rowIndex) => {
-      const rowElement = document.getElementById(`row_${rowIndex + 1}`);
+      const rowElement = document.getElementById(`row-${rowIndex + 1}`);
 
       if (rowElement && rowIndex < this.excelsRowArr.length - 1) {
         const rowResizeHandle = document.createElement("div");
@@ -194,7 +188,7 @@ export class ExcelsHandler {
       row.forEach((cell, colIndex) => {
         if (colIndex < row.length - 1) {
           const cellElement = document.getElementById(
-            `rowCol${rowIndex + 1}_${colIndex + 1}`
+            `row-${rowIndex + 1}-col-${colIndex + 1}`
           );
           const colResizeHandle = document.createElement("div");
           colResizeHandle.className = "col-resize-handle";
@@ -251,6 +245,7 @@ export class ExcelsHandler {
       }
 
       currentElement.style.display = "none";
+      /* SonarQube ignore next line */
       currentElement.offsetHeight; // Force reflow
       currentElement.style.display = "";
     };

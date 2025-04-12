@@ -1,4 +1,4 @@
-import { Sheet } from "../excel/excel";
+import { SheetMaker } from "../excel/controllers/sheetMaker";
 import {
   EFontFamilies,
   ETextAlign,
@@ -8,7 +8,7 @@ import {
 
 export interface ISheetObj {
   name: string;
-  instance: Sheet;
+  instance: SheetMaker;
 }
 
 export interface IGridHeaderCell {

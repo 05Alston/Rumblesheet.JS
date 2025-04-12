@@ -4,8 +4,8 @@ import {
   DEFAULT_FONT_SIZE,
   FONT_FAMILY_ARRAY,
   FONT_SIZES_ARRAY,
-} from "../dataStructure/constants.js";
-import { EFontFamilies, ERibbonDataActions, ETabList } from "../dataStructure/enums.js";
+} from "../data/constants.js";
+import { EFontFamilies, ERibbonDataActions, ETabList } from "../data/enums.js";
 
 export class Ribbon {
   private ribbonElement: HTMLElement; //ribbon element where the ribbon is to be embedded

@@ -1,5 +1,11 @@
 //* Enums
 
+export enum ECanvasType {
+  horizontal = "horizontal",
+  vertical = "vertical",
+  spreadsheet = "spreadsheet",
+}
+
 export enum ETextAlign {
   center = "center",
   left = "left",

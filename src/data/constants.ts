@@ -8,7 +8,8 @@ import {
 import { ICellStyles } from "./interfaces.js";
 
 //* constants for all canvas
-
+export const DEFAULT_HORIZONTAL_CANVAS_HEIGHT = 20;
+export const DEFAULT_VERTICAL_CANVAS_WIDTH = 30;
 export const DEFAULT_CANVAS_LINES_COLOR = "#000000";
 export const DEFAULT_CANVAS_TEXT_COLOR = "#000000";
 export const DEFAULT_CANVAS_FONT_FAMILY = EFontFamilies.arial;

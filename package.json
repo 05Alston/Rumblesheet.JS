@@ -1,22 +1,37 @@
 {
   "name": "rumblesheetjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Seamlessly integrate dynamic, interactive spreadsheets into any website for enhanced data management and visualization.",
-  "main": "index.js",
+  "main": "rumblesheet.js",
+  "type": "module",
+  "files": [
+    "dist/",
+    "assets/"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/rumblesheet.js"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "rumblesheetjs",
+    "spreadsheet",
+    "interactive",
+    "data-visualization",
+    "web-component",
+    "grid"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pandevs-org/RumblesheetJS.git"
+    "url": "git+https://github.com/pandevs-org/Rumblesheet.JS.git"
   },
-  "keywords": [
-    "rumblesheetjs"
-  ],
-  "author": "borisedison",
+  "author": "borisedison, shivendrapandey",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pandevs-org/RumblesheetJS/issues"
+    "url": "https://github.com/pandevs-org/Rumblesheet.JS/issues"
   },
-  "homepage": "https://github.com/pandevs-org/RumblesheetJS#readme"
+  "homepage": "https://github.com/pandevs-org/Rumblesheet.JS#readme"
 }
