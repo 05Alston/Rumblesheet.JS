@@ -4,8 +4,8 @@ import { SparseMatrix, Cell } from "../../dataStructure/sparseMatrix.js";
 import { SheetRendrer } from "./sheetRendrer.js";
 import {  GridHeaderManager } from "./GridManager.js";
 import  {IGridHeaderCell} from "../../dataStructure/interfaces.js"
-import { mainCellManager } from "../../feature/mainCellFeature/mainCellManager.js";
-import { headerCellManager } from "../../feature/headerCellManager/headerCellManager.js";
+import { mainCellManager } from "../../features/mainCellFeature/mainCellManager.js";
+import { headerCellManager } from "../../features/headerCellManager/headerCellManager.js";
 
 export class Helper {
   private scroll: Scroll;
