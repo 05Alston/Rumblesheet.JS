@@ -49,7 +49,7 @@ export class HeaderCellManager{
 
     private handleKeyDown(event:Event) {
       if ((event as KeyboardEvent).key === 'Enter') {
-        console.log(event)
+        // conosle.log(event)
           // this.updateCellValue(event.value);
           // this.cellFunctionality.selectedCell = null;
           // this.sheetRenderer.draw();

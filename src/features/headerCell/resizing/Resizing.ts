@@ -83,10 +83,10 @@ export class HeaderResizeFunctionality {
             // Adjust index based on the resize type
             if (this.resizeType === 'column') {
                 this.resizeIndex = cells[resizeEdge.index].col - 1; // Use column index for resizing columns
-                console.log(this.resizeIndex)
+                // conosle.log(this.resizeIndex)
             } else {
                 this.resizeIndex = cells[resizeEdge.index].row - 1; // Use row index for resizing rows
-                console.log(this.resizeIndex)
+                // conosle.log(this.resizeIndex)
             }
             
             event.preventDefault();
@@ -98,7 +98,7 @@ export class HeaderResizeFunctionality {
 
     private handleDrag(event: MouseEvent): void {
         if (!this.isResizing) {
-            console.log(this.isResizing)
+            // conosle.log(this.isResizing)
             return;
         }
 
@@ -126,7 +126,7 @@ export class HeaderResizeFunctionality {
     }
     private applyResize(event: MouseEvent): void {
         if (!this.isResizing || !this.resizeType || this.resizeIndex === null) return;
-        console.log("applying the resize")
+        // conosle.log("applying the resize")
         const canvas = this.resizeType === 'column' 
             ? this.canvases.horizontal 
             : this.canvases.vertical;
@@ -145,7 +145,7 @@ export class HeaderResizeFunctionality {
             this.resizeIndex
         );
         const newSize = Math.max(20, currentSize! + delta);
-        console.log("current Position: ",currentPosition," scrolloffset: ",scrollOffset,"delta:",delta,"currentSize:",currentSize)
+        // conosle.log("current Position: ",currentPosition," scrolloffset: ",scrollOffset,"delta:",delta,"currentSize:",currentSize)
 
 
         // Set the new size for the resized header cell

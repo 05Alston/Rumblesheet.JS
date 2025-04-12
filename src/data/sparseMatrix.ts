@@ -1,25 +1,30 @@
 import { DEFAULT_CELL_STYLES } from "./constants.js";
-import { ICellStyles } from "./interfaces.js";
+import { ICell, ICellStyles, IGridHeaderCell, ISelectedCell } from "./interfaces.js";
 
 export class Cell {
+  public firstColumnHeaderCell: IGridHeaderCell| undefined;
+  public lastColumnHeaderCell: IGridHeaderCell| undefined;
+  public firstRowHeaderCell: IGridHeaderCell| undefined;
+  public lastRowHeaderCell: IGridHeaderCell| undefined;
   public rowValue: number;
   public colValue: number;
   public value: string | null;
-  public nextRow?: Cell | undefined;
-  public nextCol?: Cell | undefined;
-  public prevRow?: Cell | undefined;
-  public prevCol?: Cell | undefined;
+  public nextRow?: ICell | undefined;
+  public nextCol?: ICell | undefined;
+  public prevRow?: ICell | undefined;
+  public prevCol?: ICell | undefined;
   public styles: ICellStyles;
+  public mergedTo?: ICell | undefined ;
 
   constructor(
     rowValue: number,
     colValue: number,
     value: string | null,
-    nextRow?: Cell | undefined,
-    nextCol?: Cell | undefined,
-    prevRow?: Cell | undefined,
-    prevCol?: Cell | undefined, 
-    styles?: ICellStyles
+    nextRow?: ICell | undefined,
+    nextCol?: ICell | undefined,
+    prevRow?: ICell | undefined,
+    prevCol?: ICell | undefined, 
+    styles?: ICellStyles,
   ) {
     this.rowValue = rowValue;
     this.colValue = colValue;
@@ -275,5 +280,33 @@ export class SparseMatrix {
     } else {
       this.createCell(row, col, value);
     }
+  }
+
+  public updateCellsForSparse(selectedCells: ISelectedCell[]) {
+    // console.log(selectedCells)
+    if (!selectedCells.length) return;
+  
+    for (const cellInfo of selectedCells) {
+      const col = cellInfo.column?.col;
+      const row = cellInfo.row?.row;
+  
+      if (col === undefined || row === undefined) continue;
+  
+      // Check if cell exists
+      if (!this._cellExists(row, col)) {
+        this.createCell(row, col, null); // Create with null value
+      }
+  
+      const cell = this.getCell(row, col); // Assuming this retrieves the created/existing cell
+      if (cell) {
+        cell.mergedTo = this.getCell(selectedCells[0].row?.row!,selectedCells[0].column?.col!)!;
+        console.log(cell)
+      }
+    }
+    const target_cell = this.getCell(selectedCells[0].row?.row!,selectedCells[0].column?.col!)!;
+    target_cell.firstRowHeaderCell = selectedCells[0].row;
+    target_cell.firstColumnHeaderCell =  selectedCells[0].column ;
+    target_cell.lastRowHeaderCell = selectedCells[selectedCells.length - 1].row;
+    target_cell.lastColumnHeaderCell = selectedCells[selectedCells.length - 1].column;
   }
 }

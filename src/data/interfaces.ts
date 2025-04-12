@@ -22,14 +22,25 @@ export interface IGridHeaderCell {
 }
 
 export interface ICell {
+  firstColumnHeaderCell: IGridHeaderCell| undefined;
+  lastColumnHeaderCell: IGridHeaderCell| undefined;
+  firstRowHeaderCell: IGridHeaderCell| undefined;
+  lastRowHeaderCell: IGridHeaderCell| undefined;
   rowValue: number;
   colValue: number;
   value: any;
-  nextRow: ICell | undefined;
-  nextCol: ICell | undefined;
-  prevRow: ICell | undefined;
-  prevCol: ICell | undefined;
-  styles?: ICellStyles;
+  nextRow?: ICell | undefined;
+  nextCol?: ICell | undefined;
+  prevRow?: ICell | undefined;
+  prevCol?: ICell | undefined;
+  styles: ICellStyles;
+  mergedTo?: ICell | undefined;
+}
+
+export interface ISelectedCell {
+  column: IGridHeaderCell | undefined;
+  row: IGridHeaderCell | undefined;
+  cell: ICell | null;
 }
 
 export interface ICellStyles {
