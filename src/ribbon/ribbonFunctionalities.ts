@@ -33,8 +33,8 @@ export class RibbonFunctionalities {
 
     this.tabButtons.forEach((tab) => {
       tab.classList.remove("active");
-      tab.classList.remove("leftToActive");
-      tab.classList.remove("rightToActive");
+      tab.classList.remove("left-to-active");
+      tab.classList.remove("right-to-active");
     });
     this.tabContents.forEach((content) => content.classList.remove("active"));
 
@@ -42,10 +42,10 @@ export class RibbonFunctionalities {
     this.tabContents[index].classList.add("active");
 
     if (this.tabButtons[index - 1]) {
-      this.tabButtons[index - 1].classList.add("leftToActive");
+      this.tabButtons[index - 1].classList.add("left-to-active");
     }
     if (this.tabButtons[index + 1]) {
-      this.tabButtons[index + 1].classList.add("rightToActive");
+      this.tabButtons[index + 1].classList.add("right-to-active");
     }
   }
 
@@ -143,15 +143,15 @@ export class RibbonFunctionalities {
     const content = document.querySelector(".focus-tab.active") as HTMLElement;
 
     if (this.isOverflowingHorizontally(content)) {
-      if (!content.classList.contains("scrollAvailable")) {
-        this.focusContent.classList.add("scrollAvailable");
-        this.scrollLeftBtn.classList.add("scrollAvailable");
-        this.scrollRightBtn.classList.add("scrollAvailable");
+      if (!content.classList.contains("scroll-available")) {
+        this.focusContent.classList.add("scroll-available");
+        this.scrollLeftBtn.classList.add("scroll-available");
+        this.scrollRightBtn.classList.add("scroll-available");
       }
     } else {
-      this.focusContent.classList.remove("scrollAvailable");
-      this.scrollLeftBtn.classList.remove("scrollAvailable");
-      this.scrollRightBtn.classList.remove("scrollAvailable");
+      this.focusContent.classList.remove("scroll-available");
+      this.scrollLeftBtn.classList.remove("scroll-available");
+      this.scrollRightBtn.classList.remove("scroll-available");
     }
   }
 

@@ -8,7 +8,7 @@ import {
   DEFAULT_HORIZONTAL_CANVAS_HEIGHT,
   DEFAULT_VERTICAL_CANVAS_WIDTH,
 } from "../../../data/constants.js";
-import { IGridHeaderCell } from "../../../data/interfaces.js";
+import { IGridHeaderCell, ISelectedCell } from "../../../data/interfaces.js";
 import { Cell } from "../../../data/sparseMatrix.js";
 import { MainCellManager } from "../mainCellManager.js";
 
@@ -19,15 +19,8 @@ export class Selection {
   private isScrolling: boolean;
   private startPoint!: { x: number; y: number };
   private endPoint!: { x: number; y: number };
-  private clickedCell_headercells!: {
-    column: IGridHeaderCell;
-    row: IGridHeaderCell;
-  } | null;
-  public selectedCells!: {
-    column: IGridHeaderCell | undefined;
-    row: IGridHeaderCell | undefined;
-    cell: Cell | null;
-  }[];
+  public clickedCell_headercells!: ISelectedCell;
+  public selectedCells!: ISelectedCell[];
 
   constructor(maincellManager: MainCellManager) {
     this.maincellManager = maincellManager;
@@ -40,13 +33,17 @@ export class Selection {
 
   setupEventListeners(): void {
     const canvas = this.canvases.spreadsheet;
-    canvas.addEventListener("pointerdown", this.handlePointerDown.bind(this));
-    document.addEventListener("pointerup", this.handlePointerUp.bind(this));
+    canvas.addEventListener("pointerdown", (event) => {
+      if (event.button === 0) { // 0 = left button
+          this.handlePointerDown(event);
+      }
+  });    document.addEventListener("pointerup", this.handlePointerUp.bind(this));
     document.addEventListener("pointermove", this.handlePointerMove.bind(this));
   }
 
   private handlePointerDown(event: PointerEvent) {
     event.preventDefault();
+    // console.log(this.canvases)
     this.startPoint = this.maincellManager.getCanvasCoordinates(event);
     this.handleCellClick(event);
 
@@ -112,7 +109,8 @@ export class Selection {
     this.clickedCell_headercells = this.maincellManager.getCellFromCoordinates(
       scrollX,
       scrollY
-    );
+    )!;
+    // console.log(this.clickedCell_headercells)
     if (this.clickedCell_headercells) {
       this.deselectCurrentCells();
       // this.maincellManager.updateInputElement(this.clickedCell_headercells);
@@ -122,9 +120,7 @@ export class Selection {
     }
   }
 
-  private selectCell(
-    cell: { column: IGridHeaderCell; row: IGridHeaderCell } | null
-  ) {
+  private selectCell(cell:ISelectedCell) {
     this.maincellManager.updateInputElement(cell);
     this.maincellManager.draw();
     // this.drawHighlight();
@@ -159,25 +155,44 @@ export class Selection {
     const { x: scrollX, y: scrollY } = this.maincellManager.getScroll();
 
     if (this.selectedCells.length === 0) return;
-    let width = null;
-    let height = null;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    let width = 50;
+    let height = 30;
     ctx.strokeStyle = DEFAULT_HIGHLIGHT_BORDER_COLOR;
     ctx.lineWidth = DEFAULT_HIGHLIGHT_LINE_WIDTH;
     // Get the boundary of the selected area
-    const minX = Math.min(...this.selectedCells.map((cell) => cell.column!.x));
-    const maxX = Math.max(
-      ...this.selectedCells.map((cell) => {
-        width = cell.column!.width;
-        return cell.column!.x + cell.column!.width;
-      })
-    );
-    const minY = Math.min(...this.selectedCells.map((cell) => cell.row!.y));
-    const maxY = Math.max(
-      ...this.selectedCells.map((cell) => {
-        height = cell.row!.height;
-        return cell.row!.y + cell.row!.height;
-      })
-    );
+    for (const selectedcell of this.selectedCells) {
+      const cell = selectedcell.cell;
+      if (cell?.mergedTo){
+        minX = Math.min(minX,cell.mergedTo.firstColumnHeaderCell!.x);
+        minY = Math.min(minY,cell.mergedTo.firstRowHeaderCell!.y);
+        maxX = Math.max(maxX,cell.mergedTo.lastColumnHeaderCell!.x + cell.mergedTo.lastColumnHeaderCell!.width)
+        maxY = Math.max(maxY,cell.mergedTo.lastRowHeaderCell!.y + cell.mergedTo.lastRowHeaderCell!.height)
+      }
+      else{
+        minX = Math.min(minX, selectedcell.column!.x);
+        minY = Math.min(minY, selectedcell.row!.y);
+        maxX = Math.max(maxX, selectedcell.column!.x + selectedcell.column!.width)
+        maxY = Math.max(maxY, selectedcell.row!.y + selectedcell.row!.height)
+      }
+    }
+    // minX = Math.min(...this.selectedCells.map((cell) => cell.column!.x));
+    // maxX = Math.max(
+    //   ...this.selectedCells.map((cell) => {
+    //     width = cell.column!.width;
+    //     return cell.column!.x + cell.column!.width;
+    //   })
+    // );
+    // minY = Math.min(...this.selectedCells.map((cell) => cell.row!.y));
+    // maxY = Math.max(
+    //   ...this.selectedCells.map((cell) => {
+    //     height = cell.row!.height;
+    //     return cell.row!.y + cell.row!.height;
+    //   })
+    // );
 
     // Use a single function to draw on both horizontal and vertical canvases
     this.drawRectangleOnHeaderCanvas(

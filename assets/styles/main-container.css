@@ -1,4 +1,4 @@
-body .mainContainer {
+body .main-container {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -9,7 +9,7 @@ body .mainContainer {
   flex: 1;
   background-color: var(--excelPrimaryBgColor);
 }
-body .mainContainer .row {
+body .main-container .row {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -19,7 +19,7 @@ body .mainContainer .row {
   position: relative;
   overflow: hidden;
 }
-body .mainContainer .row .excel.resizable {
+body .main-container .row .excel.resizable {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -32,7 +32,7 @@ body .mainContainer .row .excel.resizable {
   flex-direction: column;
   flex: 1;
 }
-body .mainContainer .row .excel.resizable::after {
+body .main-container .row .excel.resizable::after {
   content: "";
   position: absolute;
   right: 0;
@@ -43,28 +43,28 @@ body .mainContainer .row .excel.resizable::after {
   opacity: 0;
   cursor: nwse-resize;
 }
-body .mainContainer .row .excel.resizable:hover::after {
+body .main-container .row .excel.resizable:hover::after {
   opacity: 0.2;
 }
-body .mainContainer .row .excel.resizable .topSection {
+body .main-container .row .excel.resizable .topSection {
   height: 20px;
 }
-body .mainContainer .row .excel.resizable .middleSection {
+body .main-container .row .excel.resizable .bottom-section {
   flex: 1;
   display: flex;
   position: relative;
   overflow: hidden;
 }
-body .mainContainer .row .excel.resizable .middleSection .verticalCanvas {
+body .main-container .row .excel.resizable .bottom-section .verticalCanvas {
   width: 30px;
   height: calc(100% - 10px);
   position: relative;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
+  .bottom-section
   .verticalCanvas
   canvas {
   width: 100%;
@@ -72,10 +72,10 @@ body
   background-color: var(--excelVerticalCanvasBgColor);
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
+  .bottom-section
   .verticalCanvas
   .up-arrow-button {
   position: absolute;
@@ -88,13 +88,24 @@ body
   text-align: center;
   font-size: 14px;
 }
-body .mainContainer .row .excel.resizable .middleSection .fullCanvas {
+body
+  .main-container
+  .row
+  .excel.resizable
+  .bottom-section
+  .spreadsheet-canvas-wrapper {
   flex: 1;
   position: relative;
   overflow: hidden;
   background-color: white;
 }
-body .mainContainer .row .excel.resizable .middleSection .fullCanvas .input {
+body
+  .main-container
+  .row
+  .excel.resizable
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .input {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -104,90 +115,90 @@ body .mainContainer .row .excel.resizable .middleSection .fullCanvas .input {
   outline: none;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .spreadsheetCanvas {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .spreadsheet-canvas {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .horizontalScroll,
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .horizontal-scroll,
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .verticalScroll {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .vertical-scroll {
   position: absolute;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .horizontalScroll {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .horizontal-scroll {
   bottom: 0;
   left: 0;
   right: 0;
   height: 10px;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .verticalScroll {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .vertical-scroll {
   top: 0;
   right: 0;
   bottom: 10px;
   width: 10px;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .horizontalBar,
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .horizontal-bar,
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .verticalBar {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .vertical-bar {
   position: absolute;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .horizontalBar {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .horizontal-bar {
   height: 100%;
 }
 body
-  .mainContainer
+  .main-container
   .row
   .excel.resizable
-  .middleSection
-  .fullCanvas
-  .verticalBar {
+  .bottom-section
+  .spreadsheet-canvas-wrapper
+  .vertical-bar {
   width: 100%;
 }
-body .mainContainer .row .excel.resizable .col-resize-handle {
+body .main-container .row .excel.resizable .col-resize-handle {
   position: absolute;
   top: 0;
   right: -5px;
@@ -196,7 +207,7 @@ body .mainContainer .row .excel.resizable .col-resize-handle {
   cursor: col-resize;
   z-index: 10;
 }
-body .mainContainer .row .row-resize-handle {
+body .main-container .row .row-resize-handle {
   position: absolute;
   left: 0;
   bottom: -5px;

@@ -7,17 +7,20 @@ import {
   DEFAULT_MIN_PADDING_IN_CELL,
 } from "../../data/constants.js";
 import { ETextBaseLine } from "../../data/enums.js";
-import { IGridHeaderCell } from "../../data/interfaces.js";
+import { ICell, IGridHeaderCell } from "../../data/interfaces.js";
 import { Helper } from "../../excel/helper/helper.js";
 import { Selection } from "./selection/selection.js";
+import { MergeCell } from './mergeCells/mergeCells.js';
+import { ISelectedCell } from '../../data/interfaces';
 
 export class MainCellManager {
   public helper: Helper;
   public input!: HTMLElement | null;
   private selectionCell!: Selection;
+  private mergeCell!: MergeCell
   private canvases: { [key: string]: HTMLCanvasElement; };
 
-  constructor(helper: Helper ) {
+  constructor(helper: Helper) {
     this.helper = helper;
     this.canvases = this.helper.getCanvases();
     this.initiateFeature();
@@ -48,8 +51,14 @@ export class MainCellManager {
       const { row, column } = this.selectionCell.selectedCells[0];
       const value = (event.target! as HTMLElement).innerText;
 
-      const rowNumber = row!.row;
-      const columnNumber = column!.col;
+      let rowNumber = row!.row;
+      let columnNumber = column!.col;
+      // For merged cell
+      if (this.selectionCell.selectedCells[0].cell?.mergedTo){
+        const cell = this.selectionCell.selectedCells[0].cell?.mergedTo;
+        rowNumber = cell.rowValue
+        columnNumber = cell.colValue
+      }
 
       // Update SparseMatrix with new value
       this.helper.setCell(rowNumber, columnNumber, value);
@@ -66,7 +75,7 @@ export class MainCellManager {
 
   private handleKeyDown(event: Event) {
     if ((event as KeyboardEvent).key === "Enter") {
-      console.log(event);
+      // conosle.log(event);
       // this.updateCellValue(event.value);
       // this.cellFunctionality.selectedCell = null;
       // this.sheetRenderer.draw();
@@ -87,9 +96,19 @@ export class MainCellManager {
     }
   }
 
+  public updateCellsValueForMerging() {
+    if (this.selectionCell.selectedCells[0]) {
+      const { row, column } = this.selectionCell.selectedCells[0];
+      const rowNumber = row!.row;
+      const columnNumber = column!.col;
+      this.helper.updateCellsForSparse(this.selectionCell.selectedCells);
+    }
+  }
+
   private initiateFeature() {
     // For adding new feature call here
     this.selectionCell = new Selection(this);
+    this.mergeCell = new MergeCell(this)
   }
 
   public getCanvasCoordinates(event: PointerEvent) {
@@ -106,11 +125,11 @@ export class MainCellManager {
     };
   }
 
-  public setScroll(x: number, y: number){
+  public setScroll(x: number, y: number) {
     this.helper.setScroll(x, y);
   }
 
-  public getScroll(){
+  public getScroll() {
     return this.helper.getScroll();
   }
 
@@ -118,20 +137,20 @@ export class MainCellManager {
     this.helper.draw();
   }
 
-  public getCanvases(){
+  public getCanvases() {
     return this.canvases;
   }
 
-  public getContexts(){
+  public getContexts() {
     return this.helper.getContexts();
   }
 
   public getCellFromCoordinates(
     x: number,
     y: number
-  ): { column: IGridHeaderCell; row: IGridHeaderCell } | null {
-    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
-    const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
+  ): { column: IGridHeaderCell; row: IGridHeaderCell; cell:ICell } | null {
+    const horizontalHeaderCells = this.helper.getAllHorizontalHeaderCells();
+    const verticalHeaderCells = this.helper.getAllVerticalHeaderCells();
 
     const column = horizontalHeaderCells.find(
       (cell) => x >= cell.x && x < cell.x + cell.width
@@ -139,40 +158,62 @@ export class MainCellManager {
     const row = verticalHeaderCells.find(
       (cell) => y >= cell.y && y < cell.y + cell.height
     );
-
-    return column && row ? { column, row } : null;
+    const cell = this.helper.getCell(row?.row!,column?.col!)!
+    return column && row ? { column, row , cell } : null;
   }
 
   public getCellsFromRect(
     startPoint: { x: number; y: number },
     endPoint: { x: number; y: number }
-  ) {
-    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(0);
-    const verticalHeaderCells = this.helper.getVerticalHeaderCells(0);
+  ):ISelectedCell[] {
+    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(startPoint.x);
+    const verticalHeaderCells = this.helper.getVerticalHeaderCells(startPoint.y);
 
     const left = Math.min(startPoint.x, endPoint.x);
     const right = Math.max(startPoint.x, endPoint.x);
     const top = Math.min(startPoint.y, endPoint.y);
     const bottom = Math.max(startPoint.y, endPoint.y);
 
-    const startColIndex = this.helper.binarySearch(horizontalHeaderCells, left, "x");
-    const endColIndex = this.helper.binarySearch(horizontalHeaderCells, right, "x");
-    const startRowIndex = this.helper.binarySearch(verticalHeaderCells, top, "y");
-    const endRowIndex = this.helper.binarySearch(verticalHeaderCells, bottom, "y");
+    const startColIndex = this.helper.binarySearch(
+      horizontalHeaderCells,
+      left,
+      "x"
+    );
+    const endColIndex = this.helper.binarySearch(
+      horizontalHeaderCells,
+      right,
+      "x"
+    );
+    const startRowIndex = this.helper.binarySearch(
+      verticalHeaderCells,
+      top,
+      "y"
+    );
+    const endRowIndex = this.helper.binarySearch(
+      verticalHeaderCells,
+      bottom,
+      "y"
+    );
 
     const cells = [];
-    console.log(startColIndex,endColIndex)
-    console.log(startRowIndex,endRowIndex)
+    console.log(startColIndex, endColIndex);
+    console.log(startRowIndex, endRowIndex);
     for (let i = startColIndex; i <= endColIndex; i++) {
       for (let j = startRowIndex; j <= endRowIndex; j++) {
-        if(this.helper.getCell(
-          verticalHeaderCells[j].row,
-          horizontalHeaderCells[i].col
-        )){
-          console.log(console.log( this.helper.getCell(
+        if (
+          this.helper.getCell(
             verticalHeaderCells[j].row,
             horizontalHeaderCells[i].col
-          ),))
+          )
+        ) {
+          console.log(
+            console.log(
+              this.helper.getCell(
+                verticalHeaderCells[j].row,
+                horizontalHeaderCells[i].col
+              )
+            )
+          );
         }
         cells.push({
           column: horizontalHeaderCells[i],
@@ -193,9 +234,12 @@ export class MainCellManager {
     this.selectionCell.updateDrawForScrolling();
   }
 
-  public updateInputElement(
-    cell: { column: IGridHeaderCell; row: IGridHeaderCell } | null
-  ) {
+  public updateInputElementWithoutCell(){
+    // conosle.log('see')
+    this.updateInputElement(this.selectionCell.clickedCell_headercells)
+    // this.selectionCell.drawHighlight()
+  }
+  public updateInputElement(cell : ISelectedCell) {
     if (!cell || !cell.column || !cell.row) {
       return;
     }
@@ -209,9 +253,17 @@ export class MainCellManager {
     const { x: scrollX, y: scrollY } = this.getScroll();
     const zoomIndex = this.helper.zoomIndex;
     const inputChange = 2;
-    const node = this.helper.getCell(cell.row.row, cell.column.col);
+    let node = this.helper.getCell(cell.row.row, cell.column.col);
+    let left,top,width,height;
     const fontSize = node?.styles.fontSize ?? DEFAULT_FONT_SIZE;
     const textAlign = node?.styles.textAlign ?? DEFAULT_CANVAS_TEXT_ALIGN;
+    if (node?.mergedTo){
+      node = node.mergedTo;
+      left = `${node.firstColumnHeaderCell!.x - scrollX + inputChange}px`
+      top = `${node.firstRowHeaderCell!.y - scrollY + inputChange}px`
+      width = `${(node.lastColumnHeaderCell!.x - node.firstColumnHeaderCell!.x + node.lastColumnHeaderCell!.width) - inputChange * inputChange}px`
+      height = `${(node.lastRowHeaderCell!.y - node.firstRowHeaderCell!.y + node.lastRowHeaderCell!.height)- inputChange * inputChange}px`
+    }
     const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
     ? "center"
     : node?.styles.textBaseline || "center"
@@ -222,20 +274,20 @@ export class MainCellManager {
 
     Object.assign(this.input.style, {
       position: "absolute",
-      left: `${cell!.column.x - scrollX + inputChange}px`,
-      top: `${cell!.row.y - scrollY + inputChange}px`,
-      width: `${cell!.column.width - inputChange * inputChange}px`,
-      height: `${cell!.row.height - inputChange * inputChange}px`,
+      left: left? left :`${cell!.column.x - scrollX + inputChange}px`,
+      top: top? top : `${cell!.row.y - scrollY + inputChange}px`,
+      width: width? width : `${cell!.column.width - inputChange * inputChange}px`,
+      height: height? height: `${cell!.row.height - inputChange * inputChange}px`,
       fontSize: `${fontSize * zoomIndex}px`, // Adjust font size based on scale
       textAlign: textAlign,
       lineHeight: `${fontSize * zoomIndex}px`,
       alignContent: alignContent,
       padding: `0px ${DEFAULT_MIN_PADDING_IN_CELL - 1}px`, // shiv don't know why is this -1 to be used
       display: "block",
-      fontWeight : bold,
-      fontStyle : italic,
-      color : color,
-      backgroundColor : bgColor
+      fontWeight: bold,
+      fontStyle: italic,
+      color: color,
+      backgroundColor: bgColor,
     });
     this.input.innerText = node?.value ?? ""; // Set the input value
     this.input.focus();

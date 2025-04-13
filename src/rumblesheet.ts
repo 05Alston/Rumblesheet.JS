@@ -48,8 +48,8 @@ export class Rumblesheet {
 
   private createMainContainer(parent: HTMLElement): HTMLElement {
     const mainContainer = document.createElement("div");
-    mainContainer.id = "mainContainer";
-    mainContainer.className = "mainContainer";
+    mainContainer.id = "main-container";
+    mainContainer.className = "main-container";
     parent.appendChild(mainContainer);
     return mainContainer;
   }

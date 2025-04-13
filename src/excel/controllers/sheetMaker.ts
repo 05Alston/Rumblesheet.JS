@@ -1,35 +1,36 @@
+import { ISheetSectionElements } from "../../data/interfaces.js";
 import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
 import { Helper } from "../helper/helper.js";
 
 export class SheetMaker {
-  name: string;
+  sheetName: string;
   row: number;
   col: number;
   index: number;
-  elements: { topSection: HTMLElement; middleSection: HTMLElement };
+  sheetSectionElements: ISheetSectionElements;
   helper?: Helper;
   mainCellManager?: MainCellManager;
 
-  constructor(name: string, row: number, col: number, index: number) {
-    this.name = name;
+  constructor(sheetName: string, row: number, col: number, index: number) {
+    this.sheetName = sheetName;
     this.row = row;
     this.col = col;
     this.index = index;
 
-    this.elements = {
+    this.sheetSectionElements = {
       topSection: this.createTopSection(),
-      middleSection: this.createMiddleSection(),
+      bottomSection: this.createBottomSection(),
     };
     this.waitForSectionsToRender();
   }
 
   waitForSectionsToRender() {
     const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        // Check if the added nodes include both topSection and middleSection
+      for (const _ of mutationsList) {
+        // Check if the added nodes include both topSection and bototomSection
         if (
-          document.body.contains(this.elements.topSection) &&
-          document.body.contains(this.elements.middleSection)
+          document.body.contains(this.sheetSectionElements.topSection) &&
+          document.body.contains(this.sheetSectionElements.bottomSection)
         ) {
           // Once both sections are added, instantiate this.helper
           this.helper = new Helper(this);
@@ -45,49 +46,50 @@ export class SheetMaker {
 
   private createTopSection(): HTMLElement {
     const topSection = document.createElement("div");
-    topSection.id = `topsection_${this.row}_${this.col}_${this.index}`;
+    topSection.id = `top-section-${this.row}-${this.col}-${this.index}`;
     topSection.className = "top-section";
 
     const nothing = document.createElement("div");
-    nothing.id = `nothing_${this.row}_${this.col}_${this.index}`;
+    nothing.id = `nothing-${this.row}-${this.col}-${this.index}`;
     nothing.className = "nothing";
 
-    const upperCanvas = document.createElement("div");
-    upperCanvas.id = `upperCanvas_${this.row}_${this.col}_${this.index}`;
-    upperCanvas.className = "upperCanvas";
+    const horizontalCanvasWrapper = document.createElement("div");
+    horizontalCanvasWrapper.id = `horizontal-canvas-wrapper-${this.row}-${this.col}-${this.index}`;
+    horizontalCanvasWrapper.className = "horizontal-canvas-wrapper";
 
     const horizontalCanvas = document.createElement("canvas");
-    horizontalCanvas.id = `horizontalCanvas_${this.row}_${this.col}_${this.index}`;
-    horizontalCanvas.className = "horizontalCanvas";
+    horizontalCanvas.id = `horizontal-canvas-${this.row}-${this.col}-${this.index}`;
+    horizontalCanvas.className = "horizontal-canvas";
 
-    upperCanvas.appendChild(horizontalCanvas);
+    horizontalCanvasWrapper.appendChild(horizontalCanvas);
     topSection.appendChild(nothing);
-    topSection.appendChild(upperCanvas);
+    topSection.appendChild(horizontalCanvasWrapper);
 
     return topSection;
   }
 
-  private createMiddleSection(): HTMLElement {
-    const midSection = document.createElement("div");
-    midSection.id = `midSection_${this.row}_${this.col}_${this.index}`;
-    midSection.className = "middleSection";
+  private createBottomSection(): HTMLElement {
+    const bottomSection = document.createElement("div");
+    bottomSection.id = `bottom-section-${this.row}-${this.col}-${this.index}`;
+    bottomSection.className = "bottom-section";
 
     const verticalCanvasWrapper = document.createElement("div");
-    verticalCanvasWrapper.id = `verticalCanvasWrapper_${this.row}_${this.col}_${this.index}`;
-    verticalCanvasWrapper.className = "verticalCanvas";
+    verticalCanvasWrapper.id = `vertical-canvas-wrapper-${this.row}-${this.col}-${this.index}`;
+    verticalCanvasWrapper.className = "vertical-canvas-wrapper";
 
     const verticalCanvas = document.createElement("canvas");
-    verticalCanvas.id = `verticalCanvas_${this.row}_${this.col}_${this.index}`;
+    verticalCanvas.id = `vertical-canvas-${this.row}-${this.col}-${this.index}`;
+    verticalCanvas.className = `vertical-canvas`;
 
     verticalCanvasWrapper.appendChild(verticalCanvas);
 
-    const fullCanvas = document.createElement("div");
-    fullCanvas.id = `fullCanvas_${this.row}_${this.col}_${this.index}`;
-    fullCanvas.className = "fullCanvas";
+    const spreadsheetCanvasWrapper = document.createElement("div");
+    spreadsheetCanvasWrapper.id = `spreadsheet-canvas-wrapper-${this.row}-${this.col}-${this.index}`;
+    spreadsheetCanvasWrapper.className = "spreadsheet-canvas-wrapper";
 
     const spreadsheetCanvas = document.createElement("canvas");
-    spreadsheetCanvas.id = `spreadsheetCanvas_${this.row}_${this.col}_${this.index}`;
-    spreadsheetCanvas.className = "spreadsheetCanvas";
+    spreadsheetCanvas.id = `spreadsheet-canvas-${this.row}-${this.col}-${this.index}`;
+    spreadsheetCanvas.className = "spreadsheet-canvas";
 
     const verticalScroll = this.createScrollbar("vertical");
     const horizontalScroll = this.createScrollbar("horizontal");
@@ -97,25 +99,25 @@ export class SheetMaker {
     inputEle.id = `input_${this.row}_${this.col}_${this.index}`;
     inputEle.className = "input";
 
-    fullCanvas.appendChild(inputEle);
-    fullCanvas.appendChild(spreadsheetCanvas);
-    fullCanvas.appendChild(verticalScroll);
-    fullCanvas.appendChild(horizontalScroll);
+    spreadsheetCanvasWrapper.appendChild(inputEle);
+    spreadsheetCanvasWrapper.appendChild(spreadsheetCanvas);
+    spreadsheetCanvasWrapper.appendChild(verticalScroll);
+    spreadsheetCanvasWrapper.appendChild(horizontalScroll);
 
-    midSection.appendChild(verticalCanvasWrapper);
-    midSection.appendChild(fullCanvas);
+    bottomSection.appendChild(verticalCanvasWrapper);
+    bottomSection.appendChild(spreadsheetCanvasWrapper);
 
-    return midSection;
+    return bottomSection;
   }
 
   private createScrollbar(orientation: "vertical" | "horizontal"): HTMLElement {
     const scroll = document.createElement("div");
-    scroll.id = `${orientation}Scroll_${this.row}_${this.col}_${this.index}`;
-    scroll.className = `${orientation}Scroll`;
+    scroll.id = `${orientation}-scroll-${this.row}-${this.col}-${this.index}`;
+    scroll.className = `${orientation}-scroll`;
 
     const bar = document.createElement("div");
-    bar.id = `${orientation}Bar_${this.row}_${this.col}_${this.index}`;
-    bar.className = `${orientation}Bar`;
+    bar.id = `${orientation}-bar-${this.row}-${this.col}-${this.index}`;
+    bar.className = `${orientation}-bar`;
 
     scroll.appendChild(bar);
     return scroll;

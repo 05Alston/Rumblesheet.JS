@@ -8,8 +8,8 @@ import {
 import { EFontFamilies, ERibbonDataActions, ETabList } from "../data/enums.js";
 
 export class Ribbon {
-  private ribbonElement: HTMLElement; //ribbon element where the ribbon is to be embedded
-  private rumblesheetElement: HTMLElement; //rumblesheet element where the ribbon is to be embedded
+  private readonly ribbonElement: HTMLElement; //ribbon element where the ribbon is to be embedded
+  private readonly rumblesheetElement: HTMLElement; //rumblesheet element where the ribbon is to be embedded
   ribbonFunctions!: RibbonFunctionalities;
   tabs: ETabList[] = [
     ETabList.file,

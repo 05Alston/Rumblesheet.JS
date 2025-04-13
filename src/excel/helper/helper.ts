@@ -1,6 +1,8 @@
 import { ECanvasType } from "../../data/enums.js";
-import { IGridHeaderCell } from "../../data/interfaces.js";
+import { ISelectedCell } from "../../data/interfaces";
+import { ICell, IGridHeaderCell } from "../../data/interfaces.js";
 import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
+import { HeaderCellManager } from "../../features/headerCell/headerCellManager.js";
 import { MainCellManager } from "../../features/mainCell/mainCellManager.js";
 import { GridHeaderManager } from "../controllers/gridManager.js";
 import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
@@ -31,6 +33,7 @@ export class Helper {
   public maxZoom: number = 5;
   public loadedRows: number = 0;
   public loadedCols: number = 0;
+  public headerCellManager!: HeaderCellManager;
   public mainCellManager!: MainCellManager;
 
   constructor(Sheet: SheetMaker) {
@@ -59,17 +62,18 @@ export class Helper {
   private initiatefeature() {
     // to add helper to feature classes
     this.mainCellManager = new MainCellManager(this);
+    this.headerCellManager = new HeaderCellManager(this);
   }
 
   private initCanvases() {
     Object.values(ECanvasType).forEach((type) => {
       const canvas = document.getElementById(
-        `${type}Canvas_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        `${type}-canvas-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
       ) as HTMLCanvasElement;
 
       if (!canvas) {
         throw new Error(
-          `Canvas not found: ${type}Canvas_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+          `Canvas not found: ${type}-canvas-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
         );
       }
       this.canvases[type] = canvas;
@@ -78,19 +82,19 @@ export class Helper {
 
     this.verticalScroll = {
       scroll: document.getElementById(
-        `verticalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        `vertical-scroll-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
       ),
       bar: document.getElementById(
-        `verticalBar_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        `vertical-bar-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
       ),
     };
 
     this.horizontalScroll = {
       scroll: document.getElementById(
-        `horizontalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        `horizontal-scroll-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
       ),
       bar: document.getElementById(
-        `horizontalBar_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
+        `horizontal-bar-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
       ),
     };
   }
@@ -133,10 +137,24 @@ export class Helper {
       );
   }
 
-  public getCell(x: number, y: number): Cell | null {
-    return this.SparseMatrix.getCell(x, y);
+  public getCell(row: number, col: number): Cell | null {
+    return this.SparseMatrix.getCell(row, col);
   }
 
+  public getCellSize(
+    type: "horizontal" | "vertical",
+    index: number
+  ): number | undefined {
+    return this.GridHeaderManager?.getCellSize(type, index);
+  }
+
+  public setCustomCellSize(
+    type: "horizontal" | "vertical",
+    index: number,
+    size: number
+  ): void {
+    this.GridHeaderManager?.setCustomCellSize(type, index, size);
+  }
   public getRowColofExcel(): { row: number; col: number; index: number } {
     return {
       row: this.sheetMaker.row,
@@ -160,6 +178,10 @@ export class Helper {
 
   public updateCells(): void {
     this.GridHeaderManager?.generateNewCells();
+  }
+
+  public updateCellsForSparse(selectedCell: ISelectedCell[]) {
+    this.SparseMatrix.updateCellsForSparse(selectedCell);
   }
 
   public getRowheader(): { [key: number]: Cell | undefined } {
@@ -195,7 +217,7 @@ export class Helper {
 
           // If the column does not exist, add a new cell for the column in this row
           if (!currentCell) {
-            const newCell = new Cell(rowIndex, colIndex, cellValue);
+            const _newCell = new Cell(rowIndex, colIndex, cellValue);
             this.SparseMatrix.addColumnInBetween(rowIndex);
             this.SparseMatrix.addRowInBetween(colIndex);
           }
@@ -212,8 +234,8 @@ export class Helper {
     // Determine the ID of the scroll element based on the direction
     const scrollElementId =
       direction === "horizontal"
-        ? `horizontalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`
-        : `verticalScroll_${this.sheetMaker.row}_${this.sheetMaker.col}_${this.sheetMaker.index}`;
+        ? `horizontal-scroll-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`
+        : `vertical-scroll-${this.sheetMaker.row}-${this.sheetMaker.col}-${this.sheetMaker.index}`;
 
     // Get the scroll element by its ID
     const scrollElement = document.getElementById(scrollElementId);
@@ -288,6 +310,14 @@ export class Helper {
     return this.GridHeaderManager!.getHeaderCellsVertical(scrollY);
   }
 
+  getAllHorizontalHeaderCells(): IGridHeaderCell[] {
+    return this.GridHeaderManager!.getAllHorizontalHeaderCells();
+  }
+
+  getAllVerticalHeaderCells(): IGridHeaderCell[] {
+    return this.GridHeaderManager!.getAllVerticalHeaderCells();
+  }
+
   draw() {
     this.sheetRendrer.draw();
   }
@@ -326,5 +356,33 @@ export class Helper {
     value: string | null
   ) {
     this.SparseMatrix.setCell(rowNumber, columnNumber, value);
+  }
+
+  //Helper to calculate merged range
+  public getMergedRange(rootCell: ICell): {
+    width: number;
+    height: number;
+    isMerged: boolean;
+  } {
+    if (!rootCell.mergedTo || rootCell === rootCell.mergedTo) {
+      let width = 1;
+      let height = 1;
+
+      let colWalker = rootCell;
+      while (colWalker.nextCol && colWalker.nextCol.mergedTo === rootCell) {
+        width++;
+        colWalker = colWalker.nextCol;
+      }
+
+      let rowWalker = rootCell;
+      while (rowWalker.nextRow && rowWalker.nextRow.mergedTo === rootCell) {
+        height++;
+        rowWalker = rowWalker.nextRow;
+      }
+
+      return { width, height, isMerged: true };
+    }
+
+    return { width: 1, height: 1, isMerged: false };
   }
 }
