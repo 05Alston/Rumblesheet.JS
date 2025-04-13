@@ -3,6 +3,7 @@ import {
   DEFAULT_CELL_BG_COLOR,
   DEFAULT_CELL_FONT_COLOR,
   DEFAULT_CELL_WIDTH,
+  DEFAULT_FONT_FAMILY,
   DEFAULT_FONT_SIZE,
   DEFAULT_MIN_PADDING_IN_CELL,
 } from "../../data/constants.js";
@@ -279,6 +280,7 @@ export class MainCellManager {
       width: width? width : `${cell!.column.width - inputChange * inputChange}px`,
       height: height? height: `${cell!.row.height - inputChange * inputChange}px`,
       fontSize: `${fontSize * zoomIndex}px`, // Adjust font size based on scale
+      fontFamily : `${node?.styles.fontFamily ?? DEFAULT_FONT_FAMILY}`,
       textAlign: textAlign,
       lineHeight: `${fontSize * zoomIndex}px`,
       alignContent: alignContent,

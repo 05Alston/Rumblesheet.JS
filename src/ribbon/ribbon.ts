@@ -1,6 +1,6 @@
 import { RibbonFunctionalities } from "./ribbonFunctionalities.js";
 import {
-  DEFAULT_FONT_FAMILTY,
+  DEFAULT_FONT_FAMILY,
   DEFAULT_FONT_SIZE,
   FONT_FAMILY_ARRAY,
   FONT_SIZES_ARRAY,
@@ -136,10 +136,12 @@ export class Ribbon {
                           .map(
                             (family) =>
                               `<option value="${family}" ${
-                                family === DEFAULT_FONT_FAMILTY
+                                family === DEFAULT_FONT_FAMILY
                                   ? "selected"
                                   : ""
-                              }>${family}</option>`
+                              }
+                              style = "font-family : ${family}"
+                                  >${family}</option>`
                           )
                           .join("")}
                       </select>

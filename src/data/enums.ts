@@ -13,11 +13,22 @@ export enum ETextAlign {
 }
 
 export enum EFontFamilies {
-  arial = "Arial",
-  timesNewRoman = "Times new Roman",
-  roboto = "Roboto",
-  openSans = "Opan Sans",
-  rubik = "Rubik",
+  // System Fonts
+  Arial = "Arial, sans-serif",
+  Georgia = "Georgia, serif",
+  CourierNew = "'Courier New', monospace",
+  Verdana = "Verdana, sans-serif",
+  TimesNewRoman = "'Times New Roman', serif",
+  Tahoma = "Tahoma, sans-serif",
+
+  // Google Fonts (commonly used)
+  Roboto = "'Roboto', sans-serif",
+  OpenSans = "'Open Sans', sans-serif",
+  Lato = "'Lato', sans-serif",
+  Montserrat = "'Montserrat', sans-serif",
+  Poppins = "'Poppins', sans-serif",
+  Inter = "'Inter', sans-serif",
+  Lobster = "'Lobster', cursive"
 }
 
 export enum ETextBaseLine {

@@ -12,7 +12,7 @@ export const DEFAULT_HORIZONTAL_CANVAS_HEIGHT = 20;
 export const DEFAULT_VERTICAL_CANVAS_WIDTH = 30;
 export const DEFAULT_CANVAS_LINES_COLOR = "#000000";
 export const DEFAULT_CANVAS_TEXT_COLOR = "#000000";
-export const DEFAULT_CANVAS_FONT_FAMILY = EFontFamilies.arial;
+export const DEFAULT_CANVAS_FONT_FAMILY = EFontFamilies.Arial;
 export const DEFAULT_CANVAS_LINE_WIDTH = 1;
 export const DEFAULT_CANVAS_TEXT_ALIGN = ETextAlign.left;
 export const DEFAULT_CANVAS_TEXT_BASELINE = ETextBaseLine.middle;
@@ -22,7 +22,7 @@ export const DEFAULT_CANVAS_TEXT_WRAPPING = ETextWrapping.clip;
 export const DEFAULT_FONT_SIZE = 14;
 export const DEFAULT_LINE_HEIGHT_FONT_SIZE_DIFF = 4;
 export const DEFAULT_CELL_FONT_COLOR = "#000000";
-export const DEFAULT_FONT_FAMILTY = EFontFamilies.arial;
+export const DEFAULT_FONT_FAMILY = EFontFamilies.Arial;
 export const DEFAULT_CELL_BG_COLOR = "#ffffff";
 export const DEFAULT_CELL_INDENT = 0;
 export const DEFAULT_CELL_WIDTH = 120;
@@ -56,13 +56,8 @@ export const INDENT_VALUE_CHANGE_VALUE = 4;
 export const FONT_SIZES_ARRAY: number[] = [
   8, 9, 10, 11, 12, 13, 50, 14, 16, 18, 20,
 ];
-export const FONT_FAMILY_ARRAY: EFontFamilies[] = [
-  EFontFamilies.timesNewRoman,
-  EFontFamilies.arial,
-  EFontFamilies.roboto,
-  EFontFamilies.openSans,
-  EFontFamilies.rubik,
-];
+export const FONT_FAMILY_ARRAY: EFontFamilies[] = Object.values(EFontFamilies);
+
 export const activePossibleActions = [
   ERibbonDataActions.bold,
   ERibbonDataActions.italic,
