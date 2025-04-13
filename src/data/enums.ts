@@ -1,15 +1,15 @@
 //* Enums
 
 export enum ECanvasType {
-  horizontal = "horizontal",
-  vertical = "vertical",
-  spreadsheet = "spreadsheet",
+  Horizontal = "horizontal",
+  Vertical = "vertical",
+  Spreadsheet = "spreadsheet",
 }
 
 export enum ETextAlign {
-  center = "center",
-  left = "left",
-  right = "right",
+  Center = "center",
+  Left = "left",
+  Right = "right",
 }
 
 export enum EFontFamilies {
@@ -28,47 +28,47 @@ export enum EFontFamilies {
   Montserrat = "'Montserrat', sans-serif",
   Poppins = "'Poppins', sans-serif",
   Inter = "'Inter', sans-serif",
-  Lobster = "'Lobster', cursive"
+  Lobster = "'Lobster', cursive",
 }
 
 export enum ETextBaseLine {
-  middle = "middle",
-  top = "top",
-  bottom = "bottom",
+  Middle = "middle",
+  Top = "top",
+  Bottom = "bottom",
 }
 
 export enum ETextWrapping {
-  wrap = "wrap",
-  clip = "clip",
+  Wrap = "wrap",
+  Clip = "clip",
 }
 
 export enum ERibbonDataActions {
-  paste = "paste",
-  cut = "cut",
-  copy = "copy",
-  increaseFont = "increaseFont",
-  decreaseFont = "decreaseFont",
-  bold = "bold",
-  italic = "italic",
-  underline = "underline",
-  fillColor = "fillColor",
-  textColor = "textColor",
-  alignLeft = "alignLeft",
-  alignCenter = "alignCenter",
-  alignRight = "alignRight",
-  decreaseIndent = "decreaseIndent",
-  increaseIndent = "increaseIndent",
-  fontSize = "fontSize",
-  fontFamily = "fontFamily",
-  textBaselineTop = "textBaselineTop",
-  textBaselineMiddle = "textBaselineMiddle",
-  textBaselineBottom = "textBaselineBottom",
+  Paste = "paste",
+  Cut = "cut",
+  Copy = "copy",
+  IncreaseFont = "increaseFont",
+  DecreaseFont = "decreaseFont",
+  Bold = "bold",
+  Italic = "italic",
+  Underline = "underline",
+  FillColor = "fillColor",
+  TextColor = "textColor",
+  AlignLeft = "alignLeft",
+  AlignCenter = "alignCenter",
+  AlignRight = "alignRight",
+  DecreaseIndent = "decreaseIndent",
+  IncreaseIndent = "increaseIndent",
+  FontSize = "fontSize",
+  FontFamily = "fontFamily",
+  TextBaselineTop = "textBaselineTop",
+  TextBaselineMiddle = "textBaselineMiddle",
+  TextBaselineBottom = "textBaselineBottom",
 }
 
 export enum ETabList {
-  file = "File",
-  home = "Home",
-  graph = "Graph",
-  operations = "Operations",
-  format = "Format",
+  File = "File",
+  Home = "Home",
+  Graph = "Graph",
+  Operations = "Operations",
+  Format = "Format",
 }

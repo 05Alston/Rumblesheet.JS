@@ -265,7 +265,7 @@ export class MainCellManager {
       width = `${(node.lastColumnHeaderCell!.x - node.firstColumnHeaderCell!.x + node.lastColumnHeaderCell!.width) - inputChange * inputChange}px`
       height = `${(node.lastRowHeaderCell!.y - node.firstRowHeaderCell!.y + node.lastRowHeaderCell!.height)- inputChange * inputChange}px`
     }
-    const alignContent = node?.styles.textBaseline === ETextBaseLine.middle
+    const alignContent = node?.styles.textBaseline === ETextBaseLine.Middle
     ? "center"
     : node?.styles.textBaseline || "center"
     const bold = node?.styles.bold ? 'bold' : 'normal';

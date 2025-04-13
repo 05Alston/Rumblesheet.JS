@@ -1,6 +1,7 @@
 import {
   EFontFamilies,
   ERibbonDataActions,
+  ETabList,
   ETextAlign,
   ETextBaseLine,
   ETextWrapping,
@@ -14,9 +15,9 @@ export const DEFAULT_CANVAS_LINES_COLOR = "#000000";
 export const DEFAULT_CANVAS_TEXT_COLOR = "#000000";
 export const DEFAULT_CANVAS_FONT_FAMILY = EFontFamilies.Arial;
 export const DEFAULT_CANVAS_LINE_WIDTH = 1;
-export const DEFAULT_CANVAS_TEXT_ALIGN = ETextAlign.left;
-export const DEFAULT_CANVAS_TEXT_BASELINE = ETextBaseLine.middle;
-export const DEFAULT_CANVAS_TEXT_WRAPPING = ETextWrapping.clip;
+export const DEFAULT_CANVAS_TEXT_ALIGN = ETextAlign.Left;
+export const DEFAULT_CANVAS_TEXT_BASELINE = ETextBaseLine.Middle;
+export const DEFAULT_CANVAS_TEXT_WRAPPING = ETextWrapping.Clip;
 
 //* constants used in sparseMatrix cells
 export const DEFAULT_FONT_SIZE = 14;
@@ -56,32 +57,34 @@ export const INDENT_VALUE_CHANGE_VALUE = 4;
 export const FONT_SIZES_ARRAY: number[] = [
   8, 9, 10, 11, 12, 13, 50, 14, 16, 18, 20,
 ];
+
 export const FONT_FAMILY_ARRAY: EFontFamilies[] = Object.values(EFontFamilies);
+export const TAB_LISTS_ARRAY : ETabList[] = Object.values(ETabList)
 
 export const activePossibleActions = [
-  ERibbonDataActions.bold,
-  ERibbonDataActions.italic,
-  ERibbonDataActions.underline,
+  ERibbonDataActions.Bold,
+  ERibbonDataActions.Italic,
+  ERibbonDataActions.Underline,
 ];
 export const alignmentActions = [
-  ERibbonDataActions.alignCenter,
-  ERibbonDataActions.alignLeft,
-  ERibbonDataActions.alignRight,
+  ERibbonDataActions.AlignCenter,
+  ERibbonDataActions.AlignLeft,
+  ERibbonDataActions.AlignRight,
 ];
 
 export const textBaseLineActions = [
-  ERibbonDataActions.textBaselineBottom,
-  ERibbonDataActions.textBaselineMiddle,
-  ERibbonDataActions.textBaselineTop,
+  ERibbonDataActions.TextBaselineBottom,
+  ERibbonDataActions.TextBaselineMiddle,
+  ERibbonDataActions.TextBaselineTop,
 ];
 export const indentActions = [
-  ERibbonDataActions.increaseIndent,
-  ERibbonDataActions.decreaseIndent,
+  ERibbonDataActions.IncreaseIndent,
+  ERibbonDataActions.DecreaseIndent,
 ];
 export const instantActions = [
-  ERibbonDataActions.increaseFont,
-  ERibbonDataActions.decreaseFont,
-  ERibbonDataActions.copy,
-  ERibbonDataActions.paste,
-  ERibbonDataActions.cut,
+  ERibbonDataActions.IncreaseFont,
+  ERibbonDataActions.DecreaseFont,
+  ERibbonDataActions.Copy,
+  ERibbonDataActions.Paste,
+  ERibbonDataActions.Cut,
 ];
