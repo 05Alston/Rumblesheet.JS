@@ -9,68 +9,67 @@
   height: 20px;
 }
 .excel .top-section .nothing {
-  box-shadow: 1px 1px solid gray;
   width: 30px;
 }
-.excel .top-section .upperCanvas {
+.excel .top-section .horizontal-canvas-wrapper {
   flex: 1;
   position: relative;
 }
-.excel .top-section .horizontalCanvas {
+.excel .top-section .horizontal-canvas {
   width: calc(100% - 10px);
   height: 100%;
 }
-.excel .middleSection {
+.excel .bottom-section {
   display: flex;
   flex: 1;
   position: relative;
 }
-.excel .verticalCanvas {
+.excel .vertical-canvas-wrapper {
   width: 30px;
   position: relative;
 }
-.excel .verticalCanvas canvas {
+.excel .vertical-canvas-wrapper .vertical-canvas {
   width: 100%;
   height: 100%;
   background-color: var(--excelHorizontalCanvasBgColor);
 }
-.excel .fullCanvas {
+.excel .spreadsheet-canvas-wrapper {
   flex: 1;
   position: relative;
 }
-.excel .fullCanvas .spreadsheetCanvas {
+.excel .spreadsheet-canvas-wrapper .spreadsheet-canvas {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
 }
-.excel .fullCanvas .verticalScroll,
-.excel .fullCanvas .horizontalScroll {
+.excel .spreadsheet-canvas-wrapper .vertical-scroll,
+.excel .spreadsheet-canvas-wrapper .horizontal-scroll {
   position: absolute;
   background: var(--scrollbarTrackColor);
 }
-.excel .fullCanvas .verticalScroll {
+.excel .spreadsheet-canvas-wrapper .vertical-scroll {
   right: 0;
   top: 0;
   width: 10px;
   height: calc(100% - 10px);
 }
-.excel .fullCanvas .horizontalScroll {
+.excel .spreadsheet-canvas-wrapper .horizontal-scroll {
   bottom: 0;
   left: 0;
   width: calc(100% - 10px);
   height: 10px;
 }
-.excel .fullCanvas .verticalBar,
-.excel .fullCanvas .horizontalBar {
+.excel .spreadsheet-canvas-wrapper .vertical-bar,
+.excel .spreadsheet-canvas-wrapper .horizontal-bar {
   position: absolute;
   background: var(--scrollbarThumbColor);
   border-radius: 5px;
 }
-.excel .fullCanvas .verticalBar {
+.excel .spreadsheet-canvas-wrapper .vertical-bar {
   width: 100%;
   height: 50%;
   top: 0;
 }
-.excel .fullCanvas .horizontalBar {
+.excel .spreadsheet-canvas-wrapper .horizontal-bar {
   height: 100%;
   width: 50%;
   left: 0;
@@ -136,6 +135,7 @@
   font-size: 12px;
   font-weight: bold;
 }
+
 .excel .sheet-bar .sheet-tabs .sheet-tab.active {
   background-color: #fff;
   border-bottom: 2px solid #1a73e8;

@@ -40,10 +40,10 @@
   color: var(--color-3);
 }
 
-.ribbon .top .tablist-container .tablist-items.leftToActive {
+.ribbon .top .tablist-container .tablist-items.left-to-active {
   border-bottom-right-radius: 5px;
 }
-.ribbon .top .tablist-container .tablist-items.rightToActive {
+.ribbon .top .tablist-container .tablist-items.right-to-active {
   border-bottom-left-radius: 5px;
 }
 
@@ -60,6 +60,13 @@
 .ribbon .focus-zone .focus-content .focus-tab {
   display: none;
   padding: 0px 2px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  scroll-behavior: smooth;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 .ribbon .focus-zone .focus-content .focus-tab.active {
   display: flex;
@@ -90,7 +97,7 @@
   height: 100%;
 }
 
-.ribbon .focus-zone .focus-content.scrollAvailable {
+.ribbon .focus-zone .focus-content.scroll-available {
   width: calc(100% - 20px - 18px - 18px);
   margin-left: 12px; /* 4px extra for clearity  */
 }
@@ -99,7 +106,6 @@
 .scroll-right {
   height: calc(100% - 10px);
   background-color: var(--light-gray);
-  display: flex;
   justify-content: center;
   align-items: center;
   width: 18px;
@@ -108,8 +114,8 @@
   display: none;
 }
 
-.ribbon .focus-zone .scroll-left.scrollAvailable,
-.scroll-right.scrollAvailable {
+.ribbon .focus-zone .scroll-left.scroll-available,
+.scroll-right.scroll-available {
   display: flex;
 }
 
@@ -147,13 +153,6 @@
 
 .ribbon .focus-zone.expanded .fixed-to-right button {
   transform: rotate(180deg);
-}
-
-.ribbon .focus-zone .focus-content .focus-tab {
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  scroll-behavior: smooth;
 }
 
 .ribbon .focus-zone .focus-content .focus-tab .tab-section {
@@ -399,12 +398,6 @@
   background-color: transparent;
 }
 
-.ribbon .focus-zone .focus-content .focus-tab {
-  overflow-x: scroll;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
 .ribbon .focus-zone .focus-content .focus-tab::-webkit-scrollbar {
   display: none;
 }
@@ -425,7 +418,6 @@ option {
   line-height: var(--input-line-height);
   font-family: var(--font-family);
   background-color: var(--color-1);
-  border: none;
   padding: 2px 4px;
   border-radius: 4px;
   border: 1px solid var(--gray);
