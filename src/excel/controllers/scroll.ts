@@ -13,9 +13,9 @@ export class Scroll {
     sheetRendrer!: SheetRendrer;
     canvases?: { [key: string]: HTMLCanvasElement; };
     contexts?: { [key: string]: CanvasRenderingContext2D; };
-    private loadThreshold = 0.8;
+    private readonly loadThreshold = 0.8;
 
-    constructor(private helper: Helper) {
+    constructor(private readonly helper: Helper) {
         this.helper = helper;
         this.mappingFromHelper();
         this.setupEventListeners();
@@ -34,8 +34,8 @@ export class Scroll {
         document.addEventListener('mousemove', this.handleMouseMove.bind(this));
         document.addEventListener('mouseup', this.handleMouseUp.bind(this));
 
-        const verticalScrollBar = document.getElementById(`verticalBar_${Sheetrow}_${Sheetcol}_${Sheetindex}`);
-        const horizontalScrollBar = document.getElementById(`horizontalBar_${Sheetrow}_${Sheetcol}_${Sheetindex}`);
+        const verticalScrollBar = document.getElementById(`vertical-bar-${Sheetrow}-${Sheetcol}-${Sheetindex}`);
+        const horizontalScrollBar = document.getElementById(`horizontal-bar-${Sheetrow}-${Sheetcol}-${Sheetindex}`);
 
         verticalScrollBar?.addEventListener('mousedown', this.handleScrollBarMouseDown.bind(this, 'vertical'));
         horizontalScrollBar?.addEventListener('mousedown', this.handleScrollBarMouseDown.bind(this, 'horizontal'));

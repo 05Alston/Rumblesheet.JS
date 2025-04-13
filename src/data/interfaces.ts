@@ -22,10 +22,10 @@ export interface IGridHeaderCell {
 }
 
 export interface ICell {
-  firstColumnHeaderCell: IGridHeaderCell| undefined;
-  lastColumnHeaderCell: IGridHeaderCell| undefined;
-  firstRowHeaderCell: IGridHeaderCell| undefined;
-  lastRowHeaderCell: IGridHeaderCell| undefined;
+  firstColumnHeaderCell: IGridHeaderCell | undefined;
+  lastColumnHeaderCell: IGridHeaderCell | undefined;
+  firstRowHeaderCell: IGridHeaderCell | undefined;
+  lastRowHeaderCell: IGridHeaderCell | undefined;
   rowValue: number;
   colValue: number;
   value: any;
@@ -99,4 +99,9 @@ export interface IThemeStructure {
 
 export interface ITheme {
   [key: string]: IThemeStructure;
+}
+
+export interface ISheetSectionElements {
+  topSection: HTMLElement;
+  bottomSection: HTMLElement;
 }

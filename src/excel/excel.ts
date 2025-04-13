@@ -72,8 +72,10 @@ export class Excel {
     this.contentArea.innerHTML = "";
     const activeSheet = this.sheetsArr[this.activeSheetIndex].instance;
     // todo : redefine top and middle section
-    this.contentArea.appendChild(activeSheet.elements.topSection);
-    this.contentArea.appendChild(activeSheet.elements.middleSection);
+    this.contentArea.appendChild(activeSheet.sheetSectionElements.topSection);
+    this.contentArea.appendChild(
+      activeSheet.sheetSectionElements.bottomSection
+    );
   }
 
   createSheetBar() {
