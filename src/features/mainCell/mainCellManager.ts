@@ -149,8 +149,8 @@ export class MainCellManager {
     x: number,
     y: number
   ): { column: IGridHeaderCell; row: IGridHeaderCell; cell:ICell } | null {
-    const horizontalHeaderCells = this.helper.getAllHorizontalHeaderCells();
-    const verticalHeaderCells = this.helper.getAllVerticalHeaderCells();
+    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(x);
+    const verticalHeaderCells = this.helper.getVerticalHeaderCells(y);
 
     const column = horizontalHeaderCells.find(
       (cell) => x >= cell.x && x < cell.x + cell.width
@@ -166,8 +166,8 @@ export class MainCellManager {
     startPoint: { x: number; y: number },
     endPoint: { x: number; y: number }
   ):ISelectedCell[] {
-    const horizontalHeaderCells = this.helper.getHorizontalHeaderCells(startPoint.x);
-    const verticalHeaderCells = this.helper.getVerticalHeaderCells(startPoint.y);
+    const horizontalHeaderCells = this.helper.getAllHorizontalHeaderCells();
+    const verticalHeaderCells = this.helper.getAllVerticalHeaderCells();
 
     const left = Math.min(startPoint.x, endPoint.x);
     const right = Math.max(startPoint.x, endPoint.x);
@@ -195,37 +195,27 @@ export class MainCellManager {
       "y"
     );
 
-    const cells = [];
-    console.log(startColIndex, endColIndex);
-    console.log(startRowIndex, endRowIndex);
+    let cells:ISelectedCell[] = [];
     for (let i = startColIndex; i <= endColIndex; i++) {
       for (let j = startRowIndex; j <= endRowIndex; j++) {
-        if (
-          this.helper.getCell(
-            verticalHeaderCells[j].row,
-            horizontalHeaderCells[i].col
-          )
-        ) {
-          console.log(
-            console.log(
-              this.helper.getCell(
-                verticalHeaderCells[j].row,
-                horizontalHeaderCells[i].col
-              )
-            )
-          );
-        }
-        cells.push({
+        const cell = this.helper.getCell(
+          verticalHeaderCells[j].row, 
+          horizontalHeaderCells[i].col
+        );
+        
+        console.log("About to push cell:", cell);
+        
+        const cellObject = {
           column: horizontalHeaderCells[i],
           row: verticalHeaderCells[j],
-          cell: this.helper.getCell(
-            verticalHeaderCells[j].row,
-            horizontalHeaderCells[i].col
-          ),
-        });
-      }
-    }
-
+          cell: cell
+        };
+        
+        console.log("Created cell object:", cellObject);
+        cells.push(cellObject);
+        console.log("After push, last item:", cells[cells.length-1]);
+      }}
+    console.log(cells)
     return cells;
   }
 
