@@ -115,7 +115,7 @@ export class Selection {
       this.deselectCurrentCells();
       // this.maincellManager.updateInputElement(this.clickedCell_headercells);
       this.selectCell(this.clickedCell_headercells);
-      this.updateSelectedCells(this.startPoint);
+      // this.updateSelectedCells(this.startPoint);
       // this.drawHighlight();
     }
   }

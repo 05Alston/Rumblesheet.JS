@@ -100,6 +100,38 @@ export class HeaderCellManager{
       return this.helper!.getVerticalHeaderCells(scrollY);
     }
 
+        // Inside HeaderCellManager
+
+    public getCellIndexFromPosition(type: 'horizontal' | 'vertical', position: number): number | null {
+      const cells = type === 'horizontal'
+          ? this.getHorizontalHeaderCells(this.getScroll().x)
+          : this.getVerticalHeaderCells(this.getScroll().y);
+
+      for (let i = 0; i < cells.length; i++) {
+          const cell = cells[i];
+          const start = type === 'horizontal' ? cell.x : cell.y;
+          const size = type === 'horizontal' ? cell.width : cell.height;
+          if (position >= start && position < start + size) {
+              return type === 'horizontal' ? cell.col : cell.row;
+          }
+      }
+      return null;
+    }
+
+    public getPositionFromIndex(type: 'horizontal' | 'vertical', index: number): number {
+      const cells = type === 'horizontal'
+          ? this.getHorizontalHeaderCells(this.getScroll().x)
+          : this.getVerticalHeaderCells(this.getScroll().y);
+
+      for (let i = 0; i < cells.length; i++) {
+          const cell = cells[i];
+          if ((type === 'horizontal' && cell.col === index) ||
+              (type === 'vertical' && cell.row === index)) {
+              return type === 'horizontal' ? cell.x : cell.y;
+          }
+      }
+      return 0; // fallback, maybe throw error if not found
+    }
     public getCellsFromRect(startPoint: { x: number; y: number }, endPoint: { x: number; y: number }) {
         const horizontalHeaderCells = this.helper.getAllHorizontalHeaderCells();
         const verticalHeaderCells = this.helper.getAllVerticalHeaderCells(); 
