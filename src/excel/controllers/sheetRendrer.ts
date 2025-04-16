@@ -222,8 +222,8 @@ export class SheetRendrer {
           this.drawAtCentered(
             ctx,
             cell.value.toString(),
-            canvasWidth / 2,
-            y + cell.height / 2,
+            0,
+            y,
             canvasWidth,
             cell.height
           );
@@ -235,8 +235,8 @@ export class SheetRendrer {
           this.drawAtCentered(
             ctx,
             cell.value.toString(),
-            x + cell.width / 2,
-            canvasHeight / 2,
+            x ,
+            0,
             cell.width,
             canvasHeight
           );
@@ -246,24 +246,37 @@ export class SheetRendrer {
   }
 
 
-    drawAtCentered(ctx: CanvasRenderingContext2D,text: string,x: number,y: number,
+  drawAtCentered(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
     maxWidth: number,
-      maxHeight: number): void{
+    maxHeight: number
+  ): void {
     const baseFontSize = this.baseGridSize * this.zoomIndex;
     let fontSize = Math.min(baseFontSize, maxHeight * 0.8);
 
-    // Adjust font size if text is too wide
-    // ctx.font = `${fontSize}px Arial`;
-
+    // Temporarily set font to measure text
+    ctx.font = `${fontSize}px ${DEFAULT_CANVAS_FONT_FAMILY}`;
     let textWidth = ctx.measureText(text).width;
+
+    // Adjust font size if text is too wide
     if (textWidth > maxWidth * 0.9) {
       fontSize *= (maxWidth * 0.9) / textWidth;
+      ctx.font = `${fontSize}px ${DEFAULT_CANVAS_FONT_FAMILY}`;
+      textWidth = ctx.measureText(text).width; // remeasure with updated font
     }
-    ctx.font = `${fontSize}px ${DEFAULT_CANVAS_FONT_FAMILY}`;
-    ctx.strokeStyle = DEFAULT_CANVAS_LINES_COLOR;
-    ctx.fillText(text, x, y, maxWidth);
-  }
 
+    const textMetrics = ctx.measureText(text);
+    const actualHeight =
+      textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
+
+    const centerX = x + (maxWidth - textWidth) / 2;
+    const centerY = y + (maxHeight + actualHeight) / 2 - textMetrics.actualBoundingBoxDescent;
+
+    ctx.fillText(text, centerX, centerY);
+  }
   drawGrid(scrollX: number, scrollY: number): void {
     const ctx: CanvasRenderingContext2D = this.contexts!.spreadsheet;
     const verticalCells: IGridHeaderCell[] = this.verticalCells;
