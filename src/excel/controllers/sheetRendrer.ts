@@ -369,8 +369,8 @@ export class SheetRendrer {
           ctx.clip();
   
           if (current.value !== undefined && current.value !== null) {
-            let textX = cellX + (current.styles.textIndent ?? 0) + hCell.width / 2;
-            let textY = cellY + vCell.height / 2;
+            let textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth / 2;
+            let textY = cellY + mergedHeight / 2;
             ctx.textAlign = DEFAULT_CANVAS_TEXT_ALIGN as CanvasTextAlign;
   
             if (current.styles.textAlign === ETextAlign.Left) {
@@ -384,13 +384,13 @@ export class SheetRendrer {
               ctx.textAlign = ETextAlign.Right as CanvasTextAlign;
             }
   
-            if (current.styles.textBaseline === ETextBaseLine.Top) {
+            if (current.styles.textBaseline === ETextBaseLine.Start) {
               textY = cellY + DEFAULT_MIN_PADDING_IN_CELL;
-              ctx.textBaseline = ETextBaseLine.Top as CanvasTextBaseline;
+              ctx.textBaseline =  ETextBaseLine.Top as CanvasTextBaseline;
             } else if (current.styles.textBaseline === ETextBaseLine.Middle) {
               textY = cellY + mergedHeight / 2;
               ctx.textBaseline = ETextBaseLine.Middle as CanvasTextBaseline;
-            } else if (current.styles.textBaseline === ETextBaseLine.Bottom) {
+            } else if (current.styles.textBaseline === ETextBaseLine.End) {
               textY = cellY + mergedHeight - DEFAULT_MIN_PADDING_IN_CELL;
               ctx.textBaseline = ETextBaseLine.Bottom as CanvasTextBaseline;
             }

@@ -85,7 +85,7 @@ export class MainCellManager {
 
   private handleInputBlur(event: Event) {
     this.updateCellValue((event!.target as HTMLElement).innerText);
-    this.selectionCell.selectedCells[0].cell = null;
+    // this.selectionCell.selectedCells[0].cell = null;
   }
 
   public updateCellValue(value: string | null) {

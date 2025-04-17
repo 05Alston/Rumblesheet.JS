@@ -35,6 +35,8 @@ export enum ETextBaseLine {
   Middle = "middle",
   Top = "top",
   Bottom = "bottom",
+  Start = "start",
+  End = "end"
 }
 
 export enum ETextWrapping {

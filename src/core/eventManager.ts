@@ -253,13 +253,13 @@ export class EventManager {
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
             case ERibbonDataActions.TextBaselineTop:
-              cellDetails.cell.styles.textBaseline = ETextBaseLine.Top;
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.Start;
               break;
             case ERibbonDataActions.TextBaselineMiddle:
               cellDetails.cell.styles.textBaseline = ETextBaseLine.Middle;
               break;
             case ERibbonDataActions.TextBaselineBottom:
-              cellDetails.cell.styles.textBaseline = ETextBaseLine.Bottom;
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.End;
               break;
             case ERibbonDataActions.Cut:
               // TODO - to be handled
@@ -302,7 +302,7 @@ export class EventManager {
         }
       });
     }
-    this.currentSheetObjHelper?.mainCellManager.draw();
+    this.currentSheetObjHelper?.updateDrawForFeatures()
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {
