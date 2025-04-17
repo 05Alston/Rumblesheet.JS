@@ -267,10 +267,15 @@ export class SparseMatrix {
 
     public getCell(row:number, col:number): Cell|null {
     let current = this.rowHeaders[row];
+    console.log(row,col,current)
     while (current) {
-      if (current.colValue === col) return current;
+      if (current.colValue === col){
+        console.log("returning the current value",current)
+        return current;
+      }
       current = current.nextCol;
     }
+    console.log("returning null")
     return null;
   }
 

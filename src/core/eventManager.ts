@@ -221,6 +221,7 @@ export class EventManager {
     const selectedCells =
       this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
+      console.log(selectedCells)
       selectedCells.forEach((cellDetails) => {
         if (cellDetails && cellDetails.cell) {
           switch (action) {
