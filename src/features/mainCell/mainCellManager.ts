@@ -48,25 +48,13 @@ export class MainCellManager {
   }
 
   private handleInputChange(event: Event) {
+    const element = event.target as HTMLElement;
     if (this.selectionCell.selectedCells) {
-      const { row, column } = this.selectionCell.selectedCells[0];
-      const value = (event.target! as HTMLElement).innerText;
-
-      let rowNumber = row!.row;
-      let columnNumber = column!.col;
-      // For merged cell
-      if (this.selectionCell.selectedCells[0].cell?.mergedTo){
-        const cell = this.selectionCell.selectedCells[0].cell?.mergedTo;
-        rowNumber = cell.rowValue
-        columnNumber = cell.colValue
-      }
-
-      // Update SparseMatrix with new value
-      this.helper.setCell(rowNumber, columnNumber, value);
+      const value = element.innerText;
+      this.updateCellValue(value)
     } else {
       console.warn("No cell is currently selected.");
     }
-    const element = event.target as HTMLElement;
 
     if (element.scrollHeight > element.offsetHeight) {
       let currentWidth = parseInt(element.style.width) || element.offsetWidth;
@@ -85,15 +73,24 @@ export class MainCellManager {
 
   private handleInputBlur(event: Event) {
     this.updateCellValue((event!.target as HTMLElement).innerText);
-    // this.selectionCell.selectedCells[0].cell = null;
   }
 
   public updateCellValue(value: string | null) {
     if (this.selectionCell.selectedCells[0]) {
       const { row, column } = this.selectionCell.selectedCells[0];
-      const rowNumber = row!.row;
-      const columnNumber = column!.col;
+
+      let rowNumber = row!.row;
+      let columnNumber = column!.col;
+      // For merged cell
+      if (this.selectionCell.selectedCells[0].cell?.mergedTo){
+        const cell = this.selectionCell.selectedCells[0].cell?.mergedTo;
+        rowNumber = cell.rowValue
+        columnNumber = cell.colValue
+      }
+
+      // Update SparseMatrix with new value
       this.helper.setCell(rowNumber, columnNumber, value);
+      this.selectionCell.selectedCells[0].cell = this.helper.getCell(rowNumber, columnNumber)
     }
   }
 

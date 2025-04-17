@@ -221,8 +221,19 @@ export class EventManager {
     const selectedCells =
       this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
-      console.log(selectedCells)
       selectedCells.forEach((cellDetails) => {
+        if (cellDetails && !cellDetails.cell) {
+          //if cell doesn't exixt create it with empty value
+          const rowNumber = cellDetails.row?.row;
+          const colNumber = cellDetails.column?.col;
+          if (rowNumber && colNumber) {
+            //create cell
+            this.currentSheetObjHelper?.setCell(rowNumber, colNumber, "");
+            //get updated cell
+            cellDetails.cell =
+              this.currentSheetObjHelper?.getCell(rowNumber, colNumber) ?? null;
+          }
+        }
         if (cellDetails && cellDetails.cell) {
           switch (action) {
             case ERibbonDataActions.Bold:
@@ -303,7 +314,7 @@ export class EventManager {
         }
       });
     }
-    this.currentSheetObjHelper?.updateDrawForFeatures()
+    this.currentSheetObjHelper?.updateDrawForFeatures();
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {
