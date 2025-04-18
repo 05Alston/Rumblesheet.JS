@@ -1,4 +1,5 @@
 import { ECanvasType } from "../../data/enums.js";
+import { ISelectedCell } from "../../data/interfaces";
 import { ICell, IGridHeaderCell } from "../../data/interfaces.js";
 import { Cell, SparseMatrix } from "../../data/sparseMatrix.js";
 import { HeaderCellManager } from "../../features/headerCell/headerCellManager.js";
@@ -7,7 +8,6 @@ import { GridHeaderManager } from "../controllers/gridManager.js";
 import { Scroll } from "../controllers/scroll.js"; // Assuming Scroll is imported from scroll.ts
 import { SheetMaker } from "../controllers/sheetMaker.js";
 import { SheetRendrer } from "../controllers/sheetRendrer.js";
-import { ISelectedCell } from "../../data/interfaces";
 
 export class Helper {
   public scroll: Scroll;

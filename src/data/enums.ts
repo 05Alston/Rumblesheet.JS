@@ -1,63 +1,76 @@
 //* Enums
 
 export enum ECanvasType {
-  horizontal = "horizontal",
-  vertical = "vertical",
-  spreadsheet = "spreadsheet",
+  Horizontal = "horizontal",
+  Vertical = "vertical",
+  Spreadsheet = "spreadsheet",
 }
 
 export enum ETextAlign {
-  center = "center",
-  left = "left",
-  right = "right",
+  Center = "center",
+  Left = "left",
+  Right = "right",
 }
 
 export enum EFontFamilies {
-  arial = "Arial",
-  timesNewRoman = "Times new Roman",
-  roboto = "Roboto",
-  openSans = "Opan Sans",
-  rubik = "Rubik",
+  // System Fonts
+  Arial = "Arial, sans-serif",
+  Georgia = "Georgia, serif",
+  CourierNew = "'Courier New', monospace",
+  Verdana = "Verdana, sans-serif",
+  TimesNewRoman = "'Times New Roman', serif",
+  Tahoma = "Tahoma, sans-serif",
+
+  // Google Fonts (commonly used)
+  Roboto = "'Roboto', sans-serif",
+  OpenSans = "'Open Sans', sans-serif",
+  Lato = "'Lato', sans-serif",
+  Montserrat = "'Montserrat', sans-serif",
+  Poppins = "'Poppins', sans-serif",
+  Inter = "'Inter', sans-serif",
+  Lobster = "'Lobster', cursive",
 }
 
 export enum ETextBaseLine {
-  middle = "middle",
-  top = "top",
-  bottom = "bottom",
+  Middle = "middle",
+  Top = "top",
+  Bottom = "bottom",
+  Start = "start",
+  End = "end"
 }
 
 export enum ETextWrapping {
-  wrap = "wrap",
-  clip = "clip",
+  Wrap = "wrap",
+  Clip = "clip",
 }
 
 export enum ERibbonDataActions {
-  paste = "paste",
-  cut = "cut",
-  copy = "copy",
-  increaseFont = "increaseFont",
-  decreaseFont = "decreaseFont",
-  bold = "bold",
-  italic = "italic",
-  underline = "underline",
-  fillColor = "fillColor",
-  textColor = "textColor",
-  alignLeft = "alignLeft",
-  alignCenter = "alignCenter",
-  alignRight = "alignRight",
-  decreaseIndent = "decreaseIndent",
-  increaseIndent = "increaseIndent",
-  fontSize = "fontSize",
-  fontFamily = "fontFamily",
-  textBaselineTop = "textBaselineTop",
-  textBaselineMiddle = "textBaselineMiddle",
-  textBaselineBottom = "textBaselineBottom",
+  Paste = "paste",
+  Cut = "cut",
+  Copy = "copy",
+  IncreaseFont = "increaseFont",
+  DecreaseFont = "decreaseFont",
+  Bold = "bold",
+  Italic = "italic",
+  Underline = "underline",
+  FillColor = "fillColor",
+  TextColor = "textColor",
+  AlignLeft = "alignLeft",
+  AlignCenter = "alignCenter",
+  AlignRight = "alignRight",
+  DecreaseIndent = "decreaseIndent",
+  IncreaseIndent = "increaseIndent",
+  FontSize = "fontSize",
+  FontFamily = "fontFamily",
+  TextBaselineTop = "textBaselineTop",
+  TextBaselineMiddle = "textBaselineMiddle",
+  TextBaselineBottom = "textBaselineBottom",
 }
 
 export enum ETabList {
-  file = "File",
-  home = "Home",
-  graph = "Graph",
-  operations = "Operations",
-  format = "Format",
+  File = "File",
+  Home = "Home",
+  Graph = "Graph",
+  Operations = "Operations",
+  Format = "Format",
 }

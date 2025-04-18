@@ -3,6 +3,7 @@ import {
   DEFAULT_CELL_BG_COLOR,
   DEFAULT_CELL_FONT_COLOR,
   DEFAULT_CELL_WIDTH,
+  DEFAULT_FONT_FAMILY,
   DEFAULT_FONT_SIZE,
   DEFAULT_MIN_PADDING_IN_CELL,
 } from "../../data/constants.js";
@@ -47,25 +48,13 @@ export class MainCellManager {
   }
 
   private handleInputChange(event: Event) {
+    const element = event.target as HTMLElement;
     if (this.selectionCell.selectedCells) {
-      const { row, column } = this.selectionCell.selectedCells[0];
-      const value = (event.target! as HTMLElement).innerText;
-
-      let rowNumber = row!.row;
-      let columnNumber = column!.col;
-      // For merged cell
-      if (this.selectionCell.selectedCells[0].cell?.mergedTo){
-        const cell = this.selectionCell.selectedCells[0].cell?.mergedTo;
-        rowNumber = cell.rowValue
-        columnNumber = cell.colValue
-      }
-
-      // Update SparseMatrix with new value
-      this.helper.setCell(rowNumber, columnNumber, value);
+      const value = element.innerText;
+      this.updateCellValue(value)
     } else {
       console.warn("No cell is currently selected.");
     }
-    const element = event.target as HTMLElement;
 
     if (element.scrollHeight > element.offsetHeight) {
       let currentWidth = parseInt(element.style.width) || element.offsetWidth;
@@ -84,15 +73,24 @@ export class MainCellManager {
 
   private handleInputBlur(event: Event) {
     this.updateCellValue((event!.target as HTMLElement).innerText);
-    this.selectionCell.selectedCells[0].cell = null;
   }
 
   public updateCellValue(value: string | null) {
     if (this.selectionCell.selectedCells[0]) {
       const { row, column } = this.selectionCell.selectedCells[0];
-      const rowNumber = row!.row;
-      const columnNumber = column!.col;
+
+      let rowNumber = row!.row;
+      let columnNumber = column!.col;
+      // For merged cell
+      if (this.selectionCell.selectedCells[0].cell?.mergedTo){
+        const cell = this.selectionCell.selectedCells[0].cell?.mergedTo;
+        rowNumber = cell.rowValue
+        columnNumber = cell.colValue
+      }
+
+      // Update SparseMatrix with new value
       this.helper.setCell(rowNumber, columnNumber, value);
+      this.selectionCell.selectedCells[0].cell = this.helper.getCell(rowNumber, columnNumber)
     }
   }
 
@@ -159,7 +157,19 @@ export class MainCellManager {
       (cell) => y >= cell.y && y < cell.y + cell.height
     );
     const cell = this.helper.getCell(row?.row!,column?.col!)!
+    if(cell && cell.mergedTo){
+      const mergedRow = cell.mergedTo.rowValue;
+      const mergeCol = cell.mergedTo.colValue
+      const horizontalHeaderCellNew = this.helper.GridHeaderManager?.getAllHorizontalHeaderCells();
+      const verticalHeaderCellNew = this.helper.GridHeaderManager?.getAllVerticalHeaderCells()
+      const columnHeaderCell = horizontalHeaderCellNew?.[mergeCol-1];
+      const rowHeaderCell = verticalHeaderCellNew?.[mergedRow-1]
+      const mergedCell = this.helper.getCell(row?.row!,column?.col!)!
+
+      return columnHeaderCell && rowHeaderCell ? { column :columnHeaderCell , row : rowHeaderCell , cell: mergedCell } : null;
+    }
     return column && row ? { column, row , cell } : null;
+
   }
 
   public getCellsFromRect(
@@ -254,18 +264,13 @@ export class MainCellManager {
       width = `${(node.lastColumnHeaderCell!.x - node.firstColumnHeaderCell!.x + node.lastColumnHeaderCell!.width) - inputChange * inputChange}px`
       height = `${(node.lastRowHeaderCell!.y - node.firstRowHeaderCell!.y + node.lastRowHeaderCell!.height)- inputChange * inputChange}px`
     }
-    const alignContent =
-      node?.styles.textBaseline === ETextBaseLine.middle
-        ? "center"
-        : node?.styles.textBaseline || "center";
-    const bold = node?.styles.bold ? "bold" : "normal";
-    const italic = node?.styles.italic ? "italic" : "normal";
-    const color = node?.styles.color
-      ? node?.styles.color
-      : DEFAULT_CELL_FONT_COLOR;
-    const bgColor = node?.styles.fill
-      ? node.styles.fill
-      : DEFAULT_CELL_BG_COLOR;
+    const alignContent = node?.styles.textBaseline === ETextBaseLine.Middle
+    ? "center"
+    : node?.styles.textBaseline || "center"
+    const bold = node?.styles.bold ? 'bold' : 'normal';
+    const italic = node?.styles.italic ? 'italic' : 'normal';
+    const color = node?.styles.color ? node?.styles.color  : DEFAULT_CELL_FONT_COLOR
+    const bgColor = node?.styles.fill ? node.styles.fill : DEFAULT_CELL_BG_COLOR
 
     Object.assign(this.input.style, {
       position: "absolute",
@@ -274,6 +279,7 @@ export class MainCellManager {
       width: width? width : `${cell!.column.width - inputChange * inputChange}px`,
       height: height? height: `${cell!.row.height - inputChange * inputChange}px`,
       fontSize: `${fontSize * zoomIndex}px`, // Adjust font size based on scale
+      fontFamily : `${node?.styles.fontFamily ?? DEFAULT_FONT_FAMILY}`,
       textAlign: textAlign,
       lineHeight: `${fontSize * zoomIndex}px`,
       alignContent: alignContent,

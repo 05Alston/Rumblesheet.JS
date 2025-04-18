@@ -382,30 +382,30 @@ export class SheetRendrer {
           ctx.clip();
   
           if (current.value !== undefined && current.value !== null) {
-            let textX = cellX + (current.styles.textIndent ?? 0) + hCell.width / 2;
-            let textY = cellY + vCell.height / 2;
+            let textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth / 2;
+            let textY = cellY + mergedHeight / 2;
             ctx.textAlign = DEFAULT_CANVAS_TEXT_ALIGN as CanvasTextAlign;
   
-            if (current.styles.textAlign === ETextAlign.left) {
+            if (current.styles.textAlign === ETextAlign.Left) {
               textX = cellX + (current.styles.textIndent ?? 0) + DEFAULT_MIN_PADDING_IN_CELL;
-              ctx.textAlign = ETextAlign.left as CanvasTextAlign;
-            } else if (current.styles.textAlign === ETextAlign.center) {
+              ctx.textAlign = ETextAlign.Left as CanvasTextAlign;
+            } else if (current.styles.textAlign === ETextAlign.Center) {
               textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth / 2;
-              ctx.textAlign = ETextAlign.center as CanvasTextAlign;
-            } else if (current.styles.textAlign === ETextAlign.right) {
+              ctx.textAlign = ETextAlign.Center as CanvasTextAlign;
+            } else if (current.styles.textAlign === ETextAlign.Right) {
               textX = cellX + (current.styles.textIndent ?? 0) + mergedWidth - DEFAULT_MIN_PADDING_IN_CELL;
-              ctx.textAlign = ETextAlign.right as CanvasTextAlign;
+              ctx.textAlign = ETextAlign.Right as CanvasTextAlign;
             }
   
-            if (current.styles.textBaseline === ETextBaseLine.top) {
+            if (current.styles.textBaseline === ETextBaseLine.Start) {
               textY = cellY + DEFAULT_MIN_PADDING_IN_CELL;
-              ctx.textBaseline = ETextBaseLine.top as CanvasTextBaseline;
-            } else if (current.styles.textBaseline === ETextBaseLine.middle) {
+              ctx.textBaseline =  ETextBaseLine.Top as CanvasTextBaseline;
+            } else if (current.styles.textBaseline === ETextBaseLine.Middle) {
               textY = cellY + mergedHeight / 2;
-              ctx.textBaseline = ETextBaseLine.middle as CanvasTextBaseline;
-            } else if (current.styles.textBaseline === ETextBaseLine.bottom) {
+              ctx.textBaseline = ETextBaseLine.Middle as CanvasTextBaseline;
+            } else if (current.styles.textBaseline === ETextBaseLine.End) {
               textY = cellY + mergedHeight - DEFAULT_MIN_PADDING_IN_CELL;
-              ctx.textBaseline = ETextBaseLine.bottom as CanvasTextBaseline;
+              ctx.textBaseline = ETextBaseLine.Bottom as CanvasTextBaseline;
             }
   
             ctx.fillText(current.value.toString(), textX, textY);

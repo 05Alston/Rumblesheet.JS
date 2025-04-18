@@ -221,76 +221,86 @@ export class EventManager {
     const selectedCells =
       this.currentSheetObjHelper?.mainCellManager.getCurrSelectedCells();
     if (selectedCells) {
-      console.log(selectedCells)
       selectedCells.forEach((cellDetails) => {
+        if (cellDetails && !cellDetails.cell) {
+          //if cell doesn't exixt create it with empty value
+          const rowNumber = cellDetails.row?.row;
+          const colNumber = cellDetails.column?.col;
+          if (rowNumber && colNumber) {
+            //create cell
+            this.currentSheetObjHelper?.setCell(rowNumber, colNumber, "");
+            //get updated cell
+            cellDetails.cell =
+              this.currentSheetObjHelper?.getCell(rowNumber, colNumber) ?? null;
+          }
+        }
         if (cellDetails && cellDetails.cell) {
           switch (action) {
-            case ERibbonDataActions.bold:
+            case ERibbonDataActions.Bold:
               cellDetails.cell.styles.bold = isActive;
               break;
-            case ERibbonDataActions.italic:
+            case ERibbonDataActions.Italic:
               cellDetails.cell.styles.italic = isActive;
               break;
-            case ERibbonDataActions.underline:
+            case ERibbonDataActions.Underline:
               cellDetails.cell.styles.underline = isActive;
               break;
-            case ERibbonDataActions.alignLeft:
-              cellDetails.cell.styles.textAlign = ETextAlign.left;
+            case ERibbonDataActions.AlignLeft:
+              cellDetails.cell.styles.textAlign = ETextAlign.Left;
               break;
-            case ERibbonDataActions.alignRight:
-              cellDetails.cell.styles.textAlign = ETextAlign.right;
+            case ERibbonDataActions.AlignRight:
+              cellDetails.cell.styles.textAlign = ETextAlign.Right;
               break;
-            case ERibbonDataActions.alignCenter:
-              cellDetails.cell.styles.textAlign = ETextAlign.center;
+            case ERibbonDataActions.AlignCenter:
+              cellDetails.cell.styles.textAlign = ETextAlign.Center;
               break;
-            case ERibbonDataActions.increaseFont:
+            case ERibbonDataActions.IncreaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) +
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ERibbonDataActions.decreaseFont:
+            case ERibbonDataActions.DecreaseFont:
               cellDetails.cell.styles.fontSize =
                 (cellDetails.cell.styles.fontSize ?? DEFAULT_FONT_SIZE) -
                 DEFAULT_FONT_SIZE_CHANGE_VALUE;
               break;
-            case ERibbonDataActions.textBaselineTop:
-              cellDetails.cell.styles.textBaseline = ETextBaseLine.top;
-              // conosle.log("done");
+            case ERibbonDataActions.TextBaselineTop:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.Start;
               break;
-            case ERibbonDataActions.textBaselineMiddle:
-              cellDetails.cell.styles.textBaseline = ETextBaseLine.middle;
+            case ERibbonDataActions.TextBaselineMiddle:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.Middle;
               break;
-            case ERibbonDataActions.textBaselineBottom:
-              cellDetails.cell.styles.textBaseline = ETextBaseLine.bottom;
+            case ERibbonDataActions.TextBaselineBottom:
+              cellDetails.cell.styles.textBaseline = ETextBaseLine.End;
               break;
-            case ERibbonDataActions.cut:
-              //todo - to be handled
+            case ERibbonDataActions.Cut:
+              // TODO - to be handled
               break;
-            case ERibbonDataActions.copy:
-              //todo - to be handled
+            case ERibbonDataActions.Copy:
+              // TODO - to be handled
               break;
-            case ERibbonDataActions.paste:
-              //todo - to be handled
+            case ERibbonDataActions.Paste:
+              // TODO - to be handled
               break;
-            case ERibbonDataActions.fontFamily:
+            case ERibbonDataActions.FontFamily:
               cellDetails.cell.styles.fontFamily = newValue as EFontFamilies;
               break;
-            case ERibbonDataActions.fontSize:
+            case ERibbonDataActions.FontSize:
               cellDetails.cell.styles.fontSize = parseInt(newValue);
               break;
-            case ERibbonDataActions.fillColor:
+            case ERibbonDataActions.FillColor:
               cellDetails.cell.styles.fill = newValue;
               break;
-            case ERibbonDataActions.textColor:
+            case ERibbonDataActions.TextColor:
               cellDetails.cell.styles.color = newValue;
               break;
-            case ERibbonDataActions.increaseIndent:
-              //todo - handle properly after resize is implemented
+            case ERibbonDataActions.IncreaseIndent:
+              // TODO - handle properly after resize is implemented
               cellDetails.cell.styles.textIndent =
                 (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) +
                 INDENT_VALUE_CHANGE_VALUE;
               break;
-            case ERibbonDataActions.decreaseIndent:
+            case ERibbonDataActions.DecreaseIndent:
               cellDetails.cell.styles.textIndent = Math.max(
                 0,
                 (cellDetails.cell.styles.textIndent ?? DEFAULT_CELL_INDENT) -
@@ -304,7 +314,7 @@ export class EventManager {
         }
       });
     }
-    this.currentSheetObjHelper?.mainCellManager.draw();
+    this.currentSheetObjHelper?.updateDrawForFeatures();
   }
 
   private handleSelectChange(selectElement: HTMLSelectElement) {
