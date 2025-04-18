@@ -157,7 +157,19 @@ export class MainCellManager {
       (cell) => y >= cell.y && y < cell.y + cell.height
     );
     const cell = this.helper.getCell(row?.row!,column?.col!)!
+    if(cell && cell.mergedTo){
+      const mergedRow = cell.mergedTo.rowValue;
+      const mergeCol = cell.mergedTo.colValue
+      const horizontalHeaderCellNew = this.helper.GridHeaderManager?.getAllHorizontalHeaderCells();
+      const verticalHeaderCellNew = this.helper.GridHeaderManager?.getAllVerticalHeaderCells()
+      const columnHeaderCell = horizontalHeaderCellNew?.[mergeCol-1];
+      const rowHeaderCell = verticalHeaderCellNew?.[mergedRow-1]
+      const mergedCell = this.helper.getCell(row?.row!,column?.col!)!
+
+      return columnHeaderCell && rowHeaderCell ? { column :columnHeaderCell , row : rowHeaderCell , cell: mergedCell } : null;
+    }
     return column && row ? { column, row , cell } : null;
+
   }
 
   public getCellsFromRect(
