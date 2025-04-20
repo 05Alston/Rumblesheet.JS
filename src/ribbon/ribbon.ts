@@ -276,14 +276,48 @@ export class Ribbon {
                 </div>
               </div>
               <div class="divider"></div>
-
+              <div class="tab-section section-4">
+                <div class="feature-menu menu-4">
+                  <div class="icon icon-align-center"></div>
+                  <div class="name">Excel Handles</div>
+                  <div class="feature-menu-arrow icon-down"></div>
+                </div>
+                <div class="feature-box box-4">
+                  <div class="content divided-in-row">
+                    <div class="row">
+                      <div class="feature-icon excel-handle-button" role="button" tabindex="0"  data-action = '${
+                        ERibbonDataActions.AddExcelRow
+                      }' >
+                        <div class="icon icon-add-excel-row"></div>
+                        <p class="icon-name">Add Excel Row</p>
+                      </div>
+                      <div class="feature-icon excel-handle-button" role="button" tabindex="0"  data-action = '${
+                        ERibbonDataActions.AddExcelCol
+                      }' >
+                        <div class="icon icon-add-excel-column"></div>
+                        <p class="icon-name">Add Excel Column</p>
+                      </div>
+                    </div>
+                    <div class="sub-divider collapsed"></div>
+                    <div class="row">
+                      <div class="feature-icon excel-handle-button" role="button" tabindex="0"  data-action = '${
+                        ERibbonDataActions.DeleteExcel
+                      }' >
+                        <div class="icon icon-delete-excel"></div>
+                        <p class="icon-name">Delete Excel</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="name">Excel Handles</div>
+                </div>
+              </div>
               `;
   }
   private getGraphTabContent(): string {
     return `
             <div class="focus-graph">
                 <button class="focus-zone-inner-btn focus-zone-inner-btn-left" data-chart-type="bar">
-                    <span class="iconify" data-icon="mdi:chart-bar" data-width="23" data-height="23"></span>
+                    <span class="iconify" data-icon="mdi:chart-bar" data-width="24" data-height="23"></span>
                 </button>
                 <button class="focus-zone-inner-btn focus-zone-inner-btn-right" data-chart-type="line">
                     <span class="iconify" data-icon="mdi:chart-line" data-width="23" data-height="23"></span>

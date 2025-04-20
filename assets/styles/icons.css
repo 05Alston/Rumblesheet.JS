@@ -93,3 +93,12 @@
 .icon-fx {
   background-image: url("../icons//fx.svg");
 }
+.icon-add-excel-row{
+  background-image: url("../icons//add-excel-row.svg");
+}
+.icon-add-excel-column{
+  background-image: url("../icons//add-excel-column.svg");
+}
+.icon-delete-excel{
+  background-image: url("../icons//delete-excel.svg");
+}

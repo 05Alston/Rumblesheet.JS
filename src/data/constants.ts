@@ -88,3 +88,8 @@ export const instantActions = [
   ERibbonDataActions.Paste,
   ERibbonDataActions.Cut,
 ];
+export const excelHandlesAction = [
+  ERibbonDataActions.AddExcelCol,
+  ERibbonDataActions.AddExcelRow,
+  ERibbonDataActions.DeleteExcel
+]
