@@ -4,6 +4,7 @@ import {
   DEFAULT_CELL_INDENT,
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_SIZE_CHANGE_VALUE,
+  excelHandlesAction,
   INDENT_VALUE_CHANGE_VALUE,
   indentActions,
   instantActions,
@@ -170,6 +171,28 @@ export class EventManager {
 
   //* Handler Functions
 
+  public handleExcelHandlerButtons(action: ERibbonDataActions) {
+    const currExcelRow = this.excelsHandler.currExcelRow;
+    const currExcelCol = this.excelsHandler.currExcelCol;
+
+    console.log(currExcelCol,currExcelRow)
+
+    switch (action) {
+      case ERibbonDataActions.AddExcelCol:
+        currExcelRow?
+          this.excelsHandler.addNewExcelCol(currExcelRow) : null;
+        break;
+      case ERibbonDataActions.AddExcelRow:
+        this.excelsHandler.addNewExcelRow()
+        break;
+      case ERibbonDataActions.DeleteExcel:
+        currExcelCol && currExcelRow ? this.excelsHandler.deleteExcel(currExcelRow,currExcelCol) : null
+        break;
+      default:
+        break;
+    }
+  }
+
   public performRibbonAction(ele: HTMLElement) {
     if (!ele) {
       return;
@@ -196,8 +219,10 @@ export class EventManager {
       this.updateCellFormatting(action, true);
     } else if (instantActions.includes(action)) {
       this.updateCellFormatting(action, true);
+    } else if (excelHandlesAction.includes(action)) {
+      this.handleExcelHandlerButtons(action);
     } else {
-      // conosle.log("Unhandled action: ", action);
+      console.log("Unhandled Case")
     }
   }
 

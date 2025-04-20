@@ -86,7 +86,7 @@ export class ExcelsHandler {
     this.currSheetObj = sheetObj;
   }
 
-  private addNewExcelRow(): void {
+  public addNewExcelRow(): void {
     if (this.totalExcelRows >= this.maxExcelRow) {
       alert("No more rows can be added");
       return;
@@ -104,7 +104,7 @@ export class ExcelsHandler {
     this.handleResize();
   }
 
-  private addNewExcelCol(rowNum: number): void {
+  public addNewExcelCol(rowNum: number): void {
     if (rowNum > this.totalExcelRows) return;
 
     let colCount = this.excelsRowArr[rowNum - 1].length;
@@ -123,7 +123,7 @@ export class ExcelsHandler {
     this.handleResize();
   }
 
-  private deleteExcel(rowNum: number, colNum: number): void {
+  public deleteExcel(rowNum: number, colNum: number): void {
     const rowElement = document.getElementById(`row-${rowNum}`);
     if (rowElement) {
       const cells = rowElement.querySelectorAll(".excel");

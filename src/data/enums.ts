@@ -65,6 +65,9 @@ export enum ERibbonDataActions {
   TextBaselineTop = "textBaselineTop",
   TextBaselineMiddle = "textBaselineMiddle",
   TextBaselineBottom = "textBaselineBottom",
+  AddExcelRow = 'addExcelRow',
+  AddExcelCol = 'addExcelCol',
+  DeleteExcel = 'deleteExcel'
 }
 
 export enum ETabList {
